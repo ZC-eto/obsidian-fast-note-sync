@@ -2,8 +2,8 @@
 
 ## 文档状态
 
-- 状态：第一阶段实现与本地验证完成；真实插件更新尚未执行
-- 日期：2026-08-06
+- 状态：第一阶段实现、本地验证和 Windows 实机普通同步 smoke 已完成；Android 与首次安全同步激活待执行
+- 日期：2026-08-07
 - 插件基线：`2.4.0`
 - 当前 fork 自用构建版本：`2.4.1`
 - 工作分支：`feat/safe-multi-device-sync`
@@ -36,7 +36,21 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 - 远端删除先检查 pending、baseline 和当前 hash，再写入 `.obsidian/plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
 - 安全附件下载的分片、hash、大小和临时写盘任一步失败都会拒绝当前事件，不留下已推进的 baseline。
 
-插件仍未写入真实 Obsidian 安装目录。发布时必须确认 `main.js`、`manifest.json`、`styles.css` 与 `package.json`/manifest 版本一致，并分别在桌面和 Android 上用复制 Vault 验证。
+Windows 插件已写入真实 Obsidian 安装目录并完成普通同步 smoke；Android 仍未安装。安全同步开关保持关闭，尚未执行 bootstrap、删除、镜像或覆盖测试。
+
+## Windows 自用安装记录
+
+- Vault：`E:\Document\Notes`
+- 插件目录：`E:\Document\Notes\.obsidian\plugins\fast-note-sync`
+- 安装版本：`2.4.1`，fork 提交 `3c784a98c50e33bca870525ab4ea33823c40bcbf`
+- 回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.4.0-before-safe-sync-20260807-091747`
+- 服务地址：`https://fast-note-sync-safe-1irxvu-6387b0-23-144-4-140.sslip.io`
+- 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
+- 持久状态：`fileHashMap.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留
+- 运行验证：Obsidian 已加载 `2.4.1`，WebSocket 已连接并鉴权，普通增量同步完成；设置页能看到“安全多端同步”，状态为“未启用”，toggle 未勾选且可用
+- 服务能力：客户端观察到 capability 可用，服务端状态为 `OFF`；`safeRevisionSyncEnabled=false`，没有进入 bootstrap
+
+启动时曾发现 LocalStorage 中的旧 API 地址优先于已更新的 `data.json`。本次已通过插件的正式 `saveAndReloadServices("api")` 路径同时更新运行配置、LocalStorage 和 `data.json`，重连后确认实际使用新临时域名。
 
 ## 完整产品路线能力（含后续阶段）
 
@@ -71,7 +85,7 @@ tests/
 - `pnpm build`：通过。
 - 当前运行环境 Node `v22.20.0`，项目声明 `>=24.14.0`，因此 pnpm 命令仍显示 engine warning；发布构建应改用满足声明的 Node 版本复验。
 
-真实桌面/Android 加载、复制 Vault smoke 和 Dokploy 服务切换尚未执行，不能据此文档声称已经发布完成。安装时必须核对 `manifest.json` 和 Obsidian 已加载版本均为 `2.4.1`。
+Windows 实机加载、普通增量同步和 Dokploy 新服务连接已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.4.1`。Android、跨设备同步和首次安全同步 bootstrap 尚未执行，不能据此文档声称这些场景已经验收完成。
 
 ## 禁止事项
 
