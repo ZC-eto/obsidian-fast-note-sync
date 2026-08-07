@@ -10646,5 +10646,2639 @@ export namespace proto {
             /** Shape of a FolderSyncPageAckRequest. */
             type $Shape = proto.v1.FolderSyncPageAckRequest.$Properties;
         }
+
+        /**
+         * Properties of a SafeSyncStatusRequest.
+         * @deprecated Use proto.v1.SafeSyncStatusRequest.$Properties instead.
+         */
+        type ISafeSyncStatusRequest = proto.v1.SafeSyncStatusRequest.$Properties;
+
+        /** Represents a SafeSyncStatusRequest. */
+        class SafeSyncStatusRequest {
+
+            /**
+             * Constructs a new SafeSyncStatusRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncStatusRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncStatusRequest vault. */
+            vault: string;
+
+            /**
+             * Creates a new SafeSyncStatusRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncStatusRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncStatusRequest.$Shape): proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncStatusRequest.$Properties): proto.v1.SafeSyncStatusRequest;
+
+            /**
+             * Encodes the specified SafeSyncStatusRequest message. Does not implicitly {@link proto.v1.SafeSyncStatusRequest.verify|verify} messages.
+             * @param message SafeSyncStatusRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncStatusRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncStatusRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncStatusRequest.verify|verify} messages.
+             * @param message SafeSyncStatusRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncStatusRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncStatusRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape} SafeSyncStatusRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncStatusRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape} SafeSyncStatusRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncStatusRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncStatusRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncStatusRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncStatusRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncStatusRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncStatusRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncStatusRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncStatusRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncStatusRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncStatusRequest {
+
+            /** Properties of a SafeSyncStatusRequest. */
+            interface $Properties {
+
+                /** SafeSyncStatusRequest vault */
+                vault?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncStatusRequest. */
+            type $Shape = proto.v1.SafeSyncStatusRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncStatusResponse.
+         * @deprecated Use proto.v1.SafeSyncStatusResponse.$Properties instead.
+         */
+        type ISafeSyncStatusResponse = proto.v1.SafeSyncStatusResponse.$Properties;
+
+        /** Represents a SafeSyncStatusResponse. */
+        class SafeSyncStatusResponse {
+
+            /**
+             * Constructs a new SafeSyncStatusResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncStatusResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncStatusResponse capability. */
+            capability: boolean;
+
+            /** SafeSyncStatusResponse state. */
+            state: string;
+
+            /** SafeSyncStatusResponse latestVaultRevision. */
+            latestVaultRevision: (number|Long);
+
+            /** SafeSyncStatusResponse migrationVerified. */
+            migrationVerified: boolean;
+
+            /** SafeSyncStatusResponse bootstrapSessionId. */
+            bootstrapSessionId: string;
+
+            /** SafeSyncStatusResponse bootstrapExpiresAt. */
+            bootstrapExpiresAt: (number|Long);
+
+            /** SafeSyncStatusResponse uid. */
+            uid: (number|Long);
+
+            /** SafeSyncStatusResponse vaultId. */
+            vaultId: (number|Long);
+
+            /**
+             * Creates a new SafeSyncStatusResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncStatusResponse instance
+             */
+            static create(properties: proto.v1.SafeSyncStatusResponse.$Shape): proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape;
+            static create(properties?: proto.v1.SafeSyncStatusResponse.$Properties): proto.v1.SafeSyncStatusResponse;
+
+            /**
+             * Encodes the specified SafeSyncStatusResponse message. Does not implicitly {@link proto.v1.SafeSyncStatusResponse.verify|verify} messages.
+             * @param message SafeSyncStatusResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncStatusResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncStatusResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncStatusResponse.verify|verify} messages.
+             * @param message SafeSyncStatusResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncStatusResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncStatusResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape} SafeSyncStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape;
+
+            /**
+             * Decodes a SafeSyncStatusResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape} SafeSyncStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape;
+
+            /**
+             * Verifies a SafeSyncStatusResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncStatusResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncStatusResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncStatusResponse;
+
+            /**
+             * Creates a plain object from a SafeSyncStatusResponse message. Also converts values to other types if specified.
+             * @param message SafeSyncStatusResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncStatusResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncStatusResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncStatusResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncStatusResponse {
+
+            /** Properties of a SafeSyncStatusResponse. */
+            interface $Properties {
+
+                /** SafeSyncStatusResponse capability */
+                capability?: (boolean|null);
+
+                /** SafeSyncStatusResponse state */
+                state?: (string|null);
+
+                /** SafeSyncStatusResponse latestVaultRevision */
+                latestVaultRevision?: (number|Long|null);
+
+                /** SafeSyncStatusResponse migrationVerified */
+                migrationVerified?: (boolean|null);
+
+                /** SafeSyncStatusResponse bootstrapSessionId */
+                bootstrapSessionId?: (string|null);
+
+                /** SafeSyncStatusResponse bootstrapExpiresAt */
+                bootstrapExpiresAt?: (number|Long|null);
+
+                /** SafeSyncStatusResponse uid */
+                uid?: (number|Long|null);
+
+                /** SafeSyncStatusResponse vaultId */
+                vaultId?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncStatusResponse. */
+            type $Shape = proto.v1.SafeSyncStatusResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapStartRequest.
+         * @deprecated Use proto.v1.SafeSyncBootstrapStartRequest.$Properties instead.
+         */
+        type ISafeSyncBootstrapStartRequest = proto.v1.SafeSyncBootstrapStartRequest.$Properties;
+
+        /** Represents a SafeSyncBootstrapStartRequest. */
+        class SafeSyncBootstrapStartRequest {
+
+            /**
+             * Constructs a new SafeSyncBootstrapStartRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapStartRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapStartRequest vault. */
+            vault: string;
+
+            /** SafeSyncBootstrapStartRequest deviceId. */
+            deviceId: string;
+
+            /** SafeSyncBootstrapStartRequest context. */
+            context: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapStartRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapStartRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapStartRequest.$Shape): proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapStartRequest.$Properties): proto.v1.SafeSyncBootstrapStartRequest;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapStartRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapStartRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapStartRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapStartRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapStartRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape} SafeSyncBootstrapStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapStartRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape} SafeSyncBootstrapStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapStartRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapStartRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapStartRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapStartRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapStartRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapStartRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapStartRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapStartRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapStartRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapStartRequest {
+
+            /** Properties of a SafeSyncBootstrapStartRequest. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapStartRequest vault */
+                vault?: (string|null);
+
+                /** SafeSyncBootstrapStartRequest deviceId */
+                deviceId?: (string|null);
+
+                /** SafeSyncBootstrapStartRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapStartRequest. */
+            type $Shape = proto.v1.SafeSyncBootstrapStartRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapStartResponse.
+         * @deprecated Use proto.v1.SafeSyncBootstrapStartResponse.$Properties instead.
+         */
+        type ISafeSyncBootstrapStartResponse = proto.v1.SafeSyncBootstrapStartResponse.$Properties;
+
+        /** Represents a SafeSyncBootstrapStartResponse. */
+        class SafeSyncBootstrapStartResponse {
+
+            /**
+             * Constructs a new SafeSyncBootstrapStartResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapStartResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapStartResponse state. */
+            state: string;
+
+            /** SafeSyncBootstrapStartResponse sessionId. */
+            sessionId: string;
+
+            /** SafeSyncBootstrapStartResponse expiresAt. */
+            expiresAt: (number|Long);
+
+            /** SafeSyncBootstrapStartResponse snapshotVaultRevision. */
+            snapshotVaultRevision: (number|Long);
+
+            /** SafeSyncBootstrapStartResponse manifestHash. */
+            manifestHash: string;
+
+            /** SafeSyncBootstrapStartResponse resourceCount. */
+            resourceCount: (number|Long);
+
+            /** SafeSyncBootstrapStartResponse cursor. */
+            cursor: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapStartResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapStartResponse instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapStartResponse.$Shape): proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapStartResponse.$Properties): proto.v1.SafeSyncBootstrapStartResponse;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartResponse message. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartResponse.verify|verify} messages.
+             * @param message SafeSyncBootstrapStartResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapStartResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartResponse.verify|verify} messages.
+             * @param message SafeSyncBootstrapStartResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapStartResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapStartResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape} SafeSyncBootstrapStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapStartResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape} SafeSyncBootstrapStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapStartResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapStartResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapStartResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapStartResponse;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapStartResponse message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapStartResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapStartResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapStartResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapStartResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapStartResponse {
+
+            /** Properties of a SafeSyncBootstrapStartResponse. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapStartResponse state */
+                state?: (string|null);
+
+                /** SafeSyncBootstrapStartResponse sessionId */
+                sessionId?: (string|null);
+
+                /** SafeSyncBootstrapStartResponse expiresAt */
+                expiresAt?: (number|Long|null);
+
+                /** SafeSyncBootstrapStartResponse snapshotVaultRevision */
+                snapshotVaultRevision?: (number|Long|null);
+
+                /** SafeSyncBootstrapStartResponse manifestHash */
+                manifestHash?: (string|null);
+
+                /** SafeSyncBootstrapStartResponse resourceCount */
+                resourceCount?: (number|Long|null);
+
+                /** SafeSyncBootstrapStartResponse cursor */
+                cursor?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapStartResponse. */
+            type $Shape = proto.v1.SafeSyncBootstrapStartResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapPageRequest.
+         * @deprecated Use proto.v1.SafeSyncBootstrapPageRequest.$Properties instead.
+         */
+        type ISafeSyncBootstrapPageRequest = proto.v1.SafeSyncBootstrapPageRequest.$Properties;
+
+        /** Represents a SafeSyncBootstrapPageRequest. */
+        class SafeSyncBootstrapPageRequest {
+
+            /**
+             * Constructs a new SafeSyncBootstrapPageRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapPageRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapPageRequest vault. */
+            vault: string;
+
+            /** SafeSyncBootstrapPageRequest sessionId. */
+            sessionId: string;
+
+            /** SafeSyncBootstrapPageRequest cursor. */
+            cursor: string;
+
+            /** SafeSyncBootstrapPageRequest pageSize. */
+            pageSize: number;
+
+            /** SafeSyncBootstrapPageRequest context. */
+            context: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapPageRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapPageRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapPageRequest.$Shape): proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapPageRequest.$Properties): proto.v1.SafeSyncBootstrapPageRequest;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapPageRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapPageRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapPageRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapPageRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapPageRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape} SafeSyncBootstrapPageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapPageRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape} SafeSyncBootstrapPageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapPageRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapPageRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapPageRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapPageRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapPageRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapPageRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapPageRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapPageRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapPageRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapPageRequest {
+
+            /** Properties of a SafeSyncBootstrapPageRequest. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapPageRequest vault */
+                vault?: (string|null);
+
+                /** SafeSyncBootstrapPageRequest sessionId */
+                sessionId?: (string|null);
+
+                /** SafeSyncBootstrapPageRequest cursor */
+                cursor?: (string|null);
+
+                /** SafeSyncBootstrapPageRequest pageSize */
+                pageSize?: (number|null);
+
+                /** SafeSyncBootstrapPageRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapPageRequest. */
+            type $Shape = proto.v1.SafeSyncBootstrapPageRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncManifestItem.
+         * @deprecated Use proto.v1.SafeSyncManifestItem.$Properties instead.
+         */
+        type ISafeSyncManifestItem = proto.v1.SafeSyncManifestItem.$Properties;
+
+        /** Represents a SafeSyncManifestItem. */
+        class SafeSyncManifestItem {
+
+            /**
+             * Constructs a new SafeSyncManifestItem.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncManifestItem.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncManifestItem resourceId. */
+            resourceId: string;
+
+            /** SafeSyncManifestItem resourceType. */
+            resourceType: string;
+
+            /** SafeSyncManifestItem path. */
+            path: string;
+
+            /** SafeSyncManifestItem pathHash. */
+            pathHash: string;
+
+            /** SafeSyncManifestItem state. */
+            state: string;
+
+            /** SafeSyncManifestItem resourceRevision. */
+            resourceRevision: (number|Long);
+
+            /** SafeSyncManifestItem contentHash. */
+            contentHash: string;
+
+            /** SafeSyncManifestItem size. */
+            size: (number|Long);
+
+            /**
+             * Creates a new SafeSyncManifestItem instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncManifestItem instance
+             */
+            static create(properties: proto.v1.SafeSyncManifestItem.$Shape): proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape;
+            static create(properties?: proto.v1.SafeSyncManifestItem.$Properties): proto.v1.SafeSyncManifestItem;
+
+            /**
+             * Encodes the specified SafeSyncManifestItem message. Does not implicitly {@link proto.v1.SafeSyncManifestItem.verify|verify} messages.
+             * @param message SafeSyncManifestItem message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncManifestItem.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncManifestItem message, length delimited. Does not implicitly {@link proto.v1.SafeSyncManifestItem.verify|verify} messages.
+             * @param message SafeSyncManifestItem message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncManifestItem.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncManifestItem message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape} SafeSyncManifestItem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape;
+
+            /**
+             * Decodes a SafeSyncManifestItem message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape} SafeSyncManifestItem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape;
+
+            /**
+             * Verifies a SafeSyncManifestItem message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncManifestItem message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncManifestItem
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncManifestItem;
+
+            /**
+             * Creates a plain object from a SafeSyncManifestItem message. Also converts values to other types if specified.
+             * @param message SafeSyncManifestItem
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncManifestItem, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncManifestItem to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncManifestItem
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncManifestItem {
+
+            /** Properties of a SafeSyncManifestItem. */
+            interface $Properties {
+
+                /** SafeSyncManifestItem resourceId */
+                resourceId?: (string|null);
+
+                /** SafeSyncManifestItem resourceType */
+                resourceType?: (string|null);
+
+                /** SafeSyncManifestItem path */
+                path?: (string|null);
+
+                /** SafeSyncManifestItem pathHash */
+                pathHash?: (string|null);
+
+                /** SafeSyncManifestItem state */
+                state?: (string|null);
+
+                /** SafeSyncManifestItem resourceRevision */
+                resourceRevision?: (number|Long|null);
+
+                /** SafeSyncManifestItem contentHash */
+                contentHash?: (string|null);
+
+                /** SafeSyncManifestItem size */
+                size?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncManifestItem. */
+            type $Shape = proto.v1.SafeSyncManifestItem.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapPageResponse.
+         * @deprecated Use proto.v1.SafeSyncBootstrapPageResponse.$Properties instead.
+         */
+        type ISafeSyncBootstrapPageResponse = proto.v1.SafeSyncBootstrapPageResponse.$Properties;
+
+        /** Represents a SafeSyncBootstrapPageResponse. */
+        class SafeSyncBootstrapPageResponse {
+
+            /**
+             * Constructs a new SafeSyncBootstrapPageResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapPageResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapPageResponse sessionId. */
+            sessionId: string;
+
+            /** SafeSyncBootstrapPageResponse snapshotVaultRevision. */
+            snapshotVaultRevision: (number|Long);
+
+            /** SafeSyncBootstrapPageResponse manifestHash. */
+            manifestHash: string;
+
+            /** SafeSyncBootstrapPageResponse items. */
+            items: proto.v1.SafeSyncManifestItem.$Properties[];
+
+            /** SafeSyncBootstrapPageResponse nextCursor. */
+            nextCursor: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapPageResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapPageResponse instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapPageResponse.$Shape): proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapPageResponse.$Properties): proto.v1.SafeSyncBootstrapPageResponse;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageResponse message. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageResponse.verify|verify} messages.
+             * @param message SafeSyncBootstrapPageResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapPageResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageResponse.verify|verify} messages.
+             * @param message SafeSyncBootstrapPageResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapPageResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapPageResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape} SafeSyncBootstrapPageResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapPageResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape} SafeSyncBootstrapPageResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapPageResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapPageResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapPageResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapPageResponse;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapPageResponse message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapPageResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapPageResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapPageResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapPageResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapPageResponse {
+
+            /** Properties of a SafeSyncBootstrapPageResponse. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapPageResponse sessionId */
+                sessionId?: (string|null);
+
+                /** SafeSyncBootstrapPageResponse snapshotVaultRevision */
+                snapshotVaultRevision?: (number|Long|null);
+
+                /** SafeSyncBootstrapPageResponse manifestHash */
+                manifestHash?: (string|null);
+
+                /** SafeSyncBootstrapPageResponse items */
+                items?: (proto.v1.SafeSyncManifestItem.$Properties[]|null);
+
+                /** SafeSyncBootstrapPageResponse nextCursor */
+                nextCursor?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapPageResponse. */
+            type $Shape = proto.v1.SafeSyncBootstrapPageResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapCommitRequest.
+         * @deprecated Use proto.v1.SafeSyncBootstrapCommitRequest.$Properties instead.
+         */
+        type ISafeSyncBootstrapCommitRequest = proto.v1.SafeSyncBootstrapCommitRequest.$Properties;
+
+        /** Represents a SafeSyncBootstrapCommitRequest. */
+        class SafeSyncBootstrapCommitRequest {
+
+            /**
+             * Constructs a new SafeSyncBootstrapCommitRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapCommitRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapCommitRequest vault. */
+            vault: string;
+
+            /** SafeSyncBootstrapCommitRequest sessionId. */
+            sessionId: string;
+
+            /** SafeSyncBootstrapCommitRequest manifestHash. */
+            manifestHash: string;
+
+            /** SafeSyncBootstrapCommitRequest snapshotVaultRevision. */
+            snapshotVaultRevision: (number|Long);
+
+            /** SafeSyncBootstrapCommitRequest context. */
+            context: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapCommitRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapCommitRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapCommitRequest.$Shape): proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapCommitRequest.$Properties): proto.v1.SafeSyncBootstrapCommitRequest;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCommitRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapCommitRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapCommitRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapCommitRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCommitRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapCommitRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapCommitRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapCommitRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapCommitRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape} SafeSyncBootstrapCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapCommitRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape} SafeSyncBootstrapCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapCommitRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapCommitRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapCommitRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapCommitRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapCommitRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapCommitRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapCommitRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapCommitRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapCommitRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapCommitRequest {
+
+            /** Properties of a SafeSyncBootstrapCommitRequest. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapCommitRequest vault */
+                vault?: (string|null);
+
+                /** SafeSyncBootstrapCommitRequest sessionId */
+                sessionId?: (string|null);
+
+                /** SafeSyncBootstrapCommitRequest manifestHash */
+                manifestHash?: (string|null);
+
+                /** SafeSyncBootstrapCommitRequest snapshotVaultRevision */
+                snapshotVaultRevision?: (number|Long|null);
+
+                /** SafeSyncBootstrapCommitRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapCommitRequest. */
+            type $Shape = proto.v1.SafeSyncBootstrapCommitRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncBootstrapCancelRequest.
+         * @deprecated Use proto.v1.SafeSyncBootstrapCancelRequest.$Properties instead.
+         */
+        type ISafeSyncBootstrapCancelRequest = proto.v1.SafeSyncBootstrapCancelRequest.$Properties;
+
+        /** Represents a SafeSyncBootstrapCancelRequest. */
+        class SafeSyncBootstrapCancelRequest {
+
+            /**
+             * Constructs a new SafeSyncBootstrapCancelRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncBootstrapCancelRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncBootstrapCancelRequest vault. */
+            vault: string;
+
+            /** SafeSyncBootstrapCancelRequest sessionId. */
+            sessionId: string;
+
+            /** SafeSyncBootstrapCancelRequest context. */
+            context: string;
+
+            /**
+             * Creates a new SafeSyncBootstrapCancelRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncBootstrapCancelRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncBootstrapCancelRequest.$Shape): proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncBootstrapCancelRequest.$Properties): proto.v1.SafeSyncBootstrapCancelRequest;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCancelRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapCancelRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapCancelRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncBootstrapCancelRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCancelRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapCancelRequest.verify|verify} messages.
+             * @param message SafeSyncBootstrapCancelRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncBootstrapCancelRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncBootstrapCancelRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape} SafeSyncBootstrapCancelRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncBootstrapCancelRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape} SafeSyncBootstrapCancelRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncBootstrapCancelRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncBootstrapCancelRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncBootstrapCancelRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncBootstrapCancelRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapCancelRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncBootstrapCancelRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncBootstrapCancelRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncBootstrapCancelRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapCancelRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncBootstrapCancelRequest {
+
+            /** Properties of a SafeSyncBootstrapCancelRequest. */
+            interface $Properties {
+
+                /** SafeSyncBootstrapCancelRequest vault */
+                vault?: (string|null);
+
+                /** SafeSyncBootstrapCancelRequest sessionId */
+                sessionId?: (string|null);
+
+                /** SafeSyncBootstrapCancelRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncBootstrapCancelRequest. */
+            type $Shape = proto.v1.SafeSyncBootstrapCancelRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncEventsRequest.
+         * @deprecated Use proto.v1.SafeSyncEventsRequest.$Properties instead.
+         */
+        type ISafeSyncEventsRequest = proto.v1.SafeSyncEventsRequest.$Properties;
+
+        /** Represents a SafeSyncEventsRequest. */
+        class SafeSyncEventsRequest {
+
+            /**
+             * Constructs a new SafeSyncEventsRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncEventsRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncEventsRequest vault. */
+            vault: string;
+
+            /** SafeSyncEventsRequest afterRevision. */
+            afterRevision: (number|Long);
+
+            /** SafeSyncEventsRequest pageSize. */
+            pageSize: number;
+
+            /** SafeSyncEventsRequest context. */
+            context: string;
+
+            /**
+             * Creates a new SafeSyncEventsRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncEventsRequest instance
+             */
+            static create(properties: proto.v1.SafeSyncEventsRequest.$Shape): proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape;
+            static create(properties?: proto.v1.SafeSyncEventsRequest.$Properties): proto.v1.SafeSyncEventsRequest;
+
+            /**
+             * Encodes the specified SafeSyncEventsRequest message. Does not implicitly {@link proto.v1.SafeSyncEventsRequest.verify|verify} messages.
+             * @param message SafeSyncEventsRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncEventsRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncEventsRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEventsRequest.verify|verify} messages.
+             * @param message SafeSyncEventsRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncEventsRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncEventsRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape} SafeSyncEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape;
+
+            /**
+             * Decodes a SafeSyncEventsRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape} SafeSyncEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape;
+
+            /**
+             * Verifies a SafeSyncEventsRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncEventsRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncEventsRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncEventsRequest;
+
+            /**
+             * Creates a plain object from a SafeSyncEventsRequest message. Also converts values to other types if specified.
+             * @param message SafeSyncEventsRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncEventsRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncEventsRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncEventsRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncEventsRequest {
+
+            /** Properties of a SafeSyncEventsRequest. */
+            interface $Properties {
+
+                /** SafeSyncEventsRequest vault */
+                vault?: (string|null);
+
+                /** SafeSyncEventsRequest afterRevision */
+                afterRevision?: (number|Long|null);
+
+                /** SafeSyncEventsRequest pageSize */
+                pageSize?: (number|null);
+
+                /** SafeSyncEventsRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncEventsRequest. */
+            type $Shape = proto.v1.SafeSyncEventsRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncEvent.
+         * @deprecated Use proto.v1.SafeSyncEvent.$Properties instead.
+         */
+        type ISafeSyncEvent = proto.v1.SafeSyncEvent.$Properties;
+
+        /** Represents a SafeSyncEvent. */
+        class SafeSyncEvent {
+
+            /**
+             * Constructs a new SafeSyncEvent.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncEvent.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncEvent vaultRevision. */
+            vaultRevision: (number|Long);
+
+            /** SafeSyncEvent resourceId. */
+            resourceId: string;
+
+            /** SafeSyncEvent resourceRevision. */
+            resourceRevision: (number|Long);
+
+            /** SafeSyncEvent resourceType. */
+            resourceType: string;
+
+            /** SafeSyncEvent action. */
+            action: string;
+
+            /** SafeSyncEvent path. */
+            path: string;
+
+            /** SafeSyncEvent previousPath. */
+            previousPath: string;
+
+            /** SafeSyncEvent contentHash. */
+            contentHash: string;
+
+            /** SafeSyncEvent state. */
+            state: string;
+
+            /** SafeSyncEvent transactionId. */
+            transactionId: string;
+
+            /** SafeSyncEvent operationId. */
+            operationId: string;
+
+            /**
+             * Creates a new SafeSyncEvent instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncEvent instance
+             */
+            static create(properties: proto.v1.SafeSyncEvent.$Shape): proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape;
+            static create(properties?: proto.v1.SafeSyncEvent.$Properties): proto.v1.SafeSyncEvent;
+
+            /**
+             * Encodes the specified SafeSyncEvent message. Does not implicitly {@link proto.v1.SafeSyncEvent.verify|verify} messages.
+             * @param message SafeSyncEvent message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncEvent.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncEvent message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEvent.verify|verify} messages.
+             * @param message SafeSyncEvent message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncEvent.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncEvent message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape} SafeSyncEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape;
+
+            /**
+             * Decodes a SafeSyncEvent message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape} SafeSyncEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape;
+
+            /**
+             * Verifies a SafeSyncEvent message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncEvent message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncEvent
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncEvent;
+
+            /**
+             * Creates a plain object from a SafeSyncEvent message. Also converts values to other types if specified.
+             * @param message SafeSyncEvent
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncEvent, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncEvent to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncEvent
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncEvent {
+
+            /** Properties of a SafeSyncEvent. */
+            interface $Properties {
+
+                /** SafeSyncEvent vaultRevision */
+                vaultRevision?: (number|Long|null);
+
+                /** SafeSyncEvent resourceId */
+                resourceId?: (string|null);
+
+                /** SafeSyncEvent resourceRevision */
+                resourceRevision?: (number|Long|null);
+
+                /** SafeSyncEvent resourceType */
+                resourceType?: (string|null);
+
+                /** SafeSyncEvent action */
+                action?: (string|null);
+
+                /** SafeSyncEvent path */
+                path?: (string|null);
+
+                /** SafeSyncEvent previousPath */
+                previousPath?: (string|null);
+
+                /** SafeSyncEvent contentHash */
+                contentHash?: (string|null);
+
+                /** SafeSyncEvent state */
+                state?: (string|null);
+
+                /** SafeSyncEvent transactionId */
+                transactionId?: (string|null);
+
+                /** SafeSyncEvent operationId */
+                operationId?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncEvent. */
+            type $Shape = proto.v1.SafeSyncEvent.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncEventsResponse.
+         * @deprecated Use proto.v1.SafeSyncEventsResponse.$Properties instead.
+         */
+        type ISafeSyncEventsResponse = proto.v1.SafeSyncEventsResponse.$Properties;
+
+        /** Represents a SafeSyncEventsResponse. */
+        class SafeSyncEventsResponse {
+
+            /**
+             * Constructs a new SafeSyncEventsResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncEventsResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncEventsResponse events. */
+            events: proto.v1.SafeSyncEvent.$Properties[];
+
+            /** SafeSyncEventsResponse latestVaultRevision. */
+            latestVaultRevision: (number|Long);
+
+            /** SafeSyncEventsResponse nextRevision. */
+            nextRevision: (number|Long);
+
+            /** SafeSyncEventsResponse hasMore. */
+            hasMore: boolean;
+
+            /**
+             * Creates a new SafeSyncEventsResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncEventsResponse instance
+             */
+            static create(properties: proto.v1.SafeSyncEventsResponse.$Shape): proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape;
+            static create(properties?: proto.v1.SafeSyncEventsResponse.$Properties): proto.v1.SafeSyncEventsResponse;
+
+            /**
+             * Encodes the specified SafeSyncEventsResponse message. Does not implicitly {@link proto.v1.SafeSyncEventsResponse.verify|verify} messages.
+             * @param message SafeSyncEventsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncEventsResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncEventsResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEventsResponse.verify|verify} messages.
+             * @param message SafeSyncEventsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncEventsResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncEventsResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape} SafeSyncEventsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape;
+
+            /**
+             * Decodes a SafeSyncEventsResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape} SafeSyncEventsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape;
+
+            /**
+             * Verifies a SafeSyncEventsResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncEventsResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncEventsResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncEventsResponse;
+
+            /**
+             * Creates a plain object from a SafeSyncEventsResponse message. Also converts values to other types if specified.
+             * @param message SafeSyncEventsResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncEventsResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncEventsResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncEventsResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncEventsResponse {
+
+            /** Properties of a SafeSyncEventsResponse. */
+            interface $Properties {
+
+                /** SafeSyncEventsResponse events */
+                events?: (proto.v1.SafeSyncEvent.$Properties[]|null);
+
+                /** SafeSyncEventsResponse latestVaultRevision */
+                latestVaultRevision?: (number|Long|null);
+
+                /** SafeSyncEventsResponse nextRevision */
+                nextRevision?: (number|Long|null);
+
+                /** SafeSyncEventsResponse hasMore */
+                hasMore?: (boolean|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncEventsResponse. */
+            type $Shape = proto.v1.SafeSyncEventsResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeMutationRequest.
+         * @deprecated Use proto.v1.SafeMutationRequest.$Properties instead.
+         */
+        type ISafeMutationRequest = proto.v1.SafeMutationRequest.$Properties;
+
+        /** Represents a SafeMutationRequest. */
+        class SafeMutationRequest {
+
+            /**
+             * Constructs a new SafeMutationRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeMutationRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeMutationRequest vault. */
+            vault: string;
+
+            /** SafeMutationRequest context. */
+            context: string;
+
+            /** SafeMutationRequest deviceId. */
+            deviceId: string;
+
+            /** SafeMutationRequest operationId. */
+            operationId: string;
+
+            /** SafeMutationRequest resourceId. */
+            resourceId: string;
+
+            /** SafeMutationRequest baseRevision. */
+            baseRevision: (number|Long);
+
+            /** SafeMutationRequest baseHash. */
+            baseHash: string;
+
+            /** SafeMutationRequest expectedPathState. */
+            expectedPathState: string;
+
+            /** SafeMutationRequest action. */
+            action: string;
+
+            /** SafeMutationRequest path. */
+            path: string;
+
+            /** SafeMutationRequest pathHash. */
+            pathHash: string;
+
+            /** SafeMutationRequest previousPath. */
+            previousPath: string;
+
+            /** SafeMutationRequest previousPathHash. */
+            previousPathHash: string;
+
+            /** SafeMutationRequest content. */
+            content: string;
+
+            /** SafeMutationRequest contentHash. */
+            contentHash: string;
+
+            /** SafeMutationRequest size. */
+            size: (number|Long);
+
+            /** SafeMutationRequest ctime. */
+            ctime: (number|Long);
+
+            /** SafeMutationRequest mtime. */
+            mtime: (number|Long);
+
+            /**
+             * Creates a new SafeMutationRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeMutationRequest instance
+             */
+            static create(properties: proto.v1.SafeMutationRequest.$Shape): proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape;
+            static create(properties?: proto.v1.SafeMutationRequest.$Properties): proto.v1.SafeMutationRequest;
+
+            /**
+             * Encodes the specified SafeMutationRequest message. Does not implicitly {@link proto.v1.SafeMutationRequest.verify|verify} messages.
+             * @param message SafeMutationRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeMutationRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeMutationRequest message, length delimited. Does not implicitly {@link proto.v1.SafeMutationRequest.verify|verify} messages.
+             * @param message SafeMutationRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeMutationRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeMutationRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape} SafeMutationRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape;
+
+            /**
+             * Decodes a SafeMutationRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape} SafeMutationRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape;
+
+            /**
+             * Verifies a SafeMutationRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeMutationRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeMutationRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeMutationRequest;
+
+            /**
+             * Creates a plain object from a SafeMutationRequest message. Also converts values to other types if specified.
+             * @param message SafeMutationRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeMutationRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeMutationRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeMutationRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeMutationRequest {
+
+            /** Properties of a SafeMutationRequest. */
+            interface $Properties {
+
+                /** SafeMutationRequest vault */
+                vault?: (string|null);
+
+                /** SafeMutationRequest context */
+                context?: (string|null);
+
+                /** SafeMutationRequest deviceId */
+                deviceId?: (string|null);
+
+                /** SafeMutationRequest operationId */
+                operationId?: (string|null);
+
+                /** SafeMutationRequest resourceId */
+                resourceId?: (string|null);
+
+                /** SafeMutationRequest baseRevision */
+                baseRevision?: (number|Long|null);
+
+                /** SafeMutationRequest baseHash */
+                baseHash?: (string|null);
+
+                /** SafeMutationRequest expectedPathState */
+                expectedPathState?: (string|null);
+
+                /** SafeMutationRequest action */
+                action?: (string|null);
+
+                /** SafeMutationRequest path */
+                path?: (string|null);
+
+                /** SafeMutationRequest pathHash */
+                pathHash?: (string|null);
+
+                /** SafeMutationRequest previousPath */
+                previousPath?: (string|null);
+
+                /** SafeMutationRequest previousPathHash */
+                previousPathHash?: (string|null);
+
+                /** SafeMutationRequest content */
+                content?: (string|null);
+
+                /** SafeMutationRequest contentHash */
+                contentHash?: (string|null);
+
+                /** SafeMutationRequest size */
+                size?: (number|Long|null);
+
+                /** SafeMutationRequest ctime */
+                ctime?: (number|Long|null);
+
+                /** SafeMutationRequest mtime */
+                mtime?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeMutationRequest. */
+            type $Shape = proto.v1.SafeMutationRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeMutationResponse.
+         * @deprecated Use proto.v1.SafeMutationResponse.$Properties instead.
+         */
+        type ISafeMutationResponse = proto.v1.SafeMutationResponse.$Properties;
+
+        /** Represents a SafeMutationResponse. */
+        class SafeMutationResponse {
+
+            /**
+             * Constructs a new SafeMutationResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeMutationResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeMutationResponse resourceId. */
+            resourceId: string;
+
+            /** SafeMutationResponse resourceRevision. */
+            resourceRevision: (number|Long);
+
+            /** SafeMutationResponse vaultRevision. */
+            vaultRevision: (number|Long);
+
+            /** SafeMutationResponse contentHash. */
+            contentHash: string;
+
+            /** SafeMutationResponse outcome. */
+            outcome: string;
+
+            /**
+             * Creates a new SafeMutationResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeMutationResponse instance
+             */
+            static create(properties: proto.v1.SafeMutationResponse.$Shape): proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape;
+            static create(properties?: proto.v1.SafeMutationResponse.$Properties): proto.v1.SafeMutationResponse;
+
+            /**
+             * Encodes the specified SafeMutationResponse message. Does not implicitly {@link proto.v1.SafeMutationResponse.verify|verify} messages.
+             * @param message SafeMutationResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeMutationResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeMutationResponse message, length delimited. Does not implicitly {@link proto.v1.SafeMutationResponse.verify|verify} messages.
+             * @param message SafeMutationResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeMutationResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeMutationResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape} SafeMutationResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape;
+
+            /**
+             * Decodes a SafeMutationResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape} SafeMutationResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape;
+
+            /**
+             * Verifies a SafeMutationResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeMutationResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeMutationResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeMutationResponse;
+
+            /**
+             * Creates a plain object from a SafeMutationResponse message. Also converts values to other types if specified.
+             * @param message SafeMutationResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeMutationResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeMutationResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeMutationResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeMutationResponse {
+
+            /** Properties of a SafeMutationResponse. */
+            interface $Properties {
+
+                /** SafeMutationResponse resourceId */
+                resourceId?: (string|null);
+
+                /** SafeMutationResponse resourceRevision */
+                resourceRevision?: (number|Long|null);
+
+                /** SafeMutationResponse vaultRevision */
+                vaultRevision?: (number|Long|null);
+
+                /** SafeMutationResponse contentHash */
+                contentHash?: (string|null);
+
+                /** SafeMutationResponse outcome */
+                outcome?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeMutationResponse. */
+            type $Shape = proto.v1.SafeMutationResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeFileUploadStartRequest.
+         * @deprecated Use proto.v1.SafeFileUploadStartRequest.$Properties instead.
+         */
+        type ISafeFileUploadStartRequest = proto.v1.SafeFileUploadStartRequest.$Properties;
+
+        /** Represents a SafeFileUploadStartRequest. */
+        class SafeFileUploadStartRequest {
+
+            /**
+             * Constructs a new SafeFileUploadStartRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeFileUploadStartRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeFileUploadStartRequest mutation. */
+            mutation?: (proto.v1.SafeMutationRequest.$Properties|null);
+
+            /** SafeFileUploadStartRequest chunkSize. */
+            chunkSize: (number|Long);
+
+            /**
+             * Creates a new SafeFileUploadStartRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeFileUploadStartRequest instance
+             */
+            static create(properties: proto.v1.SafeFileUploadStartRequest.$Shape): proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape;
+            static create(properties?: proto.v1.SafeFileUploadStartRequest.$Properties): proto.v1.SafeFileUploadStartRequest;
+
+            /**
+             * Encodes the specified SafeFileUploadStartRequest message. Does not implicitly {@link proto.v1.SafeFileUploadStartRequest.verify|verify} messages.
+             * @param message SafeFileUploadStartRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeFileUploadStartRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeFileUploadStartRequest message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadStartRequest.verify|verify} messages.
+             * @param message SafeFileUploadStartRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeFileUploadStartRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeFileUploadStartRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape} SafeFileUploadStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape;
+
+            /**
+             * Decodes a SafeFileUploadStartRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape} SafeFileUploadStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape;
+
+            /**
+             * Verifies a SafeFileUploadStartRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeFileUploadStartRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeFileUploadStartRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeFileUploadStartRequest;
+
+            /**
+             * Creates a plain object from a SafeFileUploadStartRequest message. Also converts values to other types if specified.
+             * @param message SafeFileUploadStartRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeFileUploadStartRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeFileUploadStartRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeFileUploadStartRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeFileUploadStartRequest {
+
+            /** Properties of a SafeFileUploadStartRequest. */
+            interface $Properties {
+
+                /** SafeFileUploadStartRequest mutation */
+                mutation?: (proto.v1.SafeMutationRequest.$Properties|null);
+
+                /** SafeFileUploadStartRequest chunkSize */
+                chunkSize?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeFileUploadStartRequest. */
+            type $Shape = proto.v1.SafeFileUploadStartRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeFileUploadStartResponse.
+         * @deprecated Use proto.v1.SafeFileUploadStartResponse.$Properties instead.
+         */
+        type ISafeFileUploadStartResponse = proto.v1.SafeFileUploadStartResponse.$Properties;
+
+        /** Represents a SafeFileUploadStartResponse. */
+        class SafeFileUploadStartResponse {
+
+            /**
+             * Constructs a new SafeFileUploadStartResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeFileUploadStartResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeFileUploadStartResponse sessionId. */
+            sessionId: string;
+
+            /** SafeFileUploadStartResponse nextChunkIndex. */
+            nextChunkIndex: (number|Long);
+
+            /** SafeFileUploadStartResponse operationId. */
+            operationId: string;
+
+            /** SafeFileUploadStartResponse expiresAt. */
+            expiresAt: (number|Long);
+
+            /**
+             * Creates a new SafeFileUploadStartResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeFileUploadStartResponse instance
+             */
+            static create(properties: proto.v1.SafeFileUploadStartResponse.$Shape): proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape;
+            static create(properties?: proto.v1.SafeFileUploadStartResponse.$Properties): proto.v1.SafeFileUploadStartResponse;
+
+            /**
+             * Encodes the specified SafeFileUploadStartResponse message. Does not implicitly {@link proto.v1.SafeFileUploadStartResponse.verify|verify} messages.
+             * @param message SafeFileUploadStartResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeFileUploadStartResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeFileUploadStartResponse message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadStartResponse.verify|verify} messages.
+             * @param message SafeFileUploadStartResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeFileUploadStartResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeFileUploadStartResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape} SafeFileUploadStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape;
+
+            /**
+             * Decodes a SafeFileUploadStartResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape} SafeFileUploadStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape;
+
+            /**
+             * Verifies a SafeFileUploadStartResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeFileUploadStartResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeFileUploadStartResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeFileUploadStartResponse;
+
+            /**
+             * Creates a plain object from a SafeFileUploadStartResponse message. Also converts values to other types if specified.
+             * @param message SafeFileUploadStartResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeFileUploadStartResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeFileUploadStartResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeFileUploadStartResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeFileUploadStartResponse {
+
+            /** Properties of a SafeFileUploadStartResponse. */
+            interface $Properties {
+
+                /** SafeFileUploadStartResponse sessionId */
+                sessionId?: (string|null);
+
+                /** SafeFileUploadStartResponse nextChunkIndex */
+                nextChunkIndex?: (number|Long|null);
+
+                /** SafeFileUploadStartResponse operationId */
+                operationId?: (string|null);
+
+                /** SafeFileUploadStartResponse expiresAt */
+                expiresAt?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeFileUploadStartResponse. */
+            type $Shape = proto.v1.SafeFileUploadStartResponse.$Properties;
+        }
+
+        /**
+         * Properties of a SafeFileUploadCommitRequest.
+         * @deprecated Use proto.v1.SafeFileUploadCommitRequest.$Properties instead.
+         */
+        type ISafeFileUploadCommitRequest = proto.v1.SafeFileUploadCommitRequest.$Properties;
+
+        /** Represents a SafeFileUploadCommitRequest. */
+        class SafeFileUploadCommitRequest {
+
+            /**
+             * Constructs a new SafeFileUploadCommitRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeFileUploadCommitRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeFileUploadCommitRequest vault. */
+            vault: string;
+
+            /** SafeFileUploadCommitRequest context. */
+            context: string;
+
+            /** SafeFileUploadCommitRequest deviceId. */
+            deviceId: string;
+
+            /** SafeFileUploadCommitRequest operationId. */
+            operationId: string;
+
+            /** SafeFileUploadCommitRequest sessionId. */
+            sessionId: string;
+
+            /** SafeFileUploadCommitRequest contentHash. */
+            contentHash: string;
+
+            /** SafeFileUploadCommitRequest size. */
+            size: (number|Long);
+
+            /**
+             * Creates a new SafeFileUploadCommitRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeFileUploadCommitRequest instance
+             */
+            static create(properties: proto.v1.SafeFileUploadCommitRequest.$Shape): proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape;
+            static create(properties?: proto.v1.SafeFileUploadCommitRequest.$Properties): proto.v1.SafeFileUploadCommitRequest;
+
+            /**
+             * Encodes the specified SafeFileUploadCommitRequest message. Does not implicitly {@link proto.v1.SafeFileUploadCommitRequest.verify|verify} messages.
+             * @param message SafeFileUploadCommitRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeFileUploadCommitRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeFileUploadCommitRequest message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadCommitRequest.verify|verify} messages.
+             * @param message SafeFileUploadCommitRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeFileUploadCommitRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeFileUploadCommitRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape} SafeFileUploadCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape;
+
+            /**
+             * Decodes a SafeFileUploadCommitRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape} SafeFileUploadCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape;
+
+            /**
+             * Verifies a SafeFileUploadCommitRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeFileUploadCommitRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeFileUploadCommitRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeFileUploadCommitRequest;
+
+            /**
+             * Creates a plain object from a SafeFileUploadCommitRequest message. Also converts values to other types if specified.
+             * @param message SafeFileUploadCommitRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeFileUploadCommitRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeFileUploadCommitRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeFileUploadCommitRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeFileUploadCommitRequest {
+
+            /** Properties of a SafeFileUploadCommitRequest. */
+            interface $Properties {
+
+                /** SafeFileUploadCommitRequest vault */
+                vault?: (string|null);
+
+                /** SafeFileUploadCommitRequest context */
+                context?: (string|null);
+
+                /** SafeFileUploadCommitRequest deviceId */
+                deviceId?: (string|null);
+
+                /** SafeFileUploadCommitRequest operationId */
+                operationId?: (string|null);
+
+                /** SafeFileUploadCommitRequest sessionId */
+                sessionId?: (string|null);
+
+                /** SafeFileUploadCommitRequest contentHash */
+                contentHash?: (string|null);
+
+                /** SafeFileUploadCommitRequest size */
+                size?: (number|Long|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeFileUploadCommitRequest. */
+            type $Shape = proto.v1.SafeFileUploadCommitRequest.$Properties;
+        }
+
+        /**
+         * Properties of a SafeSyncErrorData.
+         * @deprecated Use proto.v1.SafeSyncErrorData.$Properties instead.
+         */
+        type ISafeSyncErrorData = proto.v1.SafeSyncErrorData.$Properties;
+
+        /** Represents a SafeSyncErrorData. */
+        class SafeSyncErrorData {
+
+            /**
+             * Constructs a new SafeSyncErrorData.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.SafeSyncErrorData.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** SafeSyncErrorData errorCode. */
+            errorCode: string;
+
+            /** SafeSyncErrorData resourceId. */
+            resourceId: string;
+
+            /** SafeSyncErrorData expectedRevision. */
+            expectedRevision: (number|Long);
+
+            /** SafeSyncErrorData actualRevision. */
+            actualRevision: (number|Long);
+
+            /** SafeSyncErrorData currentHash. */
+            currentHash: string;
+
+            /** SafeSyncErrorData currentPath. */
+            currentPath: string;
+
+            /** SafeSyncErrorData currentPathState. */
+            currentPathState: string;
+
+            /** SafeSyncErrorData operationId. */
+            operationId: string;
+
+            /** SafeSyncErrorData retryable. */
+            retryable: boolean;
+
+            /**
+             * Creates a new SafeSyncErrorData instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SafeSyncErrorData instance
+             */
+            static create(properties: proto.v1.SafeSyncErrorData.$Shape): proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape;
+            static create(properties?: proto.v1.SafeSyncErrorData.$Properties): proto.v1.SafeSyncErrorData;
+
+            /**
+             * Encodes the specified SafeSyncErrorData message. Does not implicitly {@link proto.v1.SafeSyncErrorData.verify|verify} messages.
+             * @param message SafeSyncErrorData message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.SafeSyncErrorData.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SafeSyncErrorData message, length delimited. Does not implicitly {@link proto.v1.SafeSyncErrorData.verify|verify} messages.
+             * @param message SafeSyncErrorData message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.SafeSyncErrorData.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SafeSyncErrorData message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape} SafeSyncErrorData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape;
+
+            /**
+             * Decodes a SafeSyncErrorData message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape} SafeSyncErrorData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape;
+
+            /**
+             * Verifies a SafeSyncErrorData message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a SafeSyncErrorData message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SafeSyncErrorData
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.SafeSyncErrorData;
+
+            /**
+             * Creates a plain object from a SafeSyncErrorData message. Also converts values to other types if specified.
+             * @param message SafeSyncErrorData
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.SafeSyncErrorData, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this SafeSyncErrorData to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for SafeSyncErrorData
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace SafeSyncErrorData {
+
+            /** Properties of a SafeSyncErrorData. */
+            interface $Properties {
+
+                /** SafeSyncErrorData errorCode */
+                errorCode?: (string|null);
+
+                /** SafeSyncErrorData resourceId */
+                resourceId?: (string|null);
+
+                /** SafeSyncErrorData expectedRevision */
+                expectedRevision?: (number|Long|null);
+
+                /** SafeSyncErrorData actualRevision */
+                actualRevision?: (number|Long|null);
+
+                /** SafeSyncErrorData currentHash */
+                currentHash?: (string|null);
+
+                /** SafeSyncErrorData currentPath */
+                currentPath?: (string|null);
+
+                /** SafeSyncErrorData currentPathState */
+                currentPathState?: (string|null);
+
+                /** SafeSyncErrorData operationId */
+                operationId?: (string|null);
+
+                /** SafeSyncErrorData retryable */
+                retryable?: (boolean|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a SafeSyncErrorData. */
+            type $Shape = proto.v1.SafeSyncErrorData.$Properties;
+        }
     }
 }

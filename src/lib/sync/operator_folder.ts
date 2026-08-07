@@ -4,6 +4,7 @@ import { SyncEndData, FolderSyncRenameMessage } from "../utils/types";
 import { hashContent, dump, dumpError, isFolderSyncPathExcluded, waitForFolderEmpty, vaultDelete, checkAndNotifyCaseConflict } from "../utils/helpers";
 import { SyncLogManager } from "./sync_log_manager";
 import type FastSync from "../../main";
+import { receiveSafeFolderDelete, receiveSafeFolderModify, receiveSafeFolderRename } from "./safe_sync_inbound";
 
 
 /**
@@ -22,6 +23,16 @@ export const folderModify = async function (folder: TFolder, plugin: FastSync, e
                 vault: plugin.settings.vault,
                 path: folder.path,
                 pathHash: hashContent(folder.path),
+            }
+            const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+            if (safeMode === "paused") return
+            if (safeMode === "safe") {
+                await plugin.safeSyncRuntime!.mutateFolder({
+                    action: plugin.safeSyncRuntime!.hasLiveBaseline(folder.path) ? "MODIFY" : "CREATE",
+                    path: folder.path,
+                })
+                plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
+                return
             }
             void plugin.websocket.SendMessage("FolderModify", data, undefined, () => {
                 plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
@@ -55,6 +66,13 @@ export const folderDelete = async function (folder: TFolder, plugin: FastSync, e
                 path: folder.path,
                 pathHash: hashContent(folder.path),
             }
+            const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+            if (safeMode === "paused") return
+            if (safeMode === "safe") {
+                await plugin.safeSyncRuntime!.mutateFolder({ action: "DELETE", path: folder.path })
+                plugin.folderSnapshotManager.removeFolder(folder.path)
+                return
+            }
             void plugin.websocket.SendMessage("FolderDelete", data, undefined, () => {
                 plugin.folderSnapshotManager.removeFolder(folder.path)
             })
@@ -77,6 +95,13 @@ export const folderDeleteByPath = async function (folderPath: string, plugin: Fa
     await plugin.lockManager.withLock(folderPath, async () => {
         plugin.addIgnoredFile(folderPath)
         try {
+            const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+            if (safeMode === "paused") return
+            if (safeMode === "safe") {
+                await plugin.safeSyncRuntime!.mutateFolder({ action: "DELETE", path: folderPath })
+                plugin.folderSnapshotManager.removeFolder(folderPath)
+                return
+            }
             const data = {
                 vault: plugin.settings.vault,
                 path: folderPath,
@@ -138,6 +163,14 @@ export const folderRename = async function (folder: TFolder, oldPath: string, pl
                 oldPath: oldPath,
                 oldPathHash: hashContent(oldPath),
             }
+            const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+            if (safeMode === "paused") return
+            if (safeMode === "safe") {
+                await plugin.safeSyncRuntime!.mutateFolder({ action: "RENAME", path: folder.path, previousPath: oldPath })
+                plugin.folderSnapshotManager.removeFolder(oldPath)
+                plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
+                return
+            }
             void plugin.websocket.SendMessage("FolderRename", data, undefined, () => {
                 plugin.folderSnapshotManager.removeFolder(oldPath)
                 plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
@@ -161,6 +194,18 @@ export const receiveFolderSyncModify = async function (data: { path: string, mti
     dump(`Receive folder modify:`, data.path, data.pathHash)
 
     const normalizedPath = normalizePath(data.path)
+
+    if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+        try {
+            await receiveSafeFolderModify(data, plugin)
+        } catch (e) {
+            dumpError(`[FastSync] Failed safe receiveFolderSyncModify: ${normalizedPath}`, e)
+            plugin.folderSyncTasks.failed++
+        } finally {
+            plugin.recordSyncCompleted('folder', data.pageIndex)
+        }
+        return
+    }
 
     try {
         await plugin.lockManager.withLock(normalizedPath, async () => {
@@ -213,6 +258,18 @@ export const receiveFolderSyncDelete = async function (data: { path: string, las
     dump(`Receive folder delete:`, data.path, data.pathHash)
 
     const normalizedPath = normalizePath(data.path)
+
+    if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+        try {
+            await receiveSafeFolderDelete(data, plugin)
+        } catch (e) {
+            dumpError(`[FastSync] Failed safe receiveFolderSyncDelete: ${normalizedPath}`, e)
+            plugin.folderSyncTasks.failed++
+        } finally {
+            plugin.recordSyncCompleted('folder', data.pageIndex)
+        }
+        return
+    }
 
     try {
         await plugin.lockManager.withLock(normalizedPath, async () => {
@@ -271,6 +328,18 @@ export const receiveFolderSyncRename = async function (data: FolderSyncRenameMes
 
     const normalizedOldPath = normalizePath(data.oldPath)
     const normalizedNewPath = normalizePath(data.path)
+
+    if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+        try {
+            await receiveSafeFolderRename(data, plugin)
+        } catch (e) {
+            dumpError(`[FastSync] Failed safe receiveFolderSyncRename: ${normalizedOldPath} -> ${normalizedNewPath}`, e)
+            plugin.folderSyncTasks.failed++
+        } finally {
+            plugin.recordSyncCompleted('folder', data.pageIndex)
+        }
+        return
+    }
 
     try {
         await plugin.lockManager.withLock(normalizedNewPath, async () => {

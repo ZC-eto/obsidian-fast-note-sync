@@ -258,6 +258,20 @@ export const SettingSyncPage: WSReceiveAction = "SettingSyncPage";
  */
 export const ShareSyncRefresh: WSReceiveAction = "ShareSyncRefresh";
 
+// ---------------- Safe Revision Sync ----------------
+export const SafeSyncStatus: WSReceiveAction = "SafeSyncStatus";
+export const SafeSyncBootstrapStartAck: WSReceiveAction = "SafeSyncBootstrapStartAck";
+export const SafeSyncBootstrapPageAck: WSReceiveAction = "SafeSyncBootstrapPageAck";
+export const SafeSyncBootstrapCommitAck: WSReceiveAction = "SafeSyncBootstrapCommitAck";
+export const SafeSyncBootstrapCancelAck: WSReceiveAction = "SafeSyncBootstrapCancelAck";
+export const SafeSyncEventsAck: WSReceiveAction = "SafeSyncEventsAck";
+export const SafeSyncNoteMutationAck: WSReceiveAction = "SafeNoteMutationAck";
+export const SafeSyncFolderMutationAck: WSReceiveAction = "SafeFolderMutationAck";
+export const SafeSyncFileUploadStartAck: WSReceiveAction = "SafeFileUploadStartAck";
+export const SafeSyncFileUploadCommitAck: WSReceiveAction = "SafeFileUploadCommitAck";
+export const SafeSyncFileMutationAck: WSReceiveAction = "SafeFileMutationAck";
+export const SafeSyncEvent: WSReceiveAction = "SafeSyncEvent";
+
 
 // ==================== WSSendAction (客户端发往服务端，服务端接收) ====================
 
@@ -405,6 +419,19 @@ export const FileSyncPageAck: WSSendAction = "FileSyncPageAck";
  * SettingSyncPageAck setting sync page ack / 配置同步分页确认
  */
 export const SettingSyncPageAck: WSSendAction = "SettingSyncPageAck";
+
+// ---------------- Safe Revision Sync ----------------
+export const SafeSyncReceiveStatus: WSSendAction = "SafeSyncStatus";
+export const SafeSyncReceiveBootstrapStart: WSSendAction = "SafeSyncBootstrapStart";
+export const SafeSyncReceiveBootstrapPage: WSSendAction = "SafeSyncBootstrapPage";
+export const SafeSyncReceiveBootstrapCommit: WSSendAction = "SafeSyncBootstrapCommit";
+export const SafeSyncReceiveBootstrapCancel: WSSendAction = "SafeSyncBootstrapCancel";
+export const SafeSyncReceiveEvents: WSSendAction = "SafeSyncEvents";
+export const SafeSyncReceiveNoteMutation: WSSendAction = "SafeNoteMutation";
+export const SafeSyncReceiveFolderMutation: WSSendAction = "SafeFolderMutation";
+export const SafeSyncReceiveFileMutation: WSSendAction = "SafeFileMutation";
+export const SafeSyncReceiveFileUploadStart: WSSendAction = "SafeFileUploadStart";
+export const SafeSyncReceiveFileUploadCommit: WSSendAction = "SafeFileUploadCommit";
 
 
 /**

@@ -6,6 +6,8 @@ import { FileCloudPreview } from "../storage/file_cloud_preview";
 import { SyncLogManager } from "./sync_log_manager";
 import { HttpApiService } from "../api/http_api_service";
 import type FastSync from "../../main";
+import { receiveSafeFileDelete, receiveSafeFileRename } from "./safe_sync_inbound";
+import type { SafeSyncEvent } from "./safe_sync_engine";
 
 
 // 下载内存缓冲控制 (20MB 阈值防止 OOM)
@@ -109,6 +111,9 @@ const cleanupFileDownloadSession = async (plugin: FastSync, session: FileDownloa
 }
 
 const failFileDownloadSession = async (plugin: FastSync, session: FileDownloadSession, message: string, releaseSlot = true) => {
+  if (session.safeSyncEvent) {
+    plugin.safeSyncRuntime?.rejectRemoteEvent(session.safeSyncEvent, new Error(message))
+  }
   dumpError(`File download failed: ${session.path} (${session.sessionId}) - ${message}`)
   const completedCount = getCompletedDownloadChunks(session)
   SyncLogManager.getInstance().addOrUpdateLog({
@@ -244,6 +249,32 @@ export const fileModify = async function (file: TAbstractFile, plugin: FastSync,
         // 始终传递 baseHash 信息，如果不可用则标记 baseHashMissing
         ...(baseHash !== null ? { baseHash } : { baseHashMissing: true }),
       }
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        const chunkSize = 1024 * 1024
+        const session = await plugin.safeSyncRuntime!.startFileUpload({
+          action: plugin.safeSyncRuntime!.hasLiveBaseline(file.path) ? "MODIFY" : "CREATE",
+          path: file.path,
+          contentHash,
+          size: file.stat.size,
+          ctime: data.ctime,
+          mtime: data.mtime,
+        }, chunkSize)
+        await receiveFileUpload({
+          path: file.path,
+          pathHash: data.pathHash,
+          ctime: data.ctime,
+          mtime: data.mtime,
+          sessionId: session.sessionId,
+          chunkSize,
+          nextChunkIndex: session.nextChunkIndex,
+          onUploadReady: async () => {
+            await plugin.safeSyncRuntime!.commitFileUpload(session.operationId, session.sessionId, contentHash, file.stat.size)
+          },
+        }, plugin)
+        return
+      }
       // 将 hash 暂存到 pending map，等待服务端 FileUploadAck 后再写入 hashManager
       // Temporarily store hash in pending map, update hashManager only after server FileUploadAck
       // 新建操作覆盖删除意图，清除 pending 防止晚到的 Ack 错误删除新文件 hash
@@ -301,6 +332,14 @@ export const fileDelete = async function (file: TAbstractFile, plugin: FastSync,
         path: file.path,
         pathHash: hashContent(file.path),
       }
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateFile({ action: "DELETE", path: file.path })
+        plugin.fileHashManager.removeFileHash(file.path)
+        plugin.lastSyncMtime.delete(file.path)
+        return
+      }
       await plugin.concurrencyLimiter.waitForSlot(file.path)
       void plugin.websocket.SendMessage("FileDelete", data, undefined, () => {
         // 消息真正写入 TCP 缓冲区后加入 pending set，等待 FileDeleteAck 再删 hash
@@ -343,6 +382,14 @@ export const fileDeleteByPath = async function (filePath: string, plugin: FastSy
 
     plugin.addIgnoredFile(filePath)
     try {
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateFile({ action: "DELETE", path: filePath })
+        plugin.fileHashManager.removeFileHash(filePath)
+        plugin.lastSyncMtime.delete(filePath)
+        return
+      }
       await plugin.concurrencyLimiter.waitForSlot(filePath)
       void plugin.websocket.SendMessage("FileDelete", {
         vault: plugin.settings.vault,
@@ -402,6 +449,26 @@ export const fileRename = async function (file: TAbstractFile, oldfile: string, 
     plugin.addIgnoredFile(file.path)
     try {
       dump(`File rename`, oldfile, file.path)
+
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        if (activeUploadsMap.has(oldfile)) activeUploadsMap.get(oldfile)!.cancelled = true
+        let contentHash = plugin.fileHashManager.getPathHash(oldfile)
+        if (contentHash == null) contentHash = await hashFileAsync(plugin.app, file.path)
+        await plugin.safeSyncRuntime!.mutateFile({
+          action: "RENAME",
+          path: file.path,
+          previousPath: oldfile,
+          contentHash,
+          size: file.stat.size,
+          ctime: getSafeCtime(file.stat),
+          mtime: file.stat.mtime,
+        })
+        plugin.fileHashManager.removeFileHash(oldfile)
+        plugin.fileHashManager.setFileHash(file.path, contentHash, file.stat.mtime, file.stat.size)
+        return
+      }
 
       // 如果旧文件正在上传，则取消上传且不发送删除消息
       if (activeUploadsMap.has(oldfile)) {
@@ -520,16 +587,18 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
       logMemorySnapshot(`after upload hash ${data.path}`)
       // 将 hash 暂存到 pending map，等待服务端 FileUploadAck 后再写入 hashManager
       // Temporarily store hash in pending map, update hashManager only after server FileUploadAck
-      plugin.pendingUploadHashes.set(data.path, contentHash)
-      plugin.localStorageManager.savePending('pendingUploadHashes', plugin.pendingUploadHashes)
-      // 记录当前文件的 mtime/size 到缓存，以便后续利用
-      plugin.fileHashManager.setFileHash(data.path, contentHash, file.stat.mtime, file.stat.size)
+      if (!data.onUploadReady) {
+        plugin.pendingUploadHashes.set(data.path, contentHash)
+        plugin.localStorageManager.savePending('pendingUploadHashes', plugin.pendingUploadHashes)
+        // 旧上传路径仍等待 FileUploadAck 后确认；安全上传只在显式 commit ACK 后更新缓存
+        plugin.fileHashManager.setFileHash(data.path, contentHash, file.stat.mtime, file.stat.size)
+      }
 
       // 使用外层计算好的 actualTotalChunks
 
       // 断点续传：从 localStorage 读取上次中断的 checkpoint
       // Resume upload: read checkpoint from localStorage for the last interrupted upload
-      let startChunkIndex = 0
+      let startChunkIndex = Math.max(0, data.nextChunkIndex || 0)
       try {
         const cpRaw = plugin.app.loadLocalStorage(checkpointKey) as string | undefined;
         if (cpRaw) {
@@ -661,6 +730,13 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
         await sleep(sleepTime)
       }
 
+      if (data.onUploadReady) {
+        await data.onUploadReady()
+        plugin.fileHashManager.setFileHash(data.path, contentHash, file.stat.mtime, file.stat.size)
+        plugin.concurrencyLimiter.releaseSlot(data.path)
+        try { plugin.app.saveLocalStorage(checkpointKey, null) } catch { /* ignore */ }
+      }
+
       // 手动置空辅助 GC
       content = null;
 
@@ -728,14 +804,28 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
 export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdateMessage, plugin: FastSync) {
   if (plugin.settings.syncEnabled == false) return
 
+  let safeSyncEvent: SafeSyncEvent | undefined
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      safeSyncEvent = await plugin.safeSyncRuntime.claimRemoteEvent("FILE", "UPSERT", data.path, "", data.contentHash)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveFileSyncUpdate authorization: ${data.path}`, e)
+      plugin.fileSyncTasks.failed++
+      plugin.recordSyncCompleted('file', data.pageIndex)
+      return
+    }
+  }
+
   // 服务端推送说明该路径已有新内容，清除可能残留的 deleteAck pending 防止 Ack 删除新 hash
   // Server push means path has new content; clear stale deleteAck pending to protect newly-written hash
   plugin.pendingFileDeleteAcks.delete(data.path)
   if (isPathExcluded(data.path, plugin)) {
+    if (safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(safeSyncEvent, new Error(`safe sync file path is excluded: ${data.path}`))
     plugin.recordSyncCompleted('file', data.pageIndex);
     return
   }
   if (isLargeBinarySyncRisk(data.size, plugin)) {
+    if (safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(safeSyncEvent, new Error(`safe sync file exceeds the local download limit: ${data.path}`))
     dump(`Skip file download for large attachment (${describeBinarySyncLimit()} limit): ${data.path}`, data.size)
     notifyLargeFileSkipped(plugin, data.path, data.size, `Fast Note Sync skipped large file download: ${data.path}`)
     plugin.recordSyncCompleted('file', data.pageIndex);
@@ -748,11 +838,13 @@ export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdate
       // 开启了类型限制：仅跳过受限类型 (图片、视频、音频、PDF)
       const ext = data.path.substring(data.path.lastIndexOf(".")).toLowerCase();
       if (FileCloudPreview.isRestrictedType(ext)) {
+        if (safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(safeSyncEvent, new Error(`safe sync file download is disabled by cloud preview: ${data.path}`))
         dump(`Cloud Preview: Skipping restricted file download: ${data.path}`);
         plugin.recordSyncCompleted('file', data.pageIndex);
         return;
       }
     } else {
+      if (safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(safeSyncEvent, new Error(`safe sync file download is disabled by cloud preview: ${data.path}`))
       // 未开启类型限制：由于启用了云预览，跳过所有附件下载
       dump(`Cloud Preview: Skipping all file downloads: ${data.path}`);
       plugin.recordSyncCompleted('file', data.pageIndex);
@@ -783,6 +875,7 @@ export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdate
       size: data.size,
       pageIndex: data.pageIndex,
       initialSlotKey: slotKey,
+      safeSyncEvent,
       ...createDownloadStorage(plugin, `init_${data.pathHash}`, data.size),
     }
     plugin.fileDownloadSessions.set(tempKey, tempSession)
@@ -792,7 +885,11 @@ export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdate
       path: data.path,
       pathHash: data.pathHash,
     }
-    void plugin.websocket.SendMessage("FileChunkDownload", requestData)
+    if (safeSyncEvent) {
+      await plugin.websocket.SendMessage("FileChunkDownload", requestData)
+    } else {
+      void plugin.websocket.SendMessage("FileChunkDownload", requestData)
+    }
     plugin.totalFilesToDownload++
 
     // 更新同步时间
@@ -801,6 +898,7 @@ export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdate
       plugin.localStorageManager.setMetadata("lastFileSyncTime", data.lastTime)
     }
   } catch (e) {
+    if (safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(safeSyncEvent, e)
     plugin.concurrencyLimiter.releaseSlot(slotKey)
     throw e;
   }
@@ -814,6 +912,18 @@ export const receiveFileSyncDelete = async function (data: ReceivePathMessage, p
 
   if (isPathExcluded(data.path, plugin)) {
     plugin.recordSyncCompleted('file', data.pageIndex);
+    return
+  }
+
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      await receiveSafeFileDelete(data, plugin)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveFileSyncDelete: ${data.path}`, e)
+      plugin.fileSyncTasks.failed++
+    } finally {
+      plugin.recordSyncCompleted('file', data.pageIndex)
+    }
     return
   }
 
@@ -973,11 +1083,16 @@ export const receiveFileSyncChunkDownload = async function (data: FileSyncChunkD
       size: data.size,
       pageIndex: tempSession.pageIndex,
       initialSlotKey: tempSession.initialSlotKey,
+      safeSyncEvent: tempSession.safeSyncEvent,
       ...createDownloadStorage(plugin, data.sessionId, data.size),
     }
     plugin.fileDownloadSessions.set(data.sessionId, session)
     plugin.fileDownloadSessions.delete(tempKey)
   } else {
+    if (plugin.safeSyncRuntime?.writeMode() === "safe") {
+      dumpError(`[FastSync] Refused unclaimed safe file download session: ${data.path}`)
+      return
+    }
     session = {
       path: data.path,
       contentHash: data.contentHash,
@@ -1216,6 +1331,18 @@ export const receiveFileSyncRename = async function (data: { oldPath: string; pa
   const normalizedOldPath = normalizePath(data.oldPath)
   const normalizedNewPath = normalizePath(data.path)
 
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      await receiveSafeFileRename(data, plugin)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveFileSyncRename: ${normalizedOldPath} -> ${normalizedNewPath}`, e)
+      plugin.fileSyncTasks.failed++
+    } finally {
+      plugin.recordSyncCompleted('file', data.pageIndex)
+    }
+    return
+  }
+
   // Check if there is an active file download session for this old path
   // 检查本地是否存在该旧路径的活跃下载会话
   let downloadingSession: FileDownloadSession | undefined
@@ -1333,6 +1460,10 @@ const handleFileChunkDownloadComplete = async function (session: FileDownloadSes
   const slotKey = session.initialSlotKey || `download_${session.path}`;
   try {
     if (isLargeBinarySyncRisk(session.size, plugin)) {
+      if (session.safeSyncEvent) {
+        await failFileDownloadSession(plugin, session, `Safe sync file exceeds the local download limit: ${session.path}`, false)
+        return
+      }
       dump(`Skip assembling large downloaded attachment (${describeBinarySyncLimit()} limit): ${session.path}`, session.size)
       await cleanupFileDownloadSession(plugin, session)
       return
@@ -1370,18 +1501,29 @@ const handleFileChunkDownloadComplete = async function (session: FileDownloadSes
       return
     }
 
+    const downloadedContentHash = await hashArrayBuffer(completeFile.buffer)
+    if (session.safeSyncEvent?.contentHash && downloadedContentHash !== session.safeSyncEvent.contentHash) {
+      throw new Error(`safe sync downloaded file hash mismatch at ${session.path}`)
+    }
+
     const normalizedPath = normalizePath(session.path)
     await plugin.lockManager.withLock(normalizedPath, async () => {
       plugin.addIgnoredFile(normalizedPath)
       try {
         const file = plugin.app.vault.getFileByPath(normalizedPath)
-        if (file) {
+        let shouldApply = true
+        if (session.safeSyncEvent) {
+          const currentHash = file instanceof TFile ? await hashFileAsync(plugin.app, normalizedPath) : null
+          shouldApply = plugin.safeSyncRuntime!.verifyRemoteEvent(session.safeSyncEvent, currentHash)
+        }
+        if (shouldApply && file) {
           await plugin.app.vault.modifyBinary(file, completeFile.buffer, { ...(session.ctime > 0 && { ctime: session.ctime }), ...(session.mtime > 0 && { mtime: session.mtime }) })
-        } else {
+        } else if (shouldApply) {
           const folder = normalizedPath.split("/").slice(0, -1).join("/")
           if (folder != "") {
             const dirExists = plugin.app.vault.getFolderByPath(folder)
             if (dirExists == null) {
+              if (session.safeSyncEvent) throw new Error(`safe sync file parent folder is missing: ${folder}`)
               try {
                 await plugin.app.vault.createFolder(folder)
               } catch (e) {
@@ -1405,8 +1547,10 @@ const handleFileChunkDownloadComplete = async function (session: FileDownloadSes
 
       // 下载完成后自动计算哈希并更新缓存 (如果服务器传了内容哈希就直接使用，否则重新计算以兼容旧版本)
       let contentHash = session.contentHash
-      if (!contentHash) {
-        contentHash = await hashArrayBuffer(completeFile.buffer)
+      if (session.safeSyncEvent) {
+        contentHash = downloadedContentHash
+      } else if (!contentHash) {
+        contentHash = downloadedContentHash
         dump(`Download complete: server missing hash, local calculated: ${session.path}`, contentHash)
       } else {
         dump(`Download complete: using server provided hash: ${session.path}`, contentHash)
@@ -1414,6 +1558,11 @@ const handleFileChunkDownloadComplete = async function (session: FileDownloadSes
       plugin.fileHashManager.setFileHash(session.path, contentHash, session.mtime, session.size)
       // 记录同步后的 mtime
       plugin.lastSyncMtime.set(session.path, session.mtime)
+      if (session.safeSyncEvent) {
+        const updated = plugin.app.vault.getFileByPath(normalizedPath)
+        if (!(updated instanceof TFile)) throw new Error(`safe sync downloaded file is missing after apply: ${normalizedPath}`)
+        await plugin.safeSyncRuntime!.commitRemoteEvent(session.safeSyncEvent, contentHash, updated.stat.size)
+      }
       dump(`Download complete and hash updated for: ${session.path}`, contentHash)
     }, { maxRetries: 5, retryInterval: 100 });
 
@@ -1426,6 +1575,7 @@ const handleFileChunkDownloadComplete = async function (session: FileDownloadSes
     plugin.progressTracker.recordDownloadComplete('file');
     plugin.recordSyncCompleted('file', session.pageIndex)
   } catch (e) {
+    if (session.safeSyncEvent) plugin.safeSyncRuntime?.rejectRemoteEvent(session.safeSyncEvent, e)
     dumpError(`Error completing file download for ${session.path}`, e)
     if (!checkAndNotifyCaseConflict(e, session.path, plugin, 'FileDownload')) {
       SyncLogManager.getInstance().addOrUpdateLog({

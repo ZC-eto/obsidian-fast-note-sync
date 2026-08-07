@@ -73,6 +73,7 @@ export class FileHashManager {
     // 1. 尝试加载本地最新计算哈希缓存表 (hashMap)
     const loaded = this.loadFromStorage();
     let hasRestoredMap = false;
+    let restoredMapFromMirror = false;
 
     if (loaded) {
       dump(`FileHashManager: 从 localStorage 加载本地哈希缓存成功,共 ${this.hashMap.size} 个文件`);
@@ -81,8 +82,8 @@ export class FileHashManager {
       const mirrored = await this.mirror.read();
       if (mirrored && this.parseAndLoad(mirrored)) {
         dump("FileHashManager: 从文件镜像恢复本地哈希缓存成功");
-        this.saveToStorage();
         hasRestoredMap = true;
+        restoredMapFromMirror = true;
       }
     }
 
@@ -114,6 +115,11 @@ export class FileHashManager {
         this.syncHashMap.set(path, cache.hash);
       }
       this.saveSyncToStorage();
+    }
+
+    // 等同步基准完成恢复后再回写，避免用尚未加载的空 syncHashMap 覆盖镜像基准。
+    if (restoredMapFromMirror) {
+      this.saveToStorage();
     }
 
     this.isInitialized = true;

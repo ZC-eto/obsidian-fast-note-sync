@@ -331,6 +331,22 @@ export const receiveOperators: Map<WSAction.WSReceiveAction, OperatorHandler> = 
   [WSAction.NoteSyncPage, (data, plugin) => handleSyncPage(data, plugin, "note")],
   [WSAction.FileSyncPage, (data, plugin) => handleSyncPage(data, plugin, "file")],
   [WSAction.SettingSyncPage, (data, plugin) => handleSyncPage(data, plugin, "setting")],
+  [WSAction.SafeSyncStatus, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncStatus, data); }],
+  [WSAction.SafeSyncBootstrapStartAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncBootstrapStartAck, data); }],
+  [WSAction.SafeSyncBootstrapPageAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncBootstrapPageAck, data); }],
+  [WSAction.SafeSyncBootstrapCommitAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncBootstrapCommitAck, data); }],
+  [WSAction.SafeSyncBootstrapCancelAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncBootstrapCancelAck, data); }],
+  [WSAction.SafeSyncEventsAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncEventsAck, data); }],
+  [WSAction.SafeSyncNoteMutationAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncNoteMutationAck, data); }],
+  [WSAction.SafeSyncFolderMutationAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFolderMutationAck, data); }],
+  [WSAction.SafeSyncFileMutationAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFileMutationAck, data); }],
+  [WSAction.SafeSyncFileUploadStartAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFileUploadStartAck, data); }],
+  [WSAction.SafeSyncFileUploadCommitAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFileUploadCommitAck, data); }],
+  [WSAction.SafeSyncEvent, (_data, plugin) => {
+    if (plugin.safeSyncRuntime?.writeMode() === "safe" && !plugin.isSyncing && !plugin.isSyncRequesting) {
+      void plugin.websocket.StartHandle()
+    }
+  }],
 ] as [WSAction.WSReceiveAction, OperatorHandler][]);
 
 /**

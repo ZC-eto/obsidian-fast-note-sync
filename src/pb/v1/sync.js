@@ -30638,6 +30638,7827 @@ export const proto = $root.proto = (() => {
             return FolderSyncPageAckRequest;
         })();
 
+        v1.SafeSyncStatusRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncStatusRequest.
+             * @typedef {Object} proto.v1.SafeSyncStatusRequest.$Properties
+             * @property {string|null} [vault] SafeSyncStatusRequest vault
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncStatusRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncStatusRequest
+             * @augments proto.v1.SafeSyncStatusRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncStatusRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncStatusRequest.
+             * @typedef {proto.v1.SafeSyncStatusRequest.$Properties} proto.v1.SafeSyncStatusRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncStatusRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncStatusRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncStatusRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncStatusRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncStatusRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @instance
+             */
+            SafeSyncStatusRequest.prototype.vault = "";
+
+            /**
+             * Creates a new SafeSyncStatusRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {proto.v1.SafeSyncStatusRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncStatusRequest} SafeSyncStatusRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncStatusRequest.$Shape): proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncStatusRequest.$Properties): proto.v1.SafeSyncStatusRequest;
+             * }}
+             */
+            SafeSyncStatusRequest.create = function(properties) {
+                return new SafeSyncStatusRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncStatusRequest message. Does not implicitly {@link proto.v1.SafeSyncStatusRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {proto.v1.SafeSyncStatusRequest.$Properties} message SafeSyncStatusRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncStatusRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncStatusRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncStatusRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {proto.v1.SafeSyncStatusRequest.$Properties} message SafeSyncStatusRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncStatusRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncStatusRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape} SafeSyncStatusRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncStatusRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncStatusRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncStatusRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncStatusRequest & proto.v1.SafeSyncStatusRequest.$Shape} SafeSyncStatusRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncStatusRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncStatusRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncStatusRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncStatusRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncStatusRequest} SafeSyncStatusRequest
+             */
+            SafeSyncStatusRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncStatusRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncStatusRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncStatusRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncStatusRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {proto.v1.SafeSyncStatusRequest} message SafeSyncStatusRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncStatusRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults)
+                    object.vault = "";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncStatusRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncStatusRequest.prototype.toJSON = function() {
+                return SafeSyncStatusRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncStatusRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncStatusRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncStatusRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncStatusRequest";
+            };
+
+            return SafeSyncStatusRequest;
+        })();
+
+        v1.SafeSyncStatusResponse = (function() {
+
+            /**
+             * Properties of a SafeSyncStatusResponse.
+             * @typedef {Object} proto.v1.SafeSyncStatusResponse.$Properties
+             * @property {boolean|null} [capability] SafeSyncStatusResponse capability
+             * @property {string|null} [state] SafeSyncStatusResponse state
+             * @property {number|Long|null} [latestVaultRevision] SafeSyncStatusResponse latestVaultRevision
+             * @property {boolean|null} [migrationVerified] SafeSyncStatusResponse migrationVerified
+             * @property {string|null} [bootstrapSessionId] SafeSyncStatusResponse bootstrapSessionId
+             * @property {number|Long|null} [bootstrapExpiresAt] SafeSyncStatusResponse bootstrapExpiresAt
+             * @property {number|Long|null} [uid] SafeSyncStatusResponse uid
+             * @property {number|Long|null} [vaultId] SafeSyncStatusResponse vaultId
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncStatusResponse.
+             * @memberof proto.v1
+             * @interface ISafeSyncStatusResponse
+             * @augments proto.v1.SafeSyncStatusResponse.$Properties
+             * @deprecated Use proto.v1.SafeSyncStatusResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncStatusResponse.
+             * @typedef {proto.v1.SafeSyncStatusResponse.$Properties} proto.v1.SafeSyncStatusResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncStatusResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncStatusResponse.
+             * @constructor
+             * @param {proto.v1.SafeSyncStatusResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncStatusResponse = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncStatusResponse capability.
+             * @member {boolean} capability
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.capability = false;
+
+            /**
+             * SafeSyncStatusResponse state.
+             * @member {string} state
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.state = "";
+
+            /**
+             * SafeSyncStatusResponse latestVaultRevision.
+             * @member {number|Long} latestVaultRevision
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.latestVaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncStatusResponse migrationVerified.
+             * @member {boolean} migrationVerified
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.migrationVerified = false;
+
+            /**
+             * SafeSyncStatusResponse bootstrapSessionId.
+             * @member {string} bootstrapSessionId
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.bootstrapSessionId = "";
+
+            /**
+             * SafeSyncStatusResponse bootstrapExpiresAt.
+             * @member {number|Long} bootstrapExpiresAt
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.bootstrapExpiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncStatusResponse uid.
+             * @member {number|Long} uid
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.uid = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncStatusResponse vaultId.
+             * @member {number|Long} vaultId
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             */
+            SafeSyncStatusResponse.prototype.vaultId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeSyncStatusResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {proto.v1.SafeSyncStatusResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncStatusResponse} SafeSyncStatusResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncStatusResponse.$Shape): proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape;
+             *   (properties?: proto.v1.SafeSyncStatusResponse.$Properties): proto.v1.SafeSyncStatusResponse;
+             * }}
+             */
+            SafeSyncStatusResponse.create = function(properties) {
+                return new SafeSyncStatusResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncStatusResponse message. Does not implicitly {@link proto.v1.SafeSyncStatusResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {proto.v1.SafeSyncStatusResponse.$Properties} message SafeSyncStatusResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncStatusResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.capability != null && $Object.hasOwnProperty.call(message, "capability") && message.capability !== false)
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.capability);
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state") && message.state !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.state);
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision") && (typeof message.latestVaultRevision === "object" ? message.latestVaultRevision.low || message.latestVaultRevision.high : message.latestVaultRevision !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.latestVaultRevision);
+                if (message.migrationVerified != null && $Object.hasOwnProperty.call(message, "migrationVerified") && message.migrationVerified !== false)
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.migrationVerified);
+                if (message.bootstrapSessionId != null && $Object.hasOwnProperty.call(message, "bootstrapSessionId") && message.bootstrapSessionId !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.bootstrapSessionId);
+                if (message.bootstrapExpiresAt != null && $Object.hasOwnProperty.call(message, "bootstrapExpiresAt") && (typeof message.bootstrapExpiresAt === "object" ? message.bootstrapExpiresAt.low || message.bootstrapExpiresAt.high : message.bootstrapExpiresAt !== 0))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.bootstrapExpiresAt);
+                if (message.uid != null && $Object.hasOwnProperty.call(message, "uid") && (typeof message.uid === "object" ? message.uid.low || message.uid.high : message.uid !== 0))
+                    writer.uint32(/* id 7, wireType 0 =*/56).int64(message.uid);
+                if (message.vaultId != null && $Object.hasOwnProperty.call(message, "vaultId") && (typeof message.vaultId === "object" ? message.vaultId.low || message.vaultId.high : message.vaultId !== 0))
+                    writer.uint32(/* id 8, wireType 0 =*/64).int64(message.vaultId);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncStatusResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncStatusResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {proto.v1.SafeSyncStatusResponse.$Properties} message SafeSyncStatusResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncStatusResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncStatusResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape} SafeSyncStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncStatusResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncStatusResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.capability = value;
+                            else
+                                delete message.capability;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.state = value;
+                            else
+                                delete message.state;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.latestVaultRevision = value;
+                            else
+                                delete message.latestVaultRevision;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.migrationVerified = value;
+                            else
+                                delete message.migrationVerified;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.bootstrapSessionId = value;
+                            else
+                                delete message.bootstrapSessionId;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.bootstrapExpiresAt = value;
+                            else
+                                delete message.bootstrapExpiresAt;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.uid = value;
+                            else
+                                delete message.uid;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.vaultId = value;
+                            else
+                                delete message.vaultId;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncStatusResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncStatusResponse & proto.v1.SafeSyncStatusResponse.$Shape} SafeSyncStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncStatusResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncStatusResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncStatusResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.capability != null && $Object.hasOwnProperty.call(message, "capability"))
+                    if (typeof message.capability !== "boolean")
+                        return "capability: boolean expected";
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision"))
+                    if (!$util.isInteger(message.latestVaultRevision) && !(message.latestVaultRevision && $util.isInteger(message.latestVaultRevision.low) && $util.isInteger(message.latestVaultRevision.high)))
+                        return "latestVaultRevision: integer|Long expected";
+                if (message.migrationVerified != null && $Object.hasOwnProperty.call(message, "migrationVerified"))
+                    if (typeof message.migrationVerified !== "boolean")
+                        return "migrationVerified: boolean expected";
+                if (message.bootstrapSessionId != null && $Object.hasOwnProperty.call(message, "bootstrapSessionId"))
+                    if (!$util.isString(message.bootstrapSessionId))
+                        return "bootstrapSessionId: string expected";
+                if (message.bootstrapExpiresAt != null && $Object.hasOwnProperty.call(message, "bootstrapExpiresAt"))
+                    if (!$util.isInteger(message.bootstrapExpiresAt) && !(message.bootstrapExpiresAt && $util.isInteger(message.bootstrapExpiresAt.low) && $util.isInteger(message.bootstrapExpiresAt.high)))
+                        return "bootstrapExpiresAt: integer|Long expected";
+                if (message.uid != null && $Object.hasOwnProperty.call(message, "uid"))
+                    if (!$util.isInteger(message.uid) && !(message.uid && $util.isInteger(message.uid.low) && $util.isInteger(message.uid.high)))
+                        return "uid: integer|Long expected";
+                if (message.vaultId != null && $Object.hasOwnProperty.call(message, "vaultId"))
+                    if (!$util.isInteger(message.vaultId) && !(message.vaultId && $util.isInteger(message.vaultId.low) && $util.isInteger(message.vaultId.high)))
+                        return "vaultId: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncStatusResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncStatusResponse} SafeSyncStatusResponse
+             */
+            SafeSyncStatusResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncStatusResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncStatusResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncStatusResponse();
+                if (object.capability != null)
+                    if (object.capability)
+                        message.capability = $Boolean(object.capability);
+                if (object.state != null)
+                    if (typeof object.state !== "string" || object.state.length)
+                        message.state = $String(object.state);
+                if (object.latestVaultRevision != null)
+                    if (typeof object.latestVaultRevision === "object" ? object.latestVaultRevision.low || object.latestVaultRevision.high : $Number(object.latestVaultRevision) !== 0)
+                        if ($util.Long)
+                            message.latestVaultRevision = $util.Long.fromValue(object.latestVaultRevision, false);
+                        else if (typeof object.latestVaultRevision === "string")
+                            message.latestVaultRevision = $parseInt(object.latestVaultRevision, 10);
+                        else if (typeof object.latestVaultRevision === "number")
+                            message.latestVaultRevision = object.latestVaultRevision;
+                        else if (typeof object.latestVaultRevision === "object")
+                            message.latestVaultRevision = new $util.LongBits(object.latestVaultRevision.low >>> 0, object.latestVaultRevision.high >>> 0).toNumber();
+                if (object.migrationVerified != null)
+                    if (object.migrationVerified)
+                        message.migrationVerified = $Boolean(object.migrationVerified);
+                if (object.bootstrapSessionId != null)
+                    if (typeof object.bootstrapSessionId !== "string" || object.bootstrapSessionId.length)
+                        message.bootstrapSessionId = $String(object.bootstrapSessionId);
+                if (object.bootstrapExpiresAt != null)
+                    if (typeof object.bootstrapExpiresAt === "object" ? object.bootstrapExpiresAt.low || object.bootstrapExpiresAt.high : $Number(object.bootstrapExpiresAt) !== 0)
+                        if ($util.Long)
+                            message.bootstrapExpiresAt = $util.Long.fromValue(object.bootstrapExpiresAt, false);
+                        else if (typeof object.bootstrapExpiresAt === "string")
+                            message.bootstrapExpiresAt = $parseInt(object.bootstrapExpiresAt, 10);
+                        else if (typeof object.bootstrapExpiresAt === "number")
+                            message.bootstrapExpiresAt = object.bootstrapExpiresAt;
+                        else if (typeof object.bootstrapExpiresAt === "object")
+                            message.bootstrapExpiresAt = new $util.LongBits(object.bootstrapExpiresAt.low >>> 0, object.bootstrapExpiresAt.high >>> 0).toNumber();
+                if (object.uid != null)
+                    if (typeof object.uid === "object" ? object.uid.low || object.uid.high : $Number(object.uid) !== 0)
+                        if ($util.Long)
+                            message.uid = $util.Long.fromValue(object.uid, false);
+                        else if (typeof object.uid === "string")
+                            message.uid = $parseInt(object.uid, 10);
+                        else if (typeof object.uid === "number")
+                            message.uid = object.uid;
+                        else if (typeof object.uid === "object")
+                            message.uid = new $util.LongBits(object.uid.low >>> 0, object.uid.high >>> 0).toNumber();
+                if (object.vaultId != null)
+                    if (typeof object.vaultId === "object" ? object.vaultId.low || object.vaultId.high : $Number(object.vaultId) !== 0)
+                        if ($util.Long)
+                            message.vaultId = $util.Long.fromValue(object.vaultId, false);
+                        else if (typeof object.vaultId === "string")
+                            message.vaultId = $parseInt(object.vaultId, 10);
+                        else if (typeof object.vaultId === "number")
+                            message.vaultId = object.vaultId;
+                        else if (typeof object.vaultId === "object")
+                            message.vaultId = new $util.LongBits(object.vaultId.low >>> 0, object.vaultId.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncStatusResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {proto.v1.SafeSyncStatusResponse} message SafeSyncStatusResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncStatusResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.capability = false;
+                    object.state = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.latestVaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.latestVaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.migrationVerified = false;
+                    object.bootstrapSessionId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.bootstrapExpiresAt = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.bootstrapExpiresAt = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.uid = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.uid = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.vaultId = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.vaultId = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.capability != null && $Object.hasOwnProperty.call(message, "capability"))
+                    object.capability = message.capability;
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    object.state = message.state;
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.latestVaultRevision = typeof message.latestVaultRevision === "number" ? $BigInt(message.latestVaultRevision) : $util.Long.fromBits(message.latestVaultRevision.low >>> 0, message.latestVaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.latestVaultRevision === "number")
+                        object.latestVaultRevision = options.longs === $String ? $String(message.latestVaultRevision) : message.latestVaultRevision;
+                    else
+                        object.latestVaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.latestVaultRevision) : options.longs === $Number ? new $util.LongBits(message.latestVaultRevision.low >>> 0, message.latestVaultRevision.high >>> 0).toNumber() : message.latestVaultRevision;
+                if (message.migrationVerified != null && $Object.hasOwnProperty.call(message, "migrationVerified"))
+                    object.migrationVerified = message.migrationVerified;
+                if (message.bootstrapSessionId != null && $Object.hasOwnProperty.call(message, "bootstrapSessionId"))
+                    object.bootstrapSessionId = message.bootstrapSessionId;
+                if (message.bootstrapExpiresAt != null && $Object.hasOwnProperty.call(message, "bootstrapExpiresAt"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.bootstrapExpiresAt = typeof message.bootstrapExpiresAt === "number" ? $BigInt(message.bootstrapExpiresAt) : $util.Long.fromBits(message.bootstrapExpiresAt.low >>> 0, message.bootstrapExpiresAt.high >>> 0, false).toBigInt();
+                    else if (typeof message.bootstrapExpiresAt === "number")
+                        object.bootstrapExpiresAt = options.longs === $String ? $String(message.bootstrapExpiresAt) : message.bootstrapExpiresAt;
+                    else
+                        object.bootstrapExpiresAt = options.longs === $String ? $util.Long.prototype.toString.call(message.bootstrapExpiresAt) : options.longs === $Number ? new $util.LongBits(message.bootstrapExpiresAt.low >>> 0, message.bootstrapExpiresAt.high >>> 0).toNumber() : message.bootstrapExpiresAt;
+                if (message.uid != null && $Object.hasOwnProperty.call(message, "uid"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.uid = typeof message.uid === "number" ? $BigInt(message.uid) : $util.Long.fromBits(message.uid.low >>> 0, message.uid.high >>> 0, false).toBigInt();
+                    else if (typeof message.uid === "number")
+                        object.uid = options.longs === $String ? $String(message.uid) : message.uid;
+                    else
+                        object.uid = options.longs === $String ? $util.Long.prototype.toString.call(message.uid) : options.longs === $Number ? new $util.LongBits(message.uid.low >>> 0, message.uid.high >>> 0).toNumber() : message.uid;
+                if (message.vaultId != null && $Object.hasOwnProperty.call(message, "vaultId"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.vaultId = typeof message.vaultId === "number" ? $BigInt(message.vaultId) : $util.Long.fromBits(message.vaultId.low >>> 0, message.vaultId.high >>> 0, false).toBigInt();
+                    else if (typeof message.vaultId === "number")
+                        object.vaultId = options.longs === $String ? $String(message.vaultId) : message.vaultId;
+                    else
+                        object.vaultId = options.longs === $String ? $util.Long.prototype.toString.call(message.vaultId) : options.longs === $Number ? new $util.LongBits(message.vaultId.low >>> 0, message.vaultId.high >>> 0).toNumber() : message.vaultId;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncStatusResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncStatusResponse.prototype.toJSON = function() {
+                return SafeSyncStatusResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncStatusResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncStatusResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncStatusResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncStatusResponse";
+            };
+
+            return SafeSyncStatusResponse;
+        })();
+
+        v1.SafeSyncBootstrapStartRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapStartRequest.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapStartRequest.$Properties
+             * @property {string|null} [vault] SafeSyncBootstrapStartRequest vault
+             * @property {string|null} [deviceId] SafeSyncBootstrapStartRequest deviceId
+             * @property {string|null} [context] SafeSyncBootstrapStartRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapStartRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapStartRequest
+             * @augments proto.v1.SafeSyncBootstrapStartRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapStartRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapStartRequest.
+             * @typedef {proto.v1.SafeSyncBootstrapStartRequest.$Properties} proto.v1.SafeSyncBootstrapStartRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapStartRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapStartRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapStartRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapStartRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapStartRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @instance
+             */
+            SafeSyncBootstrapStartRequest.prototype.vault = "";
+
+            /**
+             * SafeSyncBootstrapStartRequest deviceId.
+             * @member {string} deviceId
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @instance
+             */
+            SafeSyncBootstrapStartRequest.prototype.deviceId = "";
+
+            /**
+             * SafeSyncBootstrapStartRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @instance
+             */
+            SafeSyncBootstrapStartRequest.prototype.context = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapStartRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest} SafeSyncBootstrapStartRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapStartRequest.$Shape): proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapStartRequest.$Properties): proto.v1.SafeSyncBootstrapStartRequest;
+             * }}
+             */
+            SafeSyncBootstrapStartRequest.create = function(properties) {
+                return new SafeSyncBootstrapStartRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartRequest.$Properties} message SafeSyncBootstrapStartRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapStartRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId") && message.deviceId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.deviceId);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartRequest.$Properties} message SafeSyncBootstrapStartRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapStartRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapStartRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape} SafeSyncBootstrapStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapStartRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapStartRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.deviceId = value;
+                            else
+                                delete message.deviceId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapStartRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest & proto.v1.SafeSyncBootstrapStartRequest.$Shape} SafeSyncBootstrapStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapStartRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapStartRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapStartRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    if (!$util.isString(message.deviceId))
+                        return "deviceId: string expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapStartRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapStartRequest} SafeSyncBootstrapStartRequest
+             */
+            SafeSyncBootstrapStartRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapStartRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapStartRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapStartRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.deviceId != null)
+                    if (typeof object.deviceId !== "string" || object.deviceId.length)
+                        message.deviceId = $String(object.deviceId);
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapStartRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartRequest} message SafeSyncBootstrapStartRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapStartRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.deviceId = "";
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    object.deviceId = message.deviceId;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapStartRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapStartRequest.prototype.toJSON = function() {
+                return SafeSyncBootstrapStartRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapStartRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapStartRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapStartRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapStartRequest";
+            };
+
+            return SafeSyncBootstrapStartRequest;
+        })();
+
+        v1.SafeSyncBootstrapStartResponse = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapStartResponse.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapStartResponse.$Properties
+             * @property {string|null} [state] SafeSyncBootstrapStartResponse state
+             * @property {string|null} [sessionId] SafeSyncBootstrapStartResponse sessionId
+             * @property {number|Long|null} [expiresAt] SafeSyncBootstrapStartResponse expiresAt
+             * @property {number|Long|null} [snapshotVaultRevision] SafeSyncBootstrapStartResponse snapshotVaultRevision
+             * @property {string|null} [manifestHash] SafeSyncBootstrapStartResponse manifestHash
+             * @property {number|Long|null} [resourceCount] SafeSyncBootstrapStartResponse resourceCount
+             * @property {string|null} [cursor] SafeSyncBootstrapStartResponse cursor
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapStartResponse.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapStartResponse
+             * @augments proto.v1.SafeSyncBootstrapStartResponse.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapStartResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapStartResponse.
+             * @typedef {proto.v1.SafeSyncBootstrapStartResponse.$Properties} proto.v1.SafeSyncBootstrapStartResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapStartResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapStartResponse.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapStartResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapStartResponse = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapStartResponse state.
+             * @member {string} state
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.state = "";
+
+            /**
+             * SafeSyncBootstrapStartResponse sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.sessionId = "";
+
+            /**
+             * SafeSyncBootstrapStartResponse expiresAt.
+             * @member {number|Long} expiresAt
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncBootstrapStartResponse snapshotVaultRevision.
+             * @member {number|Long} snapshotVaultRevision
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.snapshotVaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncBootstrapStartResponse manifestHash.
+             * @member {string} manifestHash
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.manifestHash = "";
+
+            /**
+             * SafeSyncBootstrapStartResponse resourceCount.
+             * @member {number|Long} resourceCount
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.resourceCount = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncBootstrapStartResponse cursor.
+             * @member {string} cursor
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             */
+            SafeSyncBootstrapStartResponse.prototype.cursor = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapStartResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse} SafeSyncBootstrapStartResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapStartResponse.$Shape): proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapStartResponse.$Properties): proto.v1.SafeSyncBootstrapStartResponse;
+             * }}
+             */
+            SafeSyncBootstrapStartResponse.create = function(properties) {
+                return new SafeSyncBootstrapStartResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartResponse message. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartResponse.$Properties} message SafeSyncBootstrapStartResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapStartResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state") && message.state !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.state);
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt") && (typeof message.expiresAt === "object" ? message.expiresAt.low || message.expiresAt.high : message.expiresAt !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.expiresAt);
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision") && (typeof message.snapshotVaultRevision === "object" ? message.snapshotVaultRevision.low || message.snapshotVaultRevision.high : message.snapshotVaultRevision !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.snapshotVaultRevision);
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash") && message.manifestHash !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.manifestHash);
+                if (message.resourceCount != null && $Object.hasOwnProperty.call(message, "resourceCount") && (typeof message.resourceCount === "object" ? message.resourceCount.low || message.resourceCount.high : message.resourceCount !== 0))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.resourceCount);
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor") && message.cursor !== "")
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.cursor);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapStartResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapStartResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartResponse.$Properties} message SafeSyncBootstrapStartResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapStartResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapStartResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape} SafeSyncBootstrapStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapStartResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapStartResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.state = value;
+                            else
+                                delete message.state;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.expiresAt = value;
+                            else
+                                delete message.expiresAt;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.snapshotVaultRevision = value;
+                            else
+                                delete message.snapshotVaultRevision;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.manifestHash = value;
+                            else
+                                delete message.manifestHash;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.resourceCount = value;
+                            else
+                                delete message.resourceCount;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.cursor = value;
+                            else
+                                delete message.cursor;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapStartResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse & proto.v1.SafeSyncBootstrapStartResponse.$Shape} SafeSyncBootstrapStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapStartResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapStartResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapStartResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
+                        return "expiresAt: integer|Long expected";
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (!$util.isInteger(message.snapshotVaultRevision) && !(message.snapshotVaultRevision && $util.isInteger(message.snapshotVaultRevision.low) && $util.isInteger(message.snapshotVaultRevision.high)))
+                        return "snapshotVaultRevision: integer|Long expected";
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    if (!$util.isString(message.manifestHash))
+                        return "manifestHash: string expected";
+                if (message.resourceCount != null && $Object.hasOwnProperty.call(message, "resourceCount"))
+                    if (!$util.isInteger(message.resourceCount) && !(message.resourceCount && $util.isInteger(message.resourceCount.low) && $util.isInteger(message.resourceCount.high)))
+                        return "resourceCount: integer|Long expected";
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor"))
+                    if (!$util.isString(message.cursor))
+                        return "cursor: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapStartResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapStartResponse} SafeSyncBootstrapStartResponse
+             */
+            SafeSyncBootstrapStartResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapStartResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapStartResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapStartResponse();
+                if (object.state != null)
+                    if (typeof object.state !== "string" || object.state.length)
+                        message.state = $String(object.state);
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.expiresAt != null)
+                    if (typeof object.expiresAt === "object" ? object.expiresAt.low || object.expiresAt.high : $Number(object.expiresAt) !== 0)
+                        if ($util.Long)
+                            message.expiresAt = $util.Long.fromValue(object.expiresAt, false);
+                        else if (typeof object.expiresAt === "string")
+                            message.expiresAt = $parseInt(object.expiresAt, 10);
+                        else if (typeof object.expiresAt === "number")
+                            message.expiresAt = object.expiresAt;
+                        else if (typeof object.expiresAt === "object")
+                            message.expiresAt = new $util.LongBits(object.expiresAt.low >>> 0, object.expiresAt.high >>> 0).toNumber();
+                if (object.snapshotVaultRevision != null)
+                    if (typeof object.snapshotVaultRevision === "object" ? object.snapshotVaultRevision.low || object.snapshotVaultRevision.high : $Number(object.snapshotVaultRevision) !== 0)
+                        if ($util.Long)
+                            message.snapshotVaultRevision = $util.Long.fromValue(object.snapshotVaultRevision, false);
+                        else if (typeof object.snapshotVaultRevision === "string")
+                            message.snapshotVaultRevision = $parseInt(object.snapshotVaultRevision, 10);
+                        else if (typeof object.snapshotVaultRevision === "number")
+                            message.snapshotVaultRevision = object.snapshotVaultRevision;
+                        else if (typeof object.snapshotVaultRevision === "object")
+                            message.snapshotVaultRevision = new $util.LongBits(object.snapshotVaultRevision.low >>> 0, object.snapshotVaultRevision.high >>> 0).toNumber();
+                if (object.manifestHash != null)
+                    if (typeof object.manifestHash !== "string" || object.manifestHash.length)
+                        message.manifestHash = $String(object.manifestHash);
+                if (object.resourceCount != null)
+                    if (typeof object.resourceCount === "object" ? object.resourceCount.low || object.resourceCount.high : $Number(object.resourceCount) !== 0)
+                        if ($util.Long)
+                            message.resourceCount = $util.Long.fromValue(object.resourceCount, false);
+                        else if (typeof object.resourceCount === "string")
+                            message.resourceCount = $parseInt(object.resourceCount, 10);
+                        else if (typeof object.resourceCount === "number")
+                            message.resourceCount = object.resourceCount;
+                        else if (typeof object.resourceCount === "object")
+                            message.resourceCount = new $util.LongBits(object.resourceCount.low >>> 0, object.resourceCount.high >>> 0).toNumber();
+                if (object.cursor != null)
+                    if (typeof object.cursor !== "string" || object.cursor.length)
+                        message.cursor = $String(object.cursor);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapStartResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapStartResponse} message SafeSyncBootstrapStartResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapStartResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.state = "";
+                    object.sessionId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.expiresAt = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.expiresAt = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.snapshotVaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.snapshotVaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.manifestHash = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.resourceCount = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.resourceCount = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.cursor = "";
+                }
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    object.state = message.state;
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.expiresAt = typeof message.expiresAt === "number" ? $BigInt(message.expiresAt) : $util.Long.fromBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0, false).toBigInt();
+                    else if (typeof message.expiresAt === "number")
+                        object.expiresAt = options.longs === $String ? $String(message.expiresAt) : message.expiresAt;
+                    else
+                        object.expiresAt = options.longs === $String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === $Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.snapshotVaultRevision = typeof message.snapshotVaultRevision === "number" ? $BigInt(message.snapshotVaultRevision) : $util.Long.fromBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.snapshotVaultRevision === "number")
+                        object.snapshotVaultRevision = options.longs === $String ? $String(message.snapshotVaultRevision) : message.snapshotVaultRevision;
+                    else
+                        object.snapshotVaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.snapshotVaultRevision) : options.longs === $Number ? new $util.LongBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0).toNumber() : message.snapshotVaultRevision;
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    object.manifestHash = message.manifestHash;
+                if (message.resourceCount != null && $Object.hasOwnProperty.call(message, "resourceCount"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.resourceCount = typeof message.resourceCount === "number" ? $BigInt(message.resourceCount) : $util.Long.fromBits(message.resourceCount.low >>> 0, message.resourceCount.high >>> 0, false).toBigInt();
+                    else if (typeof message.resourceCount === "number")
+                        object.resourceCount = options.longs === $String ? $String(message.resourceCount) : message.resourceCount;
+                    else
+                        object.resourceCount = options.longs === $String ? $util.Long.prototype.toString.call(message.resourceCount) : options.longs === $Number ? new $util.LongBits(message.resourceCount.low >>> 0, message.resourceCount.high >>> 0).toNumber() : message.resourceCount;
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor"))
+                    object.cursor = message.cursor;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapStartResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapStartResponse.prototype.toJSON = function() {
+                return SafeSyncBootstrapStartResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapStartResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapStartResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapStartResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapStartResponse";
+            };
+
+            return SafeSyncBootstrapStartResponse;
+        })();
+
+        v1.SafeSyncBootstrapPageRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapPageRequest.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapPageRequest.$Properties
+             * @property {string|null} [vault] SafeSyncBootstrapPageRequest vault
+             * @property {string|null} [sessionId] SafeSyncBootstrapPageRequest sessionId
+             * @property {string|null} [cursor] SafeSyncBootstrapPageRequest cursor
+             * @property {number|null} [pageSize] SafeSyncBootstrapPageRequest pageSize
+             * @property {string|null} [context] SafeSyncBootstrapPageRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapPageRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapPageRequest
+             * @augments proto.v1.SafeSyncBootstrapPageRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapPageRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapPageRequest.
+             * @typedef {proto.v1.SafeSyncBootstrapPageRequest.$Properties} proto.v1.SafeSyncBootstrapPageRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapPageRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapPageRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapPageRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapPageRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapPageRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             */
+            SafeSyncBootstrapPageRequest.prototype.vault = "";
+
+            /**
+             * SafeSyncBootstrapPageRequest sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             */
+            SafeSyncBootstrapPageRequest.prototype.sessionId = "";
+
+            /**
+             * SafeSyncBootstrapPageRequest cursor.
+             * @member {string} cursor
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             */
+            SafeSyncBootstrapPageRequest.prototype.cursor = "";
+
+            /**
+             * SafeSyncBootstrapPageRequest pageSize.
+             * @member {number} pageSize
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             */
+            SafeSyncBootstrapPageRequest.prototype.pageSize = 0;
+
+            /**
+             * SafeSyncBootstrapPageRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             */
+            SafeSyncBootstrapPageRequest.prototype.context = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapPageRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest} SafeSyncBootstrapPageRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapPageRequest.$Shape): proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapPageRequest.$Properties): proto.v1.SafeSyncBootstrapPageRequest;
+             * }}
+             */
+            SafeSyncBootstrapPageRequest.create = function(properties) {
+                return new SafeSyncBootstrapPageRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageRequest.$Properties} message SafeSyncBootstrapPageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapPageRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor") && message.cursor !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.cursor);
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize") && message.pageSize !== 0)
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.pageSize);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageRequest.$Properties} message SafeSyncBootstrapPageRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapPageRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapPageRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape} SafeSyncBootstrapPageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapPageRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapPageRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.cursor = value;
+                            else
+                                delete message.cursor;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.pageSize = value;
+                            else
+                                delete message.pageSize;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapPageRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest & proto.v1.SafeSyncBootstrapPageRequest.$Shape} SafeSyncBootstrapPageRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapPageRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapPageRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapPageRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor"))
+                    if (!$util.isString(message.cursor))
+                        return "cursor: string expected";
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize"))
+                    if (!$util.isInteger(message.pageSize))
+                        return "pageSize: integer expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapPageRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapPageRequest} SafeSyncBootstrapPageRequest
+             */
+            SafeSyncBootstrapPageRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapPageRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapPageRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapPageRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.cursor != null)
+                    if (typeof object.cursor !== "string" || object.cursor.length)
+                        message.cursor = $String(object.cursor);
+                if (object.pageSize != null)
+                    if ($Number(object.pageSize) !== 0)
+                        message.pageSize = object.pageSize | 0;
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapPageRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageRequest} message SafeSyncBootstrapPageRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapPageRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.sessionId = "";
+                    object.cursor = "";
+                    object.pageSize = 0;
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.cursor != null && $Object.hasOwnProperty.call(message, "cursor"))
+                    object.cursor = message.cursor;
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize"))
+                    object.pageSize = message.pageSize;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapPageRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapPageRequest.prototype.toJSON = function() {
+                return SafeSyncBootstrapPageRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapPageRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapPageRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapPageRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapPageRequest";
+            };
+
+            return SafeSyncBootstrapPageRequest;
+        })();
+
+        v1.SafeSyncManifestItem = (function() {
+
+            /**
+             * Properties of a SafeSyncManifestItem.
+             * @typedef {Object} proto.v1.SafeSyncManifestItem.$Properties
+             * @property {string|null} [resourceId] SafeSyncManifestItem resourceId
+             * @property {string|null} [resourceType] SafeSyncManifestItem resourceType
+             * @property {string|null} [path] SafeSyncManifestItem path
+             * @property {string|null} [pathHash] SafeSyncManifestItem pathHash
+             * @property {string|null} [state] SafeSyncManifestItem state
+             * @property {number|Long|null} [resourceRevision] SafeSyncManifestItem resourceRevision
+             * @property {string|null} [contentHash] SafeSyncManifestItem contentHash
+             * @property {number|Long|null} [size] SafeSyncManifestItem size
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncManifestItem.
+             * @memberof proto.v1
+             * @interface ISafeSyncManifestItem
+             * @augments proto.v1.SafeSyncManifestItem.$Properties
+             * @deprecated Use proto.v1.SafeSyncManifestItem.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncManifestItem.
+             * @typedef {proto.v1.SafeSyncManifestItem.$Properties} proto.v1.SafeSyncManifestItem.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncManifestItem.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncManifestItem.
+             * @constructor
+             * @param {proto.v1.SafeSyncManifestItem.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncManifestItem = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncManifestItem resourceId.
+             * @member {string} resourceId
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.resourceId = "";
+
+            /**
+             * SafeSyncManifestItem resourceType.
+             * @member {string} resourceType
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.resourceType = "";
+
+            /**
+             * SafeSyncManifestItem path.
+             * @member {string} path
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.path = "";
+
+            /**
+             * SafeSyncManifestItem pathHash.
+             * @member {string} pathHash
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.pathHash = "";
+
+            /**
+             * SafeSyncManifestItem state.
+             * @member {string} state
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.state = "";
+
+            /**
+             * SafeSyncManifestItem resourceRevision.
+             * @member {number|Long} resourceRevision
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.resourceRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncManifestItem contentHash.
+             * @member {string} contentHash
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.contentHash = "";
+
+            /**
+             * SafeSyncManifestItem size.
+             * @member {number|Long} size
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             */
+            SafeSyncManifestItem.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeSyncManifestItem instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {proto.v1.SafeSyncManifestItem.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncManifestItem} SafeSyncManifestItem instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncManifestItem.$Shape): proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape;
+             *   (properties?: proto.v1.SafeSyncManifestItem.$Properties): proto.v1.SafeSyncManifestItem;
+             * }}
+             */
+            SafeSyncManifestItem.create = function(properties) {
+                return new SafeSyncManifestItem(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncManifestItem message. Does not implicitly {@link proto.v1.SafeSyncManifestItem.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {proto.v1.SafeSyncManifestItem.$Properties} message SafeSyncManifestItem message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncManifestItem.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId") && message.resourceId !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.resourceId);
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType") && message.resourceType !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.resourceType);
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path") && message.path !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.path);
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash") && message.pathHash !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.pathHash);
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state") && message.state !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.state);
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision") && (typeof message.resourceRevision === "object" ? message.resourceRevision.low || message.resourceRevision.high : message.resourceRevision !== 0))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.resourceRevision);
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash") && message.contentHash !== "")
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.contentHash);
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size") && (typeof message.size === "object" ? message.size.low || message.size.high : message.size !== 0))
+                    writer.uint32(/* id 8, wireType 0 =*/64).int64(message.size);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncManifestItem message, length delimited. Does not implicitly {@link proto.v1.SafeSyncManifestItem.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {proto.v1.SafeSyncManifestItem.$Properties} message SafeSyncManifestItem message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncManifestItem.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncManifestItem message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape} SafeSyncManifestItem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncManifestItem.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncManifestItem(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceId = value;
+                            else
+                                delete message.resourceId;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceType = value;
+                            else
+                                delete message.resourceType;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.path = value;
+                            else
+                                delete message.path;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.pathHash = value;
+                            else
+                                delete message.pathHash;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.state = value;
+                            else
+                                delete message.state;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.resourceRevision = value;
+                            else
+                                delete message.resourceRevision;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.contentHash = value;
+                            else
+                                delete message.contentHash;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.size = value;
+                            else
+                                delete message.size;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncManifestItem message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncManifestItem & proto.v1.SafeSyncManifestItem.$Shape} SafeSyncManifestItem
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncManifestItem.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncManifestItem message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncManifestItem.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    if (!$util.isString(message.resourceId))
+                        return "resourceId: string expected";
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType"))
+                    if (!$util.isString(message.resourceType))
+                        return "resourceType: string expected";
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    if (!$util.isString(message.path))
+                        return "path: string expected";
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash"))
+                    if (!$util.isString(message.pathHash))
+                        return "pathHash: string expected";
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (!$util.isInteger(message.resourceRevision) && !(message.resourceRevision && $util.isInteger(message.resourceRevision.low) && $util.isInteger(message.resourceRevision.high)))
+                        return "resourceRevision: integer|Long expected";
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    if (!$util.isString(message.contentHash))
+                        return "contentHash: string expected";
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high)))
+                        return "size: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncManifestItem message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncManifestItem} SafeSyncManifestItem
+             */
+            SafeSyncManifestItem.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncManifestItem)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncManifestItem: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncManifestItem();
+                if (object.resourceId != null)
+                    if (typeof object.resourceId !== "string" || object.resourceId.length)
+                        message.resourceId = $String(object.resourceId);
+                if (object.resourceType != null)
+                    if (typeof object.resourceType !== "string" || object.resourceType.length)
+                        message.resourceType = $String(object.resourceType);
+                if (object.path != null)
+                    if (typeof object.path !== "string" || object.path.length)
+                        message.path = $String(object.path);
+                if (object.pathHash != null)
+                    if (typeof object.pathHash !== "string" || object.pathHash.length)
+                        message.pathHash = $String(object.pathHash);
+                if (object.state != null)
+                    if (typeof object.state !== "string" || object.state.length)
+                        message.state = $String(object.state);
+                if (object.resourceRevision != null)
+                    if (typeof object.resourceRevision === "object" ? object.resourceRevision.low || object.resourceRevision.high : $Number(object.resourceRevision) !== 0)
+                        if ($util.Long)
+                            message.resourceRevision = $util.Long.fromValue(object.resourceRevision, false);
+                        else if (typeof object.resourceRevision === "string")
+                            message.resourceRevision = $parseInt(object.resourceRevision, 10);
+                        else if (typeof object.resourceRevision === "number")
+                            message.resourceRevision = object.resourceRevision;
+                        else if (typeof object.resourceRevision === "object")
+                            message.resourceRevision = new $util.LongBits(object.resourceRevision.low >>> 0, object.resourceRevision.high >>> 0).toNumber();
+                if (object.contentHash != null)
+                    if (typeof object.contentHash !== "string" || object.contentHash.length)
+                        message.contentHash = $String(object.contentHash);
+                if (object.size != null)
+                    if (typeof object.size === "object" ? object.size.low || object.size.high : $Number(object.size) !== 0)
+                        if ($util.Long)
+                            message.size = $util.Long.fromValue(object.size, false);
+                        else if (typeof object.size === "string")
+                            message.size = $parseInt(object.size, 10);
+                        else if (typeof object.size === "number")
+                            message.size = object.size;
+                        else if (typeof object.size === "object")
+                            message.size = new $util.LongBits(object.size.low >>> 0, object.size.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncManifestItem message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {proto.v1.SafeSyncManifestItem} message SafeSyncManifestItem
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncManifestItem.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.resourceId = "";
+                    object.resourceType = "";
+                    object.path = "";
+                    object.pathHash = "";
+                    object.state = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.resourceRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.resourceRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.contentHash = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.size = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.size = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    object.resourceId = message.resourceId;
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType"))
+                    object.resourceType = message.resourceType;
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    object.path = message.path;
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash"))
+                    object.pathHash = message.pathHash;
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    object.state = message.state;
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.resourceRevision = typeof message.resourceRevision === "number" ? $BigInt(message.resourceRevision) : $util.Long.fromBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.resourceRevision === "number")
+                        object.resourceRevision = options.longs === $String ? $String(message.resourceRevision) : message.resourceRevision;
+                    else
+                        object.resourceRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.resourceRevision) : options.longs === $Number ? new $util.LongBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0).toNumber() : message.resourceRevision;
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    object.contentHash = message.contentHash;
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.size = typeof message.size === "number" ? $BigInt(message.size) : $util.Long.fromBits(message.size.low >>> 0, message.size.high >>> 0, false).toBigInt();
+                    else if (typeof message.size === "number")
+                        object.size = options.longs === $String ? $String(message.size) : message.size;
+                    else
+                        object.size = options.longs === $String ? $util.Long.prototype.toString.call(message.size) : options.longs === $Number ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber() : message.size;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncManifestItem to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncManifestItem.prototype.toJSON = function() {
+                return SafeSyncManifestItem.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncManifestItem
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncManifestItem
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncManifestItem.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncManifestItem";
+            };
+
+            return SafeSyncManifestItem;
+        })();
+
+        v1.SafeSyncBootstrapPageResponse = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapPageResponse.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapPageResponse.$Properties
+             * @property {string|null} [sessionId] SafeSyncBootstrapPageResponse sessionId
+             * @property {number|Long|null} [snapshotVaultRevision] SafeSyncBootstrapPageResponse snapshotVaultRevision
+             * @property {string|null} [manifestHash] SafeSyncBootstrapPageResponse manifestHash
+             * @property {Array.<proto.v1.SafeSyncManifestItem.$Properties>|null} [items] SafeSyncBootstrapPageResponse items
+             * @property {string|null} [nextCursor] SafeSyncBootstrapPageResponse nextCursor
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapPageResponse.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapPageResponse
+             * @augments proto.v1.SafeSyncBootstrapPageResponse.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapPageResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapPageResponse.
+             * @typedef {proto.v1.SafeSyncBootstrapPageResponse.$Properties} proto.v1.SafeSyncBootstrapPageResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapPageResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapPageResponse.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapPageResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapPageResponse = function (properties) {
+                this.items = [];
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapPageResponse sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             */
+            SafeSyncBootstrapPageResponse.prototype.sessionId = "";
+
+            /**
+             * SafeSyncBootstrapPageResponse snapshotVaultRevision.
+             * @member {number|Long} snapshotVaultRevision
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             */
+            SafeSyncBootstrapPageResponse.prototype.snapshotVaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncBootstrapPageResponse manifestHash.
+             * @member {string} manifestHash
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             */
+            SafeSyncBootstrapPageResponse.prototype.manifestHash = "";
+
+            /**
+             * SafeSyncBootstrapPageResponse items.
+             * @member {Array.<proto.v1.SafeSyncManifestItem.$Properties>} items
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             */
+            SafeSyncBootstrapPageResponse.prototype.items = $util.emptyArray;
+
+            /**
+             * SafeSyncBootstrapPageResponse nextCursor.
+             * @member {string} nextCursor
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             */
+            SafeSyncBootstrapPageResponse.prototype.nextCursor = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapPageResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse} SafeSyncBootstrapPageResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapPageResponse.$Shape): proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapPageResponse.$Properties): proto.v1.SafeSyncBootstrapPageResponse;
+             * }}
+             */
+            SafeSyncBootstrapPageResponse.create = function(properties) {
+                return new SafeSyncBootstrapPageResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageResponse message. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageResponse.$Properties} message SafeSyncBootstrapPageResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapPageResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision") && (typeof message.snapshotVaultRevision === "object" ? message.snapshotVaultRevision.low || message.snapshotVaultRevision.high : message.snapshotVaultRevision !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.snapshotVaultRevision);
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash") && message.manifestHash !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.manifestHash);
+                if (message.items != null && message.items.length)
+                    for (let i = 0; i < message.items.length; ++i)
+                        $root.proto.v1.SafeSyncManifestItem.encode(message.items[i], writer.uint32(/* id 4, wireType 2 =*/34).fork(), _depth + 1).ldelim();
+                if (message.nextCursor != null && $Object.hasOwnProperty.call(message, "nextCursor") && message.nextCursor !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.nextCursor);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapPageResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapPageResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageResponse.$Properties} message SafeSyncBootstrapPageResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapPageResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapPageResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape} SafeSyncBootstrapPageResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapPageResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapPageResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.snapshotVaultRevision = value;
+                            else
+                                delete message.snapshotVaultRevision;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.manifestHash = value;
+                            else
+                                delete message.manifestHash;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if (!(message.items && message.items.length))
+                                message.items = [];
+                            message.items.push($root.proto.v1.SafeSyncManifestItem.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.nextCursor = value;
+                            else
+                                delete message.nextCursor;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapPageResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse & proto.v1.SafeSyncBootstrapPageResponse.$Shape} SafeSyncBootstrapPageResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapPageResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapPageResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapPageResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (!$util.isInteger(message.snapshotVaultRevision) && !(message.snapshotVaultRevision && $util.isInteger(message.snapshotVaultRevision.low) && $util.isInteger(message.snapshotVaultRevision.high)))
+                        return "snapshotVaultRevision: integer|Long expected";
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    if (!$util.isString(message.manifestHash))
+                        return "manifestHash: string expected";
+                if (message.items != null && $Object.hasOwnProperty.call(message, "items")) {
+                    if (!$Array.isArray(message.items))
+                        return "items: array expected";
+                    for (let i = 0; i < message.items.length; ++i) {
+                        let error = $root.proto.v1.SafeSyncManifestItem.verify(message.items[i], _depth + 1);
+                        if (error)
+                            return "items." + error;
+                    }
+                }
+                if (message.nextCursor != null && $Object.hasOwnProperty.call(message, "nextCursor"))
+                    if (!$util.isString(message.nextCursor))
+                        return "nextCursor: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapPageResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapPageResponse} SafeSyncBootstrapPageResponse
+             */
+            SafeSyncBootstrapPageResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapPageResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapPageResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapPageResponse();
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.snapshotVaultRevision != null)
+                    if (typeof object.snapshotVaultRevision === "object" ? object.snapshotVaultRevision.low || object.snapshotVaultRevision.high : $Number(object.snapshotVaultRevision) !== 0)
+                        if ($util.Long)
+                            message.snapshotVaultRevision = $util.Long.fromValue(object.snapshotVaultRevision, false);
+                        else if (typeof object.snapshotVaultRevision === "string")
+                            message.snapshotVaultRevision = $parseInt(object.snapshotVaultRevision, 10);
+                        else if (typeof object.snapshotVaultRevision === "number")
+                            message.snapshotVaultRevision = object.snapshotVaultRevision;
+                        else if (typeof object.snapshotVaultRevision === "object")
+                            message.snapshotVaultRevision = new $util.LongBits(object.snapshotVaultRevision.low >>> 0, object.snapshotVaultRevision.high >>> 0).toNumber();
+                if (object.manifestHash != null)
+                    if (typeof object.manifestHash !== "string" || object.manifestHash.length)
+                        message.manifestHash = $String(object.manifestHash);
+                if (object.items) {
+                    if (!$Array.isArray(object.items))
+                        throw $TypeError(".proto.v1.SafeSyncBootstrapPageResponse.items: array expected");
+                    message.items = $Array(object.items.length);
+                    for (let i = 0; i < object.items.length; ++i) {
+                        if (!$util.isObject(object.items[i]))
+                            throw $TypeError(".proto.v1.SafeSyncBootstrapPageResponse.items: object expected");
+                        message.items[i] = $root.proto.v1.SafeSyncManifestItem.fromObject(object.items[i], _depth + 1);
+                    }
+                }
+                if (object.nextCursor != null)
+                    if (typeof object.nextCursor !== "string" || object.nextCursor.length)
+                        message.nextCursor = $String(object.nextCursor);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapPageResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapPageResponse} message SafeSyncBootstrapPageResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapPageResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.items = [];
+                if (options.defaults) {
+                    object.sessionId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.snapshotVaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.snapshotVaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.manifestHash = "";
+                    object.nextCursor = "";
+                }
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.snapshotVaultRevision = typeof message.snapshotVaultRevision === "number" ? $BigInt(message.snapshotVaultRevision) : $util.Long.fromBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.snapshotVaultRevision === "number")
+                        object.snapshotVaultRevision = options.longs === $String ? $String(message.snapshotVaultRevision) : message.snapshotVaultRevision;
+                    else
+                        object.snapshotVaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.snapshotVaultRevision) : options.longs === $Number ? new $util.LongBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0).toNumber() : message.snapshotVaultRevision;
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    object.manifestHash = message.manifestHash;
+                if (message.items && message.items.length) {
+                    object.items = $Array(message.items.length);
+                    for (let j = 0; j < message.items.length; ++j)
+                        object.items[j] = $root.proto.v1.SafeSyncManifestItem.toObject(message.items[j], options, _depth + 1);
+                }
+                if (message.nextCursor != null && $Object.hasOwnProperty.call(message, "nextCursor"))
+                    object.nextCursor = message.nextCursor;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapPageResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapPageResponse.prototype.toJSON = function() {
+                return SafeSyncBootstrapPageResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapPageResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapPageResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapPageResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapPageResponse";
+            };
+
+            return SafeSyncBootstrapPageResponse;
+        })();
+
+        v1.SafeSyncBootstrapCommitRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapCommitRequest.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapCommitRequest.$Properties
+             * @property {string|null} [vault] SafeSyncBootstrapCommitRequest vault
+             * @property {string|null} [sessionId] SafeSyncBootstrapCommitRequest sessionId
+             * @property {string|null} [manifestHash] SafeSyncBootstrapCommitRequest manifestHash
+             * @property {number|Long|null} [snapshotVaultRevision] SafeSyncBootstrapCommitRequest snapshotVaultRevision
+             * @property {string|null} [context] SafeSyncBootstrapCommitRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapCommitRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapCommitRequest
+             * @augments proto.v1.SafeSyncBootstrapCommitRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapCommitRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapCommitRequest.
+             * @typedef {proto.v1.SafeSyncBootstrapCommitRequest.$Properties} proto.v1.SafeSyncBootstrapCommitRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapCommitRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapCommitRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapCommitRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapCommitRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapCommitRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             */
+            SafeSyncBootstrapCommitRequest.prototype.vault = "";
+
+            /**
+             * SafeSyncBootstrapCommitRequest sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             */
+            SafeSyncBootstrapCommitRequest.prototype.sessionId = "";
+
+            /**
+             * SafeSyncBootstrapCommitRequest manifestHash.
+             * @member {string} manifestHash
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             */
+            SafeSyncBootstrapCommitRequest.prototype.manifestHash = "";
+
+            /**
+             * SafeSyncBootstrapCommitRequest snapshotVaultRevision.
+             * @member {number|Long} snapshotVaultRevision
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             */
+            SafeSyncBootstrapCommitRequest.prototype.snapshotVaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncBootstrapCommitRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             */
+            SafeSyncBootstrapCommitRequest.prototype.context = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapCommitRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCommitRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest} SafeSyncBootstrapCommitRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapCommitRequest.$Shape): proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapCommitRequest.$Properties): proto.v1.SafeSyncBootstrapCommitRequest;
+             * }}
+             */
+            SafeSyncBootstrapCommitRequest.create = function(properties) {
+                return new SafeSyncBootstrapCommitRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCommitRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapCommitRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCommitRequest.$Properties} message SafeSyncBootstrapCommitRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapCommitRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash") && message.manifestHash !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.manifestHash);
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision") && (typeof message.snapshotVaultRevision === "object" ? message.snapshotVaultRevision.low || message.snapshotVaultRevision.high : message.snapshotVaultRevision !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.snapshotVaultRevision);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCommitRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapCommitRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCommitRequest.$Properties} message SafeSyncBootstrapCommitRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapCommitRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapCommitRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape} SafeSyncBootstrapCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapCommitRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapCommitRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.manifestHash = value;
+                            else
+                                delete message.manifestHash;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.snapshotVaultRevision = value;
+                            else
+                                delete message.snapshotVaultRevision;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapCommitRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest & proto.v1.SafeSyncBootstrapCommitRequest.$Shape} SafeSyncBootstrapCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapCommitRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapCommitRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapCommitRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    if (!$util.isString(message.manifestHash))
+                        return "manifestHash: string expected";
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (!$util.isInteger(message.snapshotVaultRevision) && !(message.snapshotVaultRevision && $util.isInteger(message.snapshotVaultRevision.low) && $util.isInteger(message.snapshotVaultRevision.high)))
+                        return "snapshotVaultRevision: integer|Long expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapCommitRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapCommitRequest} SafeSyncBootstrapCommitRequest
+             */
+            SafeSyncBootstrapCommitRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapCommitRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapCommitRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapCommitRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.manifestHash != null)
+                    if (typeof object.manifestHash !== "string" || object.manifestHash.length)
+                        message.manifestHash = $String(object.manifestHash);
+                if (object.snapshotVaultRevision != null)
+                    if (typeof object.snapshotVaultRevision === "object" ? object.snapshotVaultRevision.low || object.snapshotVaultRevision.high : $Number(object.snapshotVaultRevision) !== 0)
+                        if ($util.Long)
+                            message.snapshotVaultRevision = $util.Long.fromValue(object.snapshotVaultRevision, false);
+                        else if (typeof object.snapshotVaultRevision === "string")
+                            message.snapshotVaultRevision = $parseInt(object.snapshotVaultRevision, 10);
+                        else if (typeof object.snapshotVaultRevision === "number")
+                            message.snapshotVaultRevision = object.snapshotVaultRevision;
+                        else if (typeof object.snapshotVaultRevision === "object")
+                            message.snapshotVaultRevision = new $util.LongBits(object.snapshotVaultRevision.low >>> 0, object.snapshotVaultRevision.high >>> 0).toNumber();
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapCommitRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCommitRequest} message SafeSyncBootstrapCommitRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapCommitRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.sessionId = "";
+                    object.manifestHash = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.snapshotVaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.snapshotVaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.manifestHash != null && $Object.hasOwnProperty.call(message, "manifestHash"))
+                    object.manifestHash = message.manifestHash;
+                if (message.snapshotVaultRevision != null && $Object.hasOwnProperty.call(message, "snapshotVaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.snapshotVaultRevision = typeof message.snapshotVaultRevision === "number" ? $BigInt(message.snapshotVaultRevision) : $util.Long.fromBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.snapshotVaultRevision === "number")
+                        object.snapshotVaultRevision = options.longs === $String ? $String(message.snapshotVaultRevision) : message.snapshotVaultRevision;
+                    else
+                        object.snapshotVaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.snapshotVaultRevision) : options.longs === $Number ? new $util.LongBits(message.snapshotVaultRevision.low >>> 0, message.snapshotVaultRevision.high >>> 0).toNumber() : message.snapshotVaultRevision;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapCommitRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapCommitRequest.prototype.toJSON = function() {
+                return SafeSyncBootstrapCommitRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapCommitRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapCommitRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapCommitRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapCommitRequest";
+            };
+
+            return SafeSyncBootstrapCommitRequest;
+        })();
+
+        v1.SafeSyncBootstrapCancelRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncBootstrapCancelRequest.
+             * @typedef {Object} proto.v1.SafeSyncBootstrapCancelRequest.$Properties
+             * @property {string|null} [vault] SafeSyncBootstrapCancelRequest vault
+             * @property {string|null} [sessionId] SafeSyncBootstrapCancelRequest sessionId
+             * @property {string|null} [context] SafeSyncBootstrapCancelRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncBootstrapCancelRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncBootstrapCancelRequest
+             * @augments proto.v1.SafeSyncBootstrapCancelRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncBootstrapCancelRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncBootstrapCancelRequest.
+             * @typedef {proto.v1.SafeSyncBootstrapCancelRequest.$Properties} proto.v1.SafeSyncBootstrapCancelRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncBootstrapCancelRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncBootstrapCancelRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncBootstrapCancelRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncBootstrapCancelRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncBootstrapCancelRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @instance
+             */
+            SafeSyncBootstrapCancelRequest.prototype.vault = "";
+
+            /**
+             * SafeSyncBootstrapCancelRequest sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @instance
+             */
+            SafeSyncBootstrapCancelRequest.prototype.sessionId = "";
+
+            /**
+             * SafeSyncBootstrapCancelRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @instance
+             */
+            SafeSyncBootstrapCancelRequest.prototype.context = "";
+
+            /**
+             * Creates a new SafeSyncBootstrapCancelRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCancelRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest} SafeSyncBootstrapCancelRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncBootstrapCancelRequest.$Shape): proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncBootstrapCancelRequest.$Properties): proto.v1.SafeSyncBootstrapCancelRequest;
+             * }}
+             */
+            SafeSyncBootstrapCancelRequest.create = function(properties) {
+                return new SafeSyncBootstrapCancelRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCancelRequest message. Does not implicitly {@link proto.v1.SafeSyncBootstrapCancelRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCancelRequest.$Properties} message SafeSyncBootstrapCancelRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapCancelRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncBootstrapCancelRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncBootstrapCancelRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCancelRequest.$Properties} message SafeSyncBootstrapCancelRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncBootstrapCancelRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapCancelRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape} SafeSyncBootstrapCancelRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapCancelRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncBootstrapCancelRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncBootstrapCancelRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest & proto.v1.SafeSyncBootstrapCancelRequest.$Shape} SafeSyncBootstrapCancelRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncBootstrapCancelRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncBootstrapCancelRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncBootstrapCancelRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncBootstrapCancelRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncBootstrapCancelRequest} SafeSyncBootstrapCancelRequest
+             */
+            SafeSyncBootstrapCancelRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncBootstrapCancelRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncBootstrapCancelRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncBootstrapCancelRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncBootstrapCancelRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {proto.v1.SafeSyncBootstrapCancelRequest} message SafeSyncBootstrapCancelRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncBootstrapCancelRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.sessionId = "";
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncBootstrapCancelRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncBootstrapCancelRequest.prototype.toJSON = function() {
+                return SafeSyncBootstrapCancelRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncBootstrapCancelRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncBootstrapCancelRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncBootstrapCancelRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncBootstrapCancelRequest";
+            };
+
+            return SafeSyncBootstrapCancelRequest;
+        })();
+
+        v1.SafeSyncEventsRequest = (function() {
+
+            /**
+             * Properties of a SafeSyncEventsRequest.
+             * @typedef {Object} proto.v1.SafeSyncEventsRequest.$Properties
+             * @property {string|null} [vault] SafeSyncEventsRequest vault
+             * @property {number|Long|null} [afterRevision] SafeSyncEventsRequest afterRevision
+             * @property {number|null} [pageSize] SafeSyncEventsRequest pageSize
+             * @property {string|null} [context] SafeSyncEventsRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncEventsRequest.
+             * @memberof proto.v1
+             * @interface ISafeSyncEventsRequest
+             * @augments proto.v1.SafeSyncEventsRequest.$Properties
+             * @deprecated Use proto.v1.SafeSyncEventsRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncEventsRequest.
+             * @typedef {proto.v1.SafeSyncEventsRequest.$Properties} proto.v1.SafeSyncEventsRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncEventsRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncEventsRequest.
+             * @constructor
+             * @param {proto.v1.SafeSyncEventsRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncEventsRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncEventsRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @instance
+             */
+            SafeSyncEventsRequest.prototype.vault = "";
+
+            /**
+             * SafeSyncEventsRequest afterRevision.
+             * @member {number|Long} afterRevision
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @instance
+             */
+            SafeSyncEventsRequest.prototype.afterRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncEventsRequest pageSize.
+             * @member {number} pageSize
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @instance
+             */
+            SafeSyncEventsRequest.prototype.pageSize = 0;
+
+            /**
+             * SafeSyncEventsRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @instance
+             */
+            SafeSyncEventsRequest.prototype.context = "";
+
+            /**
+             * Creates a new SafeSyncEventsRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {proto.v1.SafeSyncEventsRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncEventsRequest} SafeSyncEventsRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncEventsRequest.$Shape): proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape;
+             *   (properties?: proto.v1.SafeSyncEventsRequest.$Properties): proto.v1.SafeSyncEventsRequest;
+             * }}
+             */
+            SafeSyncEventsRequest.create = function(properties) {
+                return new SafeSyncEventsRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncEventsRequest message. Does not implicitly {@link proto.v1.SafeSyncEventsRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {proto.v1.SafeSyncEventsRequest.$Properties} message SafeSyncEventsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEventsRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.afterRevision != null && $Object.hasOwnProperty.call(message, "afterRevision") && (typeof message.afterRevision === "object" ? message.afterRevision.low || message.afterRevision.high : message.afterRevision !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.afterRevision);
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize") && message.pageSize !== 0)
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.pageSize);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncEventsRequest message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEventsRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {proto.v1.SafeSyncEventsRequest.$Properties} message SafeSyncEventsRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEventsRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncEventsRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape} SafeSyncEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEventsRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncEventsRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.afterRevision = value;
+                            else
+                                delete message.afterRevision;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.int32())
+                                message.pageSize = value;
+                            else
+                                delete message.pageSize;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncEventsRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEventsRequest & proto.v1.SafeSyncEventsRequest.$Shape} SafeSyncEventsRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEventsRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncEventsRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncEventsRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.afterRevision != null && $Object.hasOwnProperty.call(message, "afterRevision"))
+                    if (!$util.isInteger(message.afterRevision) && !(message.afterRevision && $util.isInteger(message.afterRevision.low) && $util.isInteger(message.afterRevision.high)))
+                        return "afterRevision: integer|Long expected";
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize"))
+                    if (!$util.isInteger(message.pageSize))
+                        return "pageSize: integer expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncEventsRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncEventsRequest} SafeSyncEventsRequest
+             */
+            SafeSyncEventsRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncEventsRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncEventsRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncEventsRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.afterRevision != null)
+                    if (typeof object.afterRevision === "object" ? object.afterRevision.low || object.afterRevision.high : $Number(object.afterRevision) !== 0)
+                        if ($util.Long)
+                            message.afterRevision = $util.Long.fromValue(object.afterRevision, false);
+                        else if (typeof object.afterRevision === "string")
+                            message.afterRevision = $parseInt(object.afterRevision, 10);
+                        else if (typeof object.afterRevision === "number")
+                            message.afterRevision = object.afterRevision;
+                        else if (typeof object.afterRevision === "object")
+                            message.afterRevision = new $util.LongBits(object.afterRevision.low >>> 0, object.afterRevision.high >>> 0).toNumber();
+                if (object.pageSize != null)
+                    if ($Number(object.pageSize) !== 0)
+                        message.pageSize = object.pageSize | 0;
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncEventsRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {proto.v1.SafeSyncEventsRequest} message SafeSyncEventsRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncEventsRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.afterRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.afterRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.pageSize = 0;
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.afterRevision != null && $Object.hasOwnProperty.call(message, "afterRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.afterRevision = typeof message.afterRevision === "number" ? $BigInt(message.afterRevision) : $util.Long.fromBits(message.afterRevision.low >>> 0, message.afterRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.afterRevision === "number")
+                        object.afterRevision = options.longs === $String ? $String(message.afterRevision) : message.afterRevision;
+                    else
+                        object.afterRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.afterRevision) : options.longs === $Number ? new $util.LongBits(message.afterRevision.low >>> 0, message.afterRevision.high >>> 0).toNumber() : message.afterRevision;
+                if (message.pageSize != null && $Object.hasOwnProperty.call(message, "pageSize"))
+                    object.pageSize = message.pageSize;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncEventsRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncEventsRequest.prototype.toJSON = function() {
+                return SafeSyncEventsRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncEventsRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncEventsRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncEventsRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncEventsRequest";
+            };
+
+            return SafeSyncEventsRequest;
+        })();
+
+        v1.SafeSyncEvent = (function() {
+
+            /**
+             * Properties of a SafeSyncEvent.
+             * @typedef {Object} proto.v1.SafeSyncEvent.$Properties
+             * @property {number|Long|null} [vaultRevision] SafeSyncEvent vaultRevision
+             * @property {string|null} [resourceId] SafeSyncEvent resourceId
+             * @property {number|Long|null} [resourceRevision] SafeSyncEvent resourceRevision
+             * @property {string|null} [resourceType] SafeSyncEvent resourceType
+             * @property {string|null} [action] SafeSyncEvent action
+             * @property {string|null} [path] SafeSyncEvent path
+             * @property {string|null} [previousPath] SafeSyncEvent previousPath
+             * @property {string|null} [contentHash] SafeSyncEvent contentHash
+             * @property {string|null} [state] SafeSyncEvent state
+             * @property {string|null} [transactionId] SafeSyncEvent transactionId
+             * @property {string|null} [operationId] SafeSyncEvent operationId
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncEvent.
+             * @memberof proto.v1
+             * @interface ISafeSyncEvent
+             * @augments proto.v1.SafeSyncEvent.$Properties
+             * @deprecated Use proto.v1.SafeSyncEvent.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncEvent.
+             * @typedef {proto.v1.SafeSyncEvent.$Properties} proto.v1.SafeSyncEvent.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncEvent.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncEvent.
+             * @constructor
+             * @param {proto.v1.SafeSyncEvent.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncEvent = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncEvent vaultRevision.
+             * @member {number|Long} vaultRevision
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.vaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncEvent resourceId.
+             * @member {string} resourceId
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.resourceId = "";
+
+            /**
+             * SafeSyncEvent resourceRevision.
+             * @member {number|Long} resourceRevision
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.resourceRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncEvent resourceType.
+             * @member {string} resourceType
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.resourceType = "";
+
+            /**
+             * SafeSyncEvent action.
+             * @member {string} action
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.action = "";
+
+            /**
+             * SafeSyncEvent path.
+             * @member {string} path
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.path = "";
+
+            /**
+             * SafeSyncEvent previousPath.
+             * @member {string} previousPath
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.previousPath = "";
+
+            /**
+             * SafeSyncEvent contentHash.
+             * @member {string} contentHash
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.contentHash = "";
+
+            /**
+             * SafeSyncEvent state.
+             * @member {string} state
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.state = "";
+
+            /**
+             * SafeSyncEvent transactionId.
+             * @member {string} transactionId
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.transactionId = "";
+
+            /**
+             * SafeSyncEvent operationId.
+             * @member {string} operationId
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             */
+            SafeSyncEvent.prototype.operationId = "";
+
+            /**
+             * Creates a new SafeSyncEvent instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {proto.v1.SafeSyncEvent.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncEvent} SafeSyncEvent instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncEvent.$Shape): proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape;
+             *   (properties?: proto.v1.SafeSyncEvent.$Properties): proto.v1.SafeSyncEvent;
+             * }}
+             */
+            SafeSyncEvent.create = function(properties) {
+                return new SafeSyncEvent(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncEvent message. Does not implicitly {@link proto.v1.SafeSyncEvent.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {proto.v1.SafeSyncEvent.$Properties} message SafeSyncEvent message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEvent.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision") && (typeof message.vaultRevision === "object" ? message.vaultRevision.low || message.vaultRevision.high : message.vaultRevision !== 0))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int64(message.vaultRevision);
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId") && message.resourceId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.resourceId);
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision") && (typeof message.resourceRevision === "object" ? message.resourceRevision.low || message.resourceRevision.high : message.resourceRevision !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.resourceRevision);
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType") && message.resourceType !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.resourceType);
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action") && message.action !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.action);
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path") && message.path !== "")
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.path);
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath") && message.previousPath !== "")
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.previousPath);
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash") && message.contentHash !== "")
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.contentHash);
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state") && message.state !== "")
+                    writer.uint32(/* id 9, wireType 2 =*/74).string(message.state);
+                if (message.transactionId != null && $Object.hasOwnProperty.call(message, "transactionId") && message.transactionId !== "")
+                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.transactionId);
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId") && message.operationId !== "")
+                    writer.uint32(/* id 11, wireType 2 =*/90).string(message.operationId);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncEvent message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEvent.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {proto.v1.SafeSyncEvent.$Properties} message SafeSyncEvent message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEvent.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncEvent message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape} SafeSyncEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEvent.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncEvent(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.vaultRevision = value;
+                            else
+                                delete message.vaultRevision;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceId = value;
+                            else
+                                delete message.resourceId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.resourceRevision = value;
+                            else
+                                delete message.resourceRevision;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceType = value;
+                            else
+                                delete message.resourceType;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.action = value;
+                            else
+                                delete message.action;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.path = value;
+                            else
+                                delete message.path;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.previousPath = value;
+                            else
+                                delete message.previousPath;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.contentHash = value;
+                            else
+                                delete message.contentHash;
+                            continue;
+                        }
+                    case 9: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.state = value;
+                            else
+                                delete message.state;
+                            continue;
+                        }
+                    case 10: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.transactionId = value;
+                            else
+                                delete message.transactionId;
+                            continue;
+                        }
+                    case 11: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.operationId = value;
+                            else
+                                delete message.operationId;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncEvent message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEvent & proto.v1.SafeSyncEvent.$Shape} SafeSyncEvent
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEvent.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncEvent message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncEvent.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision"))
+                    if (!$util.isInteger(message.vaultRevision) && !(message.vaultRevision && $util.isInteger(message.vaultRevision.low) && $util.isInteger(message.vaultRevision.high)))
+                        return "vaultRevision: integer|Long expected";
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    if (!$util.isString(message.resourceId))
+                        return "resourceId: string expected";
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (!$util.isInteger(message.resourceRevision) && !(message.resourceRevision && $util.isInteger(message.resourceRevision.low) && $util.isInteger(message.resourceRevision.high)))
+                        return "resourceRevision: integer|Long expected";
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType"))
+                    if (!$util.isString(message.resourceType))
+                        return "resourceType: string expected";
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action"))
+                    if (!$util.isString(message.action))
+                        return "action: string expected";
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    if (!$util.isString(message.path))
+                        return "path: string expected";
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath"))
+                    if (!$util.isString(message.previousPath))
+                        return "previousPath: string expected";
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    if (!$util.isString(message.contentHash))
+                        return "contentHash: string expected";
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    if (!$util.isString(message.state))
+                        return "state: string expected";
+                if (message.transactionId != null && $Object.hasOwnProperty.call(message, "transactionId"))
+                    if (!$util.isString(message.transactionId))
+                        return "transactionId: string expected";
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncEvent message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncEvent} SafeSyncEvent
+             */
+            SafeSyncEvent.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncEvent)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncEvent: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncEvent();
+                if (object.vaultRevision != null)
+                    if (typeof object.vaultRevision === "object" ? object.vaultRevision.low || object.vaultRevision.high : $Number(object.vaultRevision) !== 0)
+                        if ($util.Long)
+                            message.vaultRevision = $util.Long.fromValue(object.vaultRevision, false);
+                        else if (typeof object.vaultRevision === "string")
+                            message.vaultRevision = $parseInt(object.vaultRevision, 10);
+                        else if (typeof object.vaultRevision === "number")
+                            message.vaultRevision = object.vaultRevision;
+                        else if (typeof object.vaultRevision === "object")
+                            message.vaultRevision = new $util.LongBits(object.vaultRevision.low >>> 0, object.vaultRevision.high >>> 0).toNumber();
+                if (object.resourceId != null)
+                    if (typeof object.resourceId !== "string" || object.resourceId.length)
+                        message.resourceId = $String(object.resourceId);
+                if (object.resourceRevision != null)
+                    if (typeof object.resourceRevision === "object" ? object.resourceRevision.low || object.resourceRevision.high : $Number(object.resourceRevision) !== 0)
+                        if ($util.Long)
+                            message.resourceRevision = $util.Long.fromValue(object.resourceRevision, false);
+                        else if (typeof object.resourceRevision === "string")
+                            message.resourceRevision = $parseInt(object.resourceRevision, 10);
+                        else if (typeof object.resourceRevision === "number")
+                            message.resourceRevision = object.resourceRevision;
+                        else if (typeof object.resourceRevision === "object")
+                            message.resourceRevision = new $util.LongBits(object.resourceRevision.low >>> 0, object.resourceRevision.high >>> 0).toNumber();
+                if (object.resourceType != null)
+                    if (typeof object.resourceType !== "string" || object.resourceType.length)
+                        message.resourceType = $String(object.resourceType);
+                if (object.action != null)
+                    if (typeof object.action !== "string" || object.action.length)
+                        message.action = $String(object.action);
+                if (object.path != null)
+                    if (typeof object.path !== "string" || object.path.length)
+                        message.path = $String(object.path);
+                if (object.previousPath != null)
+                    if (typeof object.previousPath !== "string" || object.previousPath.length)
+                        message.previousPath = $String(object.previousPath);
+                if (object.contentHash != null)
+                    if (typeof object.contentHash !== "string" || object.contentHash.length)
+                        message.contentHash = $String(object.contentHash);
+                if (object.state != null)
+                    if (typeof object.state !== "string" || object.state.length)
+                        message.state = $String(object.state);
+                if (object.transactionId != null)
+                    if (typeof object.transactionId !== "string" || object.transactionId.length)
+                        message.transactionId = $String(object.transactionId);
+                if (object.operationId != null)
+                    if (typeof object.operationId !== "string" || object.operationId.length)
+                        message.operationId = $String(object.operationId);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncEvent message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {proto.v1.SafeSyncEvent} message SafeSyncEvent
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncEvent.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.vaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.vaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.resourceId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.resourceRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.resourceRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.resourceType = "";
+                    object.action = "";
+                    object.path = "";
+                    object.previousPath = "";
+                    object.contentHash = "";
+                    object.state = "";
+                    object.transactionId = "";
+                    object.operationId = "";
+                }
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.vaultRevision = typeof message.vaultRevision === "number" ? $BigInt(message.vaultRevision) : $util.Long.fromBits(message.vaultRevision.low >>> 0, message.vaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.vaultRevision === "number")
+                        object.vaultRevision = options.longs === $String ? $String(message.vaultRevision) : message.vaultRevision;
+                    else
+                        object.vaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.vaultRevision) : options.longs === $Number ? new $util.LongBits(message.vaultRevision.low >>> 0, message.vaultRevision.high >>> 0).toNumber() : message.vaultRevision;
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    object.resourceId = message.resourceId;
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.resourceRevision = typeof message.resourceRevision === "number" ? $BigInt(message.resourceRevision) : $util.Long.fromBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.resourceRevision === "number")
+                        object.resourceRevision = options.longs === $String ? $String(message.resourceRevision) : message.resourceRevision;
+                    else
+                        object.resourceRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.resourceRevision) : options.longs === $Number ? new $util.LongBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0).toNumber() : message.resourceRevision;
+                if (message.resourceType != null && $Object.hasOwnProperty.call(message, "resourceType"))
+                    object.resourceType = message.resourceType;
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action"))
+                    object.action = message.action;
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    object.path = message.path;
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath"))
+                    object.previousPath = message.previousPath;
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    object.contentHash = message.contentHash;
+                if (message.state != null && $Object.hasOwnProperty.call(message, "state"))
+                    object.state = message.state;
+                if (message.transactionId != null && $Object.hasOwnProperty.call(message, "transactionId"))
+                    object.transactionId = message.transactionId;
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    object.operationId = message.operationId;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncEvent to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncEvent
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncEvent.prototype.toJSON = function() {
+                return SafeSyncEvent.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncEvent
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncEvent
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncEvent.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncEvent";
+            };
+
+            return SafeSyncEvent;
+        })();
+
+        v1.SafeSyncEventsResponse = (function() {
+
+            /**
+             * Properties of a SafeSyncEventsResponse.
+             * @typedef {Object} proto.v1.SafeSyncEventsResponse.$Properties
+             * @property {Array.<proto.v1.SafeSyncEvent.$Properties>|null} [events] SafeSyncEventsResponse events
+             * @property {number|Long|null} [latestVaultRevision] SafeSyncEventsResponse latestVaultRevision
+             * @property {number|Long|null} [nextRevision] SafeSyncEventsResponse nextRevision
+             * @property {boolean|null} [hasMore] SafeSyncEventsResponse hasMore
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncEventsResponse.
+             * @memberof proto.v1
+             * @interface ISafeSyncEventsResponse
+             * @augments proto.v1.SafeSyncEventsResponse.$Properties
+             * @deprecated Use proto.v1.SafeSyncEventsResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncEventsResponse.
+             * @typedef {proto.v1.SafeSyncEventsResponse.$Properties} proto.v1.SafeSyncEventsResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncEventsResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncEventsResponse.
+             * @constructor
+             * @param {proto.v1.SafeSyncEventsResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncEventsResponse = function (properties) {
+                this.events = [];
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncEventsResponse events.
+             * @member {Array.<proto.v1.SafeSyncEvent.$Properties>} events
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @instance
+             */
+            SafeSyncEventsResponse.prototype.events = $util.emptyArray;
+
+            /**
+             * SafeSyncEventsResponse latestVaultRevision.
+             * @member {number|Long} latestVaultRevision
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @instance
+             */
+            SafeSyncEventsResponse.prototype.latestVaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncEventsResponse nextRevision.
+             * @member {number|Long} nextRevision
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @instance
+             */
+            SafeSyncEventsResponse.prototype.nextRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncEventsResponse hasMore.
+             * @member {boolean} hasMore
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @instance
+             */
+            SafeSyncEventsResponse.prototype.hasMore = false;
+
+            /**
+             * Creates a new SafeSyncEventsResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {proto.v1.SafeSyncEventsResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncEventsResponse} SafeSyncEventsResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncEventsResponse.$Shape): proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape;
+             *   (properties?: proto.v1.SafeSyncEventsResponse.$Properties): proto.v1.SafeSyncEventsResponse;
+             * }}
+             */
+            SafeSyncEventsResponse.create = function(properties) {
+                return new SafeSyncEventsResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncEventsResponse message. Does not implicitly {@link proto.v1.SafeSyncEventsResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {proto.v1.SafeSyncEventsResponse.$Properties} message SafeSyncEventsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEventsResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.events != null && message.events.length)
+                    for (let i = 0; i < message.events.length; ++i)
+                        $root.proto.v1.SafeSyncEvent.encode(message.events[i], writer.uint32(/* id 1, wireType 2 =*/10).fork(), _depth + 1).ldelim();
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision") && (typeof message.latestVaultRevision === "object" ? message.latestVaultRevision.low || message.latestVaultRevision.high : message.latestVaultRevision !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.latestVaultRevision);
+                if (message.nextRevision != null && $Object.hasOwnProperty.call(message, "nextRevision") && (typeof message.nextRevision === "object" ? message.nextRevision.low || message.nextRevision.high : message.nextRevision !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.nextRevision);
+                if (message.hasMore != null && $Object.hasOwnProperty.call(message, "hasMore") && message.hasMore !== false)
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.hasMore);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncEventsResponse message, length delimited. Does not implicitly {@link proto.v1.SafeSyncEventsResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {proto.v1.SafeSyncEventsResponse.$Properties} message SafeSyncEventsResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncEventsResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncEventsResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape} SafeSyncEventsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEventsResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncEventsResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if (!(message.events && message.events.length))
+                                message.events = [];
+                            message.events.push($root.proto.v1.SafeSyncEvent.decode(reader, reader.uint32(), $undefined, _depth + 1));
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.latestVaultRevision = value;
+                            else
+                                delete message.latestVaultRevision;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.nextRevision = value;
+                            else
+                                delete message.nextRevision;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.hasMore = value;
+                            else
+                                delete message.hasMore;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncEventsResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncEventsResponse & proto.v1.SafeSyncEventsResponse.$Shape} SafeSyncEventsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncEventsResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncEventsResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncEventsResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.events != null && $Object.hasOwnProperty.call(message, "events")) {
+                    if (!$Array.isArray(message.events))
+                        return "events: array expected";
+                    for (let i = 0; i < message.events.length; ++i) {
+                        let error = $root.proto.v1.SafeSyncEvent.verify(message.events[i], _depth + 1);
+                        if (error)
+                            return "events." + error;
+                    }
+                }
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision"))
+                    if (!$util.isInteger(message.latestVaultRevision) && !(message.latestVaultRevision && $util.isInteger(message.latestVaultRevision.low) && $util.isInteger(message.latestVaultRevision.high)))
+                        return "latestVaultRevision: integer|Long expected";
+                if (message.nextRevision != null && $Object.hasOwnProperty.call(message, "nextRevision"))
+                    if (!$util.isInteger(message.nextRevision) && !(message.nextRevision && $util.isInteger(message.nextRevision.low) && $util.isInteger(message.nextRevision.high)))
+                        return "nextRevision: integer|Long expected";
+                if (message.hasMore != null && $Object.hasOwnProperty.call(message, "hasMore"))
+                    if (typeof message.hasMore !== "boolean")
+                        return "hasMore: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncEventsResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncEventsResponse} SafeSyncEventsResponse
+             */
+            SafeSyncEventsResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncEventsResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncEventsResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncEventsResponse();
+                if (object.events) {
+                    if (!$Array.isArray(object.events))
+                        throw $TypeError(".proto.v1.SafeSyncEventsResponse.events: array expected");
+                    message.events = $Array(object.events.length);
+                    for (let i = 0; i < object.events.length; ++i) {
+                        if (!$util.isObject(object.events[i]))
+                            throw $TypeError(".proto.v1.SafeSyncEventsResponse.events: object expected");
+                        message.events[i] = $root.proto.v1.SafeSyncEvent.fromObject(object.events[i], _depth + 1);
+                    }
+                }
+                if (object.latestVaultRevision != null)
+                    if (typeof object.latestVaultRevision === "object" ? object.latestVaultRevision.low || object.latestVaultRevision.high : $Number(object.latestVaultRevision) !== 0)
+                        if ($util.Long)
+                            message.latestVaultRevision = $util.Long.fromValue(object.latestVaultRevision, false);
+                        else if (typeof object.latestVaultRevision === "string")
+                            message.latestVaultRevision = $parseInt(object.latestVaultRevision, 10);
+                        else if (typeof object.latestVaultRevision === "number")
+                            message.latestVaultRevision = object.latestVaultRevision;
+                        else if (typeof object.latestVaultRevision === "object")
+                            message.latestVaultRevision = new $util.LongBits(object.latestVaultRevision.low >>> 0, object.latestVaultRevision.high >>> 0).toNumber();
+                if (object.nextRevision != null)
+                    if (typeof object.nextRevision === "object" ? object.nextRevision.low || object.nextRevision.high : $Number(object.nextRevision) !== 0)
+                        if ($util.Long)
+                            message.nextRevision = $util.Long.fromValue(object.nextRevision, false);
+                        else if (typeof object.nextRevision === "string")
+                            message.nextRevision = $parseInt(object.nextRevision, 10);
+                        else if (typeof object.nextRevision === "number")
+                            message.nextRevision = object.nextRevision;
+                        else if (typeof object.nextRevision === "object")
+                            message.nextRevision = new $util.LongBits(object.nextRevision.low >>> 0, object.nextRevision.high >>> 0).toNumber();
+                if (object.hasMore != null)
+                    if (object.hasMore)
+                        message.hasMore = $Boolean(object.hasMore);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncEventsResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {proto.v1.SafeSyncEventsResponse} message SafeSyncEventsResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncEventsResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.events = [];
+                if (options.defaults) {
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.latestVaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.latestVaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.nextRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.nextRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.hasMore = false;
+                }
+                if (message.events && message.events.length) {
+                    object.events = $Array(message.events.length);
+                    for (let j = 0; j < message.events.length; ++j)
+                        object.events[j] = $root.proto.v1.SafeSyncEvent.toObject(message.events[j], options, _depth + 1);
+                }
+                if (message.latestVaultRevision != null && $Object.hasOwnProperty.call(message, "latestVaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.latestVaultRevision = typeof message.latestVaultRevision === "number" ? $BigInt(message.latestVaultRevision) : $util.Long.fromBits(message.latestVaultRevision.low >>> 0, message.latestVaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.latestVaultRevision === "number")
+                        object.latestVaultRevision = options.longs === $String ? $String(message.latestVaultRevision) : message.latestVaultRevision;
+                    else
+                        object.latestVaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.latestVaultRevision) : options.longs === $Number ? new $util.LongBits(message.latestVaultRevision.low >>> 0, message.latestVaultRevision.high >>> 0).toNumber() : message.latestVaultRevision;
+                if (message.nextRevision != null && $Object.hasOwnProperty.call(message, "nextRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.nextRevision = typeof message.nextRevision === "number" ? $BigInt(message.nextRevision) : $util.Long.fromBits(message.nextRevision.low >>> 0, message.nextRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.nextRevision === "number")
+                        object.nextRevision = options.longs === $String ? $String(message.nextRevision) : message.nextRevision;
+                    else
+                        object.nextRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.nextRevision) : options.longs === $Number ? new $util.LongBits(message.nextRevision.low >>> 0, message.nextRevision.high >>> 0).toNumber() : message.nextRevision;
+                if (message.hasMore != null && $Object.hasOwnProperty.call(message, "hasMore"))
+                    object.hasMore = message.hasMore;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncEventsResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncEventsResponse.prototype.toJSON = function() {
+                return SafeSyncEventsResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncEventsResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncEventsResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncEventsResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncEventsResponse";
+            };
+
+            return SafeSyncEventsResponse;
+        })();
+
+        v1.SafeMutationRequest = (function() {
+
+            /**
+             * Properties of a SafeMutationRequest.
+             * @typedef {Object} proto.v1.SafeMutationRequest.$Properties
+             * @property {string|null} [vault] SafeMutationRequest vault
+             * @property {string|null} [context] SafeMutationRequest context
+             * @property {string|null} [deviceId] SafeMutationRequest deviceId
+             * @property {string|null} [operationId] SafeMutationRequest operationId
+             * @property {string|null} [resourceId] SafeMutationRequest resourceId
+             * @property {number|Long|null} [baseRevision] SafeMutationRequest baseRevision
+             * @property {string|null} [baseHash] SafeMutationRequest baseHash
+             * @property {string|null} [expectedPathState] SafeMutationRequest expectedPathState
+             * @property {string|null} [action] SafeMutationRequest action
+             * @property {string|null} [path] SafeMutationRequest path
+             * @property {string|null} [pathHash] SafeMutationRequest pathHash
+             * @property {string|null} [previousPath] SafeMutationRequest previousPath
+             * @property {string|null} [previousPathHash] SafeMutationRequest previousPathHash
+             * @property {string|null} [content] SafeMutationRequest content
+             * @property {string|null} [contentHash] SafeMutationRequest contentHash
+             * @property {number|Long|null} [size] SafeMutationRequest size
+             * @property {number|Long|null} [ctime] SafeMutationRequest ctime
+             * @property {number|Long|null} [mtime] SafeMutationRequest mtime
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeMutationRequest.
+             * @memberof proto.v1
+             * @interface ISafeMutationRequest
+             * @augments proto.v1.SafeMutationRequest.$Properties
+             * @deprecated Use proto.v1.SafeMutationRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeMutationRequest.
+             * @typedef {proto.v1.SafeMutationRequest.$Properties} proto.v1.SafeMutationRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeMutationRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeMutationRequest.
+             * @constructor
+             * @param {proto.v1.SafeMutationRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeMutationRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeMutationRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.vault = "";
+
+            /**
+             * SafeMutationRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.context = "";
+
+            /**
+             * SafeMutationRequest deviceId.
+             * @member {string} deviceId
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.deviceId = "";
+
+            /**
+             * SafeMutationRequest operationId.
+             * @member {string} operationId
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.operationId = "";
+
+            /**
+             * SafeMutationRequest resourceId.
+             * @member {string} resourceId
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.resourceId = "";
+
+            /**
+             * SafeMutationRequest baseRevision.
+             * @member {number|Long} baseRevision
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.baseRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeMutationRequest baseHash.
+             * @member {string} baseHash
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.baseHash = "";
+
+            /**
+             * SafeMutationRequest expectedPathState.
+             * @member {string} expectedPathState
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.expectedPathState = "";
+
+            /**
+             * SafeMutationRequest action.
+             * @member {string} action
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.action = "";
+
+            /**
+             * SafeMutationRequest path.
+             * @member {string} path
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.path = "";
+
+            /**
+             * SafeMutationRequest pathHash.
+             * @member {string} pathHash
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.pathHash = "";
+
+            /**
+             * SafeMutationRequest previousPath.
+             * @member {string} previousPath
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.previousPath = "";
+
+            /**
+             * SafeMutationRequest previousPathHash.
+             * @member {string} previousPathHash
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.previousPathHash = "";
+
+            /**
+             * SafeMutationRequest content.
+             * @member {string} content
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.content = "";
+
+            /**
+             * SafeMutationRequest contentHash.
+             * @member {string} contentHash
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.contentHash = "";
+
+            /**
+             * SafeMutationRequest size.
+             * @member {number|Long} size
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeMutationRequest ctime.
+             * @member {number|Long} ctime
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.ctime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeMutationRequest mtime.
+             * @member {number|Long} mtime
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             */
+            SafeMutationRequest.prototype.mtime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeMutationRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {proto.v1.SafeMutationRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeMutationRequest} SafeMutationRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeMutationRequest.$Shape): proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape;
+             *   (properties?: proto.v1.SafeMutationRequest.$Properties): proto.v1.SafeMutationRequest;
+             * }}
+             */
+            SafeMutationRequest.create = function(properties) {
+                return new SafeMutationRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeMutationRequest message. Does not implicitly {@link proto.v1.SafeMutationRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {proto.v1.SafeMutationRequest.$Properties} message SafeMutationRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeMutationRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.context);
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId") && message.deviceId !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.deviceId);
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId") && message.operationId !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.operationId);
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId") && message.resourceId !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.resourceId);
+                if (message.baseRevision != null && $Object.hasOwnProperty.call(message, "baseRevision") && (typeof message.baseRevision === "object" ? message.baseRevision.low || message.baseRevision.high : message.baseRevision !== 0))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.baseRevision);
+                if (message.baseHash != null && $Object.hasOwnProperty.call(message, "baseHash") && message.baseHash !== "")
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.baseHash);
+                if (message.expectedPathState != null && $Object.hasOwnProperty.call(message, "expectedPathState") && message.expectedPathState !== "")
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.expectedPathState);
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action") && message.action !== "")
+                    writer.uint32(/* id 9, wireType 2 =*/74).string(message.action);
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path") && message.path !== "")
+                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.path);
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash") && message.pathHash !== "")
+                    writer.uint32(/* id 11, wireType 2 =*/90).string(message.pathHash);
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath") && message.previousPath !== "")
+                    writer.uint32(/* id 12, wireType 2 =*/98).string(message.previousPath);
+                if (message.previousPathHash != null && $Object.hasOwnProperty.call(message, "previousPathHash") && message.previousPathHash !== "")
+                    writer.uint32(/* id 13, wireType 2 =*/106).string(message.previousPathHash);
+                if (message.content != null && $Object.hasOwnProperty.call(message, "content") && message.content !== "")
+                    writer.uint32(/* id 14, wireType 2 =*/114).string(message.content);
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash") && message.contentHash !== "")
+                    writer.uint32(/* id 15, wireType 2 =*/122).string(message.contentHash);
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size") && (typeof message.size === "object" ? message.size.low || message.size.high : message.size !== 0))
+                    writer.uint32(/* id 16, wireType 0 =*/128).int64(message.size);
+                if (message.ctime != null && $Object.hasOwnProperty.call(message, "ctime") && (typeof message.ctime === "object" ? message.ctime.low || message.ctime.high : message.ctime !== 0))
+                    writer.uint32(/* id 17, wireType 0 =*/136).int64(message.ctime);
+                if (message.mtime != null && $Object.hasOwnProperty.call(message, "mtime") && (typeof message.mtime === "object" ? message.mtime.low || message.mtime.high : message.mtime !== 0))
+                    writer.uint32(/* id 18, wireType 0 =*/144).int64(message.mtime);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeMutationRequest message, length delimited. Does not implicitly {@link proto.v1.SafeMutationRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {proto.v1.SafeMutationRequest.$Properties} message SafeMutationRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeMutationRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeMutationRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape} SafeMutationRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeMutationRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeMutationRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.deviceId = value;
+                            else
+                                delete message.deviceId;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.operationId = value;
+                            else
+                                delete message.operationId;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceId = value;
+                            else
+                                delete message.resourceId;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.baseRevision = value;
+                            else
+                                delete message.baseRevision;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.baseHash = value;
+                            else
+                                delete message.baseHash;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.expectedPathState = value;
+                            else
+                                delete message.expectedPathState;
+                            continue;
+                        }
+                    case 9: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.action = value;
+                            else
+                                delete message.action;
+                            continue;
+                        }
+                    case 10: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.path = value;
+                            else
+                                delete message.path;
+                            continue;
+                        }
+                    case 11: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.pathHash = value;
+                            else
+                                delete message.pathHash;
+                            continue;
+                        }
+                    case 12: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.previousPath = value;
+                            else
+                                delete message.previousPath;
+                            continue;
+                        }
+                    case 13: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.previousPathHash = value;
+                            else
+                                delete message.previousPathHash;
+                            continue;
+                        }
+                    case 14: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.content = value;
+                            else
+                                delete message.content;
+                            continue;
+                        }
+                    case 15: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.contentHash = value;
+                            else
+                                delete message.contentHash;
+                            continue;
+                        }
+                    case 16: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.size = value;
+                            else
+                                delete message.size;
+                            continue;
+                        }
+                    case 17: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.ctime = value;
+                            else
+                                delete message.ctime;
+                            continue;
+                        }
+                    case 18: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.mtime = value;
+                            else
+                                delete message.mtime;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeMutationRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeMutationRequest & proto.v1.SafeMutationRequest.$Shape} SafeMutationRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeMutationRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeMutationRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeMutationRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    if (!$util.isString(message.deviceId))
+                        return "deviceId: string expected";
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    if (!$util.isString(message.resourceId))
+                        return "resourceId: string expected";
+                if (message.baseRevision != null && $Object.hasOwnProperty.call(message, "baseRevision"))
+                    if (!$util.isInteger(message.baseRevision) && !(message.baseRevision && $util.isInteger(message.baseRevision.low) && $util.isInteger(message.baseRevision.high)))
+                        return "baseRevision: integer|Long expected";
+                if (message.baseHash != null && $Object.hasOwnProperty.call(message, "baseHash"))
+                    if (!$util.isString(message.baseHash))
+                        return "baseHash: string expected";
+                if (message.expectedPathState != null && $Object.hasOwnProperty.call(message, "expectedPathState"))
+                    if (!$util.isString(message.expectedPathState))
+                        return "expectedPathState: string expected";
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action"))
+                    if (!$util.isString(message.action))
+                        return "action: string expected";
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    if (!$util.isString(message.path))
+                        return "path: string expected";
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash"))
+                    if (!$util.isString(message.pathHash))
+                        return "pathHash: string expected";
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath"))
+                    if (!$util.isString(message.previousPath))
+                        return "previousPath: string expected";
+                if (message.previousPathHash != null && $Object.hasOwnProperty.call(message, "previousPathHash"))
+                    if (!$util.isString(message.previousPathHash))
+                        return "previousPathHash: string expected";
+                if (message.content != null && $Object.hasOwnProperty.call(message, "content"))
+                    if (!$util.isString(message.content))
+                        return "content: string expected";
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    if (!$util.isString(message.contentHash))
+                        return "contentHash: string expected";
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high)))
+                        return "size: integer|Long expected";
+                if (message.ctime != null && $Object.hasOwnProperty.call(message, "ctime"))
+                    if (!$util.isInteger(message.ctime) && !(message.ctime && $util.isInteger(message.ctime.low) && $util.isInteger(message.ctime.high)))
+                        return "ctime: integer|Long expected";
+                if (message.mtime != null && $Object.hasOwnProperty.call(message, "mtime"))
+                    if (!$util.isInteger(message.mtime) && !(message.mtime && $util.isInteger(message.mtime.low) && $util.isInteger(message.mtime.high)))
+                        return "mtime: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeMutationRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeMutationRequest} SafeMutationRequest
+             */
+            SafeMutationRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeMutationRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeMutationRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeMutationRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                if (object.deviceId != null)
+                    if (typeof object.deviceId !== "string" || object.deviceId.length)
+                        message.deviceId = $String(object.deviceId);
+                if (object.operationId != null)
+                    if (typeof object.operationId !== "string" || object.operationId.length)
+                        message.operationId = $String(object.operationId);
+                if (object.resourceId != null)
+                    if (typeof object.resourceId !== "string" || object.resourceId.length)
+                        message.resourceId = $String(object.resourceId);
+                if (object.baseRevision != null)
+                    if (typeof object.baseRevision === "object" ? object.baseRevision.low || object.baseRevision.high : $Number(object.baseRevision) !== 0)
+                        if ($util.Long)
+                            message.baseRevision = $util.Long.fromValue(object.baseRevision, false);
+                        else if (typeof object.baseRevision === "string")
+                            message.baseRevision = $parseInt(object.baseRevision, 10);
+                        else if (typeof object.baseRevision === "number")
+                            message.baseRevision = object.baseRevision;
+                        else if (typeof object.baseRevision === "object")
+                            message.baseRevision = new $util.LongBits(object.baseRevision.low >>> 0, object.baseRevision.high >>> 0).toNumber();
+                if (object.baseHash != null)
+                    if (typeof object.baseHash !== "string" || object.baseHash.length)
+                        message.baseHash = $String(object.baseHash);
+                if (object.expectedPathState != null)
+                    if (typeof object.expectedPathState !== "string" || object.expectedPathState.length)
+                        message.expectedPathState = $String(object.expectedPathState);
+                if (object.action != null)
+                    if (typeof object.action !== "string" || object.action.length)
+                        message.action = $String(object.action);
+                if (object.path != null)
+                    if (typeof object.path !== "string" || object.path.length)
+                        message.path = $String(object.path);
+                if (object.pathHash != null)
+                    if (typeof object.pathHash !== "string" || object.pathHash.length)
+                        message.pathHash = $String(object.pathHash);
+                if (object.previousPath != null)
+                    if (typeof object.previousPath !== "string" || object.previousPath.length)
+                        message.previousPath = $String(object.previousPath);
+                if (object.previousPathHash != null)
+                    if (typeof object.previousPathHash !== "string" || object.previousPathHash.length)
+                        message.previousPathHash = $String(object.previousPathHash);
+                if (object.content != null)
+                    if (typeof object.content !== "string" || object.content.length)
+                        message.content = $String(object.content);
+                if (object.contentHash != null)
+                    if (typeof object.contentHash !== "string" || object.contentHash.length)
+                        message.contentHash = $String(object.contentHash);
+                if (object.size != null)
+                    if (typeof object.size === "object" ? object.size.low || object.size.high : $Number(object.size) !== 0)
+                        if ($util.Long)
+                            message.size = $util.Long.fromValue(object.size, false);
+                        else if (typeof object.size === "string")
+                            message.size = $parseInt(object.size, 10);
+                        else if (typeof object.size === "number")
+                            message.size = object.size;
+                        else if (typeof object.size === "object")
+                            message.size = new $util.LongBits(object.size.low >>> 0, object.size.high >>> 0).toNumber();
+                if (object.ctime != null)
+                    if (typeof object.ctime === "object" ? object.ctime.low || object.ctime.high : $Number(object.ctime) !== 0)
+                        if ($util.Long)
+                            message.ctime = $util.Long.fromValue(object.ctime, false);
+                        else if (typeof object.ctime === "string")
+                            message.ctime = $parseInt(object.ctime, 10);
+                        else if (typeof object.ctime === "number")
+                            message.ctime = object.ctime;
+                        else if (typeof object.ctime === "object")
+                            message.ctime = new $util.LongBits(object.ctime.low >>> 0, object.ctime.high >>> 0).toNumber();
+                if (object.mtime != null)
+                    if (typeof object.mtime === "object" ? object.mtime.low || object.mtime.high : $Number(object.mtime) !== 0)
+                        if ($util.Long)
+                            message.mtime = $util.Long.fromValue(object.mtime, false);
+                        else if (typeof object.mtime === "string")
+                            message.mtime = $parseInt(object.mtime, 10);
+                        else if (typeof object.mtime === "number")
+                            message.mtime = object.mtime;
+                        else if (typeof object.mtime === "object")
+                            message.mtime = new $util.LongBits(object.mtime.low >>> 0, object.mtime.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeMutationRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {proto.v1.SafeMutationRequest} message SafeMutationRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeMutationRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.context = "";
+                    object.deviceId = "";
+                    object.operationId = "";
+                    object.resourceId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.baseRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.baseRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.baseHash = "";
+                    object.expectedPathState = "";
+                    object.action = "";
+                    object.path = "";
+                    object.pathHash = "";
+                    object.previousPath = "";
+                    object.previousPathHash = "";
+                    object.content = "";
+                    object.contentHash = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.size = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.size = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.ctime = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.ctime = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.mtime = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.mtime = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    object.deviceId = message.deviceId;
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    object.operationId = message.operationId;
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    object.resourceId = message.resourceId;
+                if (message.baseRevision != null && $Object.hasOwnProperty.call(message, "baseRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.baseRevision = typeof message.baseRevision === "number" ? $BigInt(message.baseRevision) : $util.Long.fromBits(message.baseRevision.low >>> 0, message.baseRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.baseRevision === "number")
+                        object.baseRevision = options.longs === $String ? $String(message.baseRevision) : message.baseRevision;
+                    else
+                        object.baseRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.baseRevision) : options.longs === $Number ? new $util.LongBits(message.baseRevision.low >>> 0, message.baseRevision.high >>> 0).toNumber() : message.baseRevision;
+                if (message.baseHash != null && $Object.hasOwnProperty.call(message, "baseHash"))
+                    object.baseHash = message.baseHash;
+                if (message.expectedPathState != null && $Object.hasOwnProperty.call(message, "expectedPathState"))
+                    object.expectedPathState = message.expectedPathState;
+                if (message.action != null && $Object.hasOwnProperty.call(message, "action"))
+                    object.action = message.action;
+                if (message.path != null && $Object.hasOwnProperty.call(message, "path"))
+                    object.path = message.path;
+                if (message.pathHash != null && $Object.hasOwnProperty.call(message, "pathHash"))
+                    object.pathHash = message.pathHash;
+                if (message.previousPath != null && $Object.hasOwnProperty.call(message, "previousPath"))
+                    object.previousPath = message.previousPath;
+                if (message.previousPathHash != null && $Object.hasOwnProperty.call(message, "previousPathHash"))
+                    object.previousPathHash = message.previousPathHash;
+                if (message.content != null && $Object.hasOwnProperty.call(message, "content"))
+                    object.content = message.content;
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    object.contentHash = message.contentHash;
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.size = typeof message.size === "number" ? $BigInt(message.size) : $util.Long.fromBits(message.size.low >>> 0, message.size.high >>> 0, false).toBigInt();
+                    else if (typeof message.size === "number")
+                        object.size = options.longs === $String ? $String(message.size) : message.size;
+                    else
+                        object.size = options.longs === $String ? $util.Long.prototype.toString.call(message.size) : options.longs === $Number ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber() : message.size;
+                if (message.ctime != null && $Object.hasOwnProperty.call(message, "ctime"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.ctime = typeof message.ctime === "number" ? $BigInt(message.ctime) : $util.Long.fromBits(message.ctime.low >>> 0, message.ctime.high >>> 0, false).toBigInt();
+                    else if (typeof message.ctime === "number")
+                        object.ctime = options.longs === $String ? $String(message.ctime) : message.ctime;
+                    else
+                        object.ctime = options.longs === $String ? $util.Long.prototype.toString.call(message.ctime) : options.longs === $Number ? new $util.LongBits(message.ctime.low >>> 0, message.ctime.high >>> 0).toNumber() : message.ctime;
+                if (message.mtime != null && $Object.hasOwnProperty.call(message, "mtime"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.mtime = typeof message.mtime === "number" ? $BigInt(message.mtime) : $util.Long.fromBits(message.mtime.low >>> 0, message.mtime.high >>> 0, false).toBigInt();
+                    else if (typeof message.mtime === "number")
+                        object.mtime = options.longs === $String ? $String(message.mtime) : message.mtime;
+                    else
+                        object.mtime = options.longs === $String ? $util.Long.prototype.toString.call(message.mtime) : options.longs === $Number ? new $util.LongBits(message.mtime.low >>> 0, message.mtime.high >>> 0).toNumber() : message.mtime;
+                return object;
+            };
+
+            /**
+             * Converts this SafeMutationRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeMutationRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeMutationRequest.prototype.toJSON = function() {
+                return SafeMutationRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeMutationRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeMutationRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeMutationRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeMutationRequest";
+            };
+
+            return SafeMutationRequest;
+        })();
+
+        v1.SafeMutationResponse = (function() {
+
+            /**
+             * Properties of a SafeMutationResponse.
+             * @typedef {Object} proto.v1.SafeMutationResponse.$Properties
+             * @property {string|null} [resourceId] SafeMutationResponse resourceId
+             * @property {number|Long|null} [resourceRevision] SafeMutationResponse resourceRevision
+             * @property {number|Long|null} [vaultRevision] SafeMutationResponse vaultRevision
+             * @property {string|null} [contentHash] SafeMutationResponse contentHash
+             * @property {string|null} [outcome] SafeMutationResponse outcome
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeMutationResponse.
+             * @memberof proto.v1
+             * @interface ISafeMutationResponse
+             * @augments proto.v1.SafeMutationResponse.$Properties
+             * @deprecated Use proto.v1.SafeMutationResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeMutationResponse.
+             * @typedef {proto.v1.SafeMutationResponse.$Properties} proto.v1.SafeMutationResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeMutationResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeMutationResponse.
+             * @constructor
+             * @param {proto.v1.SafeMutationResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeMutationResponse = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeMutationResponse resourceId.
+             * @member {string} resourceId
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             */
+            SafeMutationResponse.prototype.resourceId = "";
+
+            /**
+             * SafeMutationResponse resourceRevision.
+             * @member {number|Long} resourceRevision
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             */
+            SafeMutationResponse.prototype.resourceRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeMutationResponse vaultRevision.
+             * @member {number|Long} vaultRevision
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             */
+            SafeMutationResponse.prototype.vaultRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeMutationResponse contentHash.
+             * @member {string} contentHash
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             */
+            SafeMutationResponse.prototype.contentHash = "";
+
+            /**
+             * SafeMutationResponse outcome.
+             * @member {string} outcome
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             */
+            SafeMutationResponse.prototype.outcome = "";
+
+            /**
+             * Creates a new SafeMutationResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {proto.v1.SafeMutationResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeMutationResponse} SafeMutationResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeMutationResponse.$Shape): proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape;
+             *   (properties?: proto.v1.SafeMutationResponse.$Properties): proto.v1.SafeMutationResponse;
+             * }}
+             */
+            SafeMutationResponse.create = function(properties) {
+                return new SafeMutationResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeMutationResponse message. Does not implicitly {@link proto.v1.SafeMutationResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {proto.v1.SafeMutationResponse.$Properties} message SafeMutationResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeMutationResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId") && message.resourceId !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.resourceId);
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision") && (typeof message.resourceRevision === "object" ? message.resourceRevision.low || message.resourceRevision.high : message.resourceRevision !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.resourceRevision);
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision") && (typeof message.vaultRevision === "object" ? message.vaultRevision.low || message.vaultRevision.high : message.vaultRevision !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.vaultRevision);
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash") && message.contentHash !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.contentHash);
+                if (message.outcome != null && $Object.hasOwnProperty.call(message, "outcome") && message.outcome !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.outcome);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeMutationResponse message, length delimited. Does not implicitly {@link proto.v1.SafeMutationResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {proto.v1.SafeMutationResponse.$Properties} message SafeMutationResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeMutationResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeMutationResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape} SafeMutationResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeMutationResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeMutationResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceId = value;
+                            else
+                                delete message.resourceId;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.resourceRevision = value;
+                            else
+                                delete message.resourceRevision;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.vaultRevision = value;
+                            else
+                                delete message.vaultRevision;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.contentHash = value;
+                            else
+                                delete message.contentHash;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.outcome = value;
+                            else
+                                delete message.outcome;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeMutationResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeMutationResponse & proto.v1.SafeMutationResponse.$Shape} SafeMutationResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeMutationResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeMutationResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeMutationResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    if (!$util.isString(message.resourceId))
+                        return "resourceId: string expected";
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (!$util.isInteger(message.resourceRevision) && !(message.resourceRevision && $util.isInteger(message.resourceRevision.low) && $util.isInteger(message.resourceRevision.high)))
+                        return "resourceRevision: integer|Long expected";
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision"))
+                    if (!$util.isInteger(message.vaultRevision) && !(message.vaultRevision && $util.isInteger(message.vaultRevision.low) && $util.isInteger(message.vaultRevision.high)))
+                        return "vaultRevision: integer|Long expected";
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    if (!$util.isString(message.contentHash))
+                        return "contentHash: string expected";
+                if (message.outcome != null && $Object.hasOwnProperty.call(message, "outcome"))
+                    if (!$util.isString(message.outcome))
+                        return "outcome: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeMutationResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeMutationResponse} SafeMutationResponse
+             */
+            SafeMutationResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeMutationResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeMutationResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeMutationResponse();
+                if (object.resourceId != null)
+                    if (typeof object.resourceId !== "string" || object.resourceId.length)
+                        message.resourceId = $String(object.resourceId);
+                if (object.resourceRevision != null)
+                    if (typeof object.resourceRevision === "object" ? object.resourceRevision.low || object.resourceRevision.high : $Number(object.resourceRevision) !== 0)
+                        if ($util.Long)
+                            message.resourceRevision = $util.Long.fromValue(object.resourceRevision, false);
+                        else if (typeof object.resourceRevision === "string")
+                            message.resourceRevision = $parseInt(object.resourceRevision, 10);
+                        else if (typeof object.resourceRevision === "number")
+                            message.resourceRevision = object.resourceRevision;
+                        else if (typeof object.resourceRevision === "object")
+                            message.resourceRevision = new $util.LongBits(object.resourceRevision.low >>> 0, object.resourceRevision.high >>> 0).toNumber();
+                if (object.vaultRevision != null)
+                    if (typeof object.vaultRevision === "object" ? object.vaultRevision.low || object.vaultRevision.high : $Number(object.vaultRevision) !== 0)
+                        if ($util.Long)
+                            message.vaultRevision = $util.Long.fromValue(object.vaultRevision, false);
+                        else if (typeof object.vaultRevision === "string")
+                            message.vaultRevision = $parseInt(object.vaultRevision, 10);
+                        else if (typeof object.vaultRevision === "number")
+                            message.vaultRevision = object.vaultRevision;
+                        else if (typeof object.vaultRevision === "object")
+                            message.vaultRevision = new $util.LongBits(object.vaultRevision.low >>> 0, object.vaultRevision.high >>> 0).toNumber();
+                if (object.contentHash != null)
+                    if (typeof object.contentHash !== "string" || object.contentHash.length)
+                        message.contentHash = $String(object.contentHash);
+                if (object.outcome != null)
+                    if (typeof object.outcome !== "string" || object.outcome.length)
+                        message.outcome = $String(object.outcome);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeMutationResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {proto.v1.SafeMutationResponse} message SafeMutationResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeMutationResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.resourceId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.resourceRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.resourceRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.vaultRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.vaultRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.contentHash = "";
+                    object.outcome = "";
+                }
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    object.resourceId = message.resourceId;
+                if (message.resourceRevision != null && $Object.hasOwnProperty.call(message, "resourceRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.resourceRevision = typeof message.resourceRevision === "number" ? $BigInt(message.resourceRevision) : $util.Long.fromBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.resourceRevision === "number")
+                        object.resourceRevision = options.longs === $String ? $String(message.resourceRevision) : message.resourceRevision;
+                    else
+                        object.resourceRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.resourceRevision) : options.longs === $Number ? new $util.LongBits(message.resourceRevision.low >>> 0, message.resourceRevision.high >>> 0).toNumber() : message.resourceRevision;
+                if (message.vaultRevision != null && $Object.hasOwnProperty.call(message, "vaultRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.vaultRevision = typeof message.vaultRevision === "number" ? $BigInt(message.vaultRevision) : $util.Long.fromBits(message.vaultRevision.low >>> 0, message.vaultRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.vaultRevision === "number")
+                        object.vaultRevision = options.longs === $String ? $String(message.vaultRevision) : message.vaultRevision;
+                    else
+                        object.vaultRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.vaultRevision) : options.longs === $Number ? new $util.LongBits(message.vaultRevision.low >>> 0, message.vaultRevision.high >>> 0).toNumber() : message.vaultRevision;
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    object.contentHash = message.contentHash;
+                if (message.outcome != null && $Object.hasOwnProperty.call(message, "outcome"))
+                    object.outcome = message.outcome;
+                return object;
+            };
+
+            /**
+             * Converts this SafeMutationResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeMutationResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeMutationResponse.prototype.toJSON = function() {
+                return SafeMutationResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeMutationResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeMutationResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeMutationResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeMutationResponse";
+            };
+
+            return SafeMutationResponse;
+        })();
+
+        v1.SafeFileUploadStartRequest = (function() {
+
+            /**
+             * Properties of a SafeFileUploadStartRequest.
+             * @typedef {Object} proto.v1.SafeFileUploadStartRequest.$Properties
+             * @property {proto.v1.SafeMutationRequest.$Properties|null} [mutation] SafeFileUploadStartRequest mutation
+             * @property {number|Long|null} [chunkSize] SafeFileUploadStartRequest chunkSize
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeFileUploadStartRequest.
+             * @memberof proto.v1
+             * @interface ISafeFileUploadStartRequest
+             * @augments proto.v1.SafeFileUploadStartRequest.$Properties
+             * @deprecated Use proto.v1.SafeFileUploadStartRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeFileUploadStartRequest.
+             * @typedef {proto.v1.SafeFileUploadStartRequest.$Properties} proto.v1.SafeFileUploadStartRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeFileUploadStartRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeFileUploadStartRequest.
+             * @constructor
+             * @param {proto.v1.SafeFileUploadStartRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeFileUploadStartRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeFileUploadStartRequest mutation.
+             * @member {proto.v1.SafeMutationRequest.$Properties|null|undefined} mutation
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @instance
+             */
+            SafeFileUploadStartRequest.prototype.mutation = null;
+
+            /**
+             * SafeFileUploadStartRequest chunkSize.
+             * @member {number|Long} chunkSize
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @instance
+             */
+            SafeFileUploadStartRequest.prototype.chunkSize = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeFileUploadStartRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadStartRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeFileUploadStartRequest} SafeFileUploadStartRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeFileUploadStartRequest.$Shape): proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape;
+             *   (properties?: proto.v1.SafeFileUploadStartRequest.$Properties): proto.v1.SafeFileUploadStartRequest;
+             * }}
+             */
+            SafeFileUploadStartRequest.create = function(properties) {
+                return new SafeFileUploadStartRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadStartRequest message. Does not implicitly {@link proto.v1.SafeFileUploadStartRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadStartRequest.$Properties} message SafeFileUploadStartRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadStartRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.mutation != null && $Object.hasOwnProperty.call(message, "mutation"))
+                    $root.proto.v1.SafeMutationRequest.encode(message.mutation, writer.uint32(/* id 1, wireType 2 =*/10).fork(), _depth + 1).ldelim();
+                if (message.chunkSize != null && $Object.hasOwnProperty.call(message, "chunkSize") && (typeof message.chunkSize === "object" ? message.chunkSize.low || message.chunkSize.high : message.chunkSize !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.chunkSize);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadStartRequest message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadStartRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadStartRequest.$Properties} message SafeFileUploadStartRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadStartRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeFileUploadStartRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape} SafeFileUploadStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadStartRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeFileUploadStartRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            message.mutation = $root.proto.v1.SafeMutationRequest.decode(reader, reader.uint32(), $undefined, _depth + 1, message.mutation);
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.chunkSize = value;
+                            else
+                                delete message.chunkSize;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeFileUploadStartRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadStartRequest & proto.v1.SafeFileUploadStartRequest.$Shape} SafeFileUploadStartRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadStartRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeFileUploadStartRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeFileUploadStartRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.mutation != null && $Object.hasOwnProperty.call(message, "mutation")) {
+                    let error = $root.proto.v1.SafeMutationRequest.verify(message.mutation, _depth + 1);
+                    if (error)
+                        return "mutation." + error;
+                }
+                if (message.chunkSize != null && $Object.hasOwnProperty.call(message, "chunkSize"))
+                    if (!$util.isInteger(message.chunkSize) && !(message.chunkSize && $util.isInteger(message.chunkSize.low) && $util.isInteger(message.chunkSize.high)))
+                        return "chunkSize: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeFileUploadStartRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeFileUploadStartRequest} SafeFileUploadStartRequest
+             */
+            SafeFileUploadStartRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeFileUploadStartRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeFileUploadStartRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeFileUploadStartRequest();
+                if (object.mutation != null) {
+                    if (!$util.isObject(object.mutation))
+                        throw $TypeError(".proto.v1.SafeFileUploadStartRequest.mutation: object expected");
+                    message.mutation = $root.proto.v1.SafeMutationRequest.fromObject(object.mutation, _depth + 1);
+                }
+                if (object.chunkSize != null)
+                    if (typeof object.chunkSize === "object" ? object.chunkSize.low || object.chunkSize.high : $Number(object.chunkSize) !== 0)
+                        if ($util.Long)
+                            message.chunkSize = $util.Long.fromValue(object.chunkSize, false);
+                        else if (typeof object.chunkSize === "string")
+                            message.chunkSize = $parseInt(object.chunkSize, 10);
+                        else if (typeof object.chunkSize === "number")
+                            message.chunkSize = object.chunkSize;
+                        else if (typeof object.chunkSize === "object")
+                            message.chunkSize = new $util.LongBits(object.chunkSize.low >>> 0, object.chunkSize.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeFileUploadStartRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadStartRequest} message SafeFileUploadStartRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeFileUploadStartRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.mutation = null;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.chunkSize = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.chunkSize = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.mutation != null && $Object.hasOwnProperty.call(message, "mutation"))
+                    object.mutation = $root.proto.v1.SafeMutationRequest.toObject(message.mutation, options, _depth + 1);
+                if (message.chunkSize != null && $Object.hasOwnProperty.call(message, "chunkSize"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.chunkSize = typeof message.chunkSize === "number" ? $BigInt(message.chunkSize) : $util.Long.fromBits(message.chunkSize.low >>> 0, message.chunkSize.high >>> 0, false).toBigInt();
+                    else if (typeof message.chunkSize === "number")
+                        object.chunkSize = options.longs === $String ? $String(message.chunkSize) : message.chunkSize;
+                    else
+                        object.chunkSize = options.longs === $String ? $util.Long.prototype.toString.call(message.chunkSize) : options.longs === $Number ? new $util.LongBits(message.chunkSize.low >>> 0, message.chunkSize.high >>> 0).toNumber() : message.chunkSize;
+                return object;
+            };
+
+            /**
+             * Converts this SafeFileUploadStartRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeFileUploadStartRequest.prototype.toJSON = function() {
+                return SafeFileUploadStartRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeFileUploadStartRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeFileUploadStartRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeFileUploadStartRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeFileUploadStartRequest";
+            };
+
+            return SafeFileUploadStartRequest;
+        })();
+
+        v1.SafeFileUploadStartResponse = (function() {
+
+            /**
+             * Properties of a SafeFileUploadStartResponse.
+             * @typedef {Object} proto.v1.SafeFileUploadStartResponse.$Properties
+             * @property {string|null} [sessionId] SafeFileUploadStartResponse sessionId
+             * @property {number|Long|null} [nextChunkIndex] SafeFileUploadStartResponse nextChunkIndex
+             * @property {string|null} [operationId] SafeFileUploadStartResponse operationId
+             * @property {number|Long|null} [expiresAt] SafeFileUploadStartResponse expiresAt
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeFileUploadStartResponse.
+             * @memberof proto.v1
+             * @interface ISafeFileUploadStartResponse
+             * @augments proto.v1.SafeFileUploadStartResponse.$Properties
+             * @deprecated Use proto.v1.SafeFileUploadStartResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeFileUploadStartResponse.
+             * @typedef {proto.v1.SafeFileUploadStartResponse.$Properties} proto.v1.SafeFileUploadStartResponse.$Shape
+             */
+
+            /**
+             * Constructs a new SafeFileUploadStartResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeFileUploadStartResponse.
+             * @constructor
+             * @param {proto.v1.SafeFileUploadStartResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeFileUploadStartResponse = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeFileUploadStartResponse sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @instance
+             */
+            SafeFileUploadStartResponse.prototype.sessionId = "";
+
+            /**
+             * SafeFileUploadStartResponse nextChunkIndex.
+             * @member {number|Long} nextChunkIndex
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @instance
+             */
+            SafeFileUploadStartResponse.prototype.nextChunkIndex = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeFileUploadStartResponse operationId.
+             * @member {string} operationId
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @instance
+             */
+            SafeFileUploadStartResponse.prototype.operationId = "";
+
+            /**
+             * SafeFileUploadStartResponse expiresAt.
+             * @member {number|Long} expiresAt
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @instance
+             */
+            SafeFileUploadStartResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeFileUploadStartResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {proto.v1.SafeFileUploadStartResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeFileUploadStartResponse} SafeFileUploadStartResponse instance
+             * @type {{
+             *   (properties: proto.v1.SafeFileUploadStartResponse.$Shape): proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape;
+             *   (properties?: proto.v1.SafeFileUploadStartResponse.$Properties): proto.v1.SafeFileUploadStartResponse;
+             * }}
+             */
+            SafeFileUploadStartResponse.create = function(properties) {
+                return new SafeFileUploadStartResponse(properties);
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadStartResponse message. Does not implicitly {@link proto.v1.SafeFileUploadStartResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {proto.v1.SafeFileUploadStartResponse.$Properties} message SafeFileUploadStartResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadStartResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
+                if (message.nextChunkIndex != null && $Object.hasOwnProperty.call(message, "nextChunkIndex") && (typeof message.nextChunkIndex === "object" ? message.nextChunkIndex.low || message.nextChunkIndex.high : message.nextChunkIndex !== 0))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.nextChunkIndex);
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId") && message.operationId !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.operationId);
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt") && (typeof message.expiresAt === "object" ? message.expiresAt.low || message.expiresAt.high : message.expiresAt !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.expiresAt);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadStartResponse message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadStartResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {proto.v1.SafeFileUploadStartResponse.$Properties} message SafeFileUploadStartResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadStartResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeFileUploadStartResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape} SafeFileUploadStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadStartResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeFileUploadStartResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.nextChunkIndex = value;
+                            else
+                                delete message.nextChunkIndex;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.operationId = value;
+                            else
+                                delete message.operationId;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.expiresAt = value;
+                            else
+                                delete message.expiresAt;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeFileUploadStartResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadStartResponse & proto.v1.SafeFileUploadStartResponse.$Shape} SafeFileUploadStartResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadStartResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeFileUploadStartResponse message.
+             * @function verify
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeFileUploadStartResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.nextChunkIndex != null && $Object.hasOwnProperty.call(message, "nextChunkIndex"))
+                    if (!$util.isInteger(message.nextChunkIndex) && !(message.nextChunkIndex && $util.isInteger(message.nextChunkIndex.low) && $util.isInteger(message.nextChunkIndex.high)))
+                        return "nextChunkIndex: integer|Long expected";
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
+                        return "expiresAt: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeFileUploadStartResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeFileUploadStartResponse} SafeFileUploadStartResponse
+             */
+            SafeFileUploadStartResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeFileUploadStartResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeFileUploadStartResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeFileUploadStartResponse();
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.nextChunkIndex != null)
+                    if (typeof object.nextChunkIndex === "object" ? object.nextChunkIndex.low || object.nextChunkIndex.high : $Number(object.nextChunkIndex) !== 0)
+                        if ($util.Long)
+                            message.nextChunkIndex = $util.Long.fromValue(object.nextChunkIndex, false);
+                        else if (typeof object.nextChunkIndex === "string")
+                            message.nextChunkIndex = $parseInt(object.nextChunkIndex, 10);
+                        else if (typeof object.nextChunkIndex === "number")
+                            message.nextChunkIndex = object.nextChunkIndex;
+                        else if (typeof object.nextChunkIndex === "object")
+                            message.nextChunkIndex = new $util.LongBits(object.nextChunkIndex.low >>> 0, object.nextChunkIndex.high >>> 0).toNumber();
+                if (object.operationId != null)
+                    if (typeof object.operationId !== "string" || object.operationId.length)
+                        message.operationId = $String(object.operationId);
+                if (object.expiresAt != null)
+                    if (typeof object.expiresAt === "object" ? object.expiresAt.low || object.expiresAt.high : $Number(object.expiresAt) !== 0)
+                        if ($util.Long)
+                            message.expiresAt = $util.Long.fromValue(object.expiresAt, false);
+                        else if (typeof object.expiresAt === "string")
+                            message.expiresAt = $parseInt(object.expiresAt, 10);
+                        else if (typeof object.expiresAt === "number")
+                            message.expiresAt = object.expiresAt;
+                        else if (typeof object.expiresAt === "object")
+                            message.expiresAt = new $util.LongBits(object.expiresAt.low >>> 0, object.expiresAt.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeFileUploadStartResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {proto.v1.SafeFileUploadStartResponse} message SafeFileUploadStartResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeFileUploadStartResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.sessionId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.nextChunkIndex = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.nextChunkIndex = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.operationId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.expiresAt = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.expiresAt = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.nextChunkIndex != null && $Object.hasOwnProperty.call(message, "nextChunkIndex"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.nextChunkIndex = typeof message.nextChunkIndex === "number" ? $BigInt(message.nextChunkIndex) : $util.Long.fromBits(message.nextChunkIndex.low >>> 0, message.nextChunkIndex.high >>> 0, false).toBigInt();
+                    else if (typeof message.nextChunkIndex === "number")
+                        object.nextChunkIndex = options.longs === $String ? $String(message.nextChunkIndex) : message.nextChunkIndex;
+                    else
+                        object.nextChunkIndex = options.longs === $String ? $util.Long.prototype.toString.call(message.nextChunkIndex) : options.longs === $Number ? new $util.LongBits(message.nextChunkIndex.low >>> 0, message.nextChunkIndex.high >>> 0).toNumber() : message.nextChunkIndex;
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    object.operationId = message.operationId;
+                if (message.expiresAt != null && $Object.hasOwnProperty.call(message, "expiresAt"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.expiresAt = typeof message.expiresAt === "number" ? $BigInt(message.expiresAt) : $util.Long.fromBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0, false).toBigInt();
+                    else if (typeof message.expiresAt === "number")
+                        object.expiresAt = options.longs === $String ? $String(message.expiresAt) : message.expiresAt;
+                    else
+                        object.expiresAt = options.longs === $String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === $Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
+                return object;
+            };
+
+            /**
+             * Converts this SafeFileUploadStartResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeFileUploadStartResponse.prototype.toJSON = function() {
+                return SafeFileUploadStartResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeFileUploadStartResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeFileUploadStartResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeFileUploadStartResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeFileUploadStartResponse";
+            };
+
+            return SafeFileUploadStartResponse;
+        })();
+
+        v1.SafeFileUploadCommitRequest = (function() {
+
+            /**
+             * Properties of a SafeFileUploadCommitRequest.
+             * @typedef {Object} proto.v1.SafeFileUploadCommitRequest.$Properties
+             * @property {string|null} [vault] SafeFileUploadCommitRequest vault
+             * @property {string|null} [context] SafeFileUploadCommitRequest context
+             * @property {string|null} [deviceId] SafeFileUploadCommitRequest deviceId
+             * @property {string|null} [operationId] SafeFileUploadCommitRequest operationId
+             * @property {string|null} [sessionId] SafeFileUploadCommitRequest sessionId
+             * @property {string|null} [contentHash] SafeFileUploadCommitRequest contentHash
+             * @property {number|Long|null} [size] SafeFileUploadCommitRequest size
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeFileUploadCommitRequest.
+             * @memberof proto.v1
+             * @interface ISafeFileUploadCommitRequest
+             * @augments proto.v1.SafeFileUploadCommitRequest.$Properties
+             * @deprecated Use proto.v1.SafeFileUploadCommitRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeFileUploadCommitRequest.
+             * @typedef {proto.v1.SafeFileUploadCommitRequest.$Properties} proto.v1.SafeFileUploadCommitRequest.$Shape
+             */
+
+            /**
+             * Constructs a new SafeFileUploadCommitRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeFileUploadCommitRequest.
+             * @constructor
+             * @param {proto.v1.SafeFileUploadCommitRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeFileUploadCommitRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeFileUploadCommitRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.vault = "";
+
+            /**
+             * SafeFileUploadCommitRequest context.
+             * @member {string} context
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.context = "";
+
+            /**
+             * SafeFileUploadCommitRequest deviceId.
+             * @member {string} deviceId
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.deviceId = "";
+
+            /**
+             * SafeFileUploadCommitRequest operationId.
+             * @member {string} operationId
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.operationId = "";
+
+            /**
+             * SafeFileUploadCommitRequest sessionId.
+             * @member {string} sessionId
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.sessionId = "";
+
+            /**
+             * SafeFileUploadCommitRequest contentHash.
+             * @member {string} contentHash
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.contentHash = "";
+
+            /**
+             * SafeFileUploadCommitRequest size.
+             * @member {number|Long} size
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             */
+            SafeFileUploadCommitRequest.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Creates a new SafeFileUploadCommitRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadCommitRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeFileUploadCommitRequest} SafeFileUploadCommitRequest instance
+             * @type {{
+             *   (properties: proto.v1.SafeFileUploadCommitRequest.$Shape): proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape;
+             *   (properties?: proto.v1.SafeFileUploadCommitRequest.$Properties): proto.v1.SafeFileUploadCommitRequest;
+             * }}
+             */
+            SafeFileUploadCommitRequest.create = function(properties) {
+                return new SafeFileUploadCommitRequest(properties);
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadCommitRequest message. Does not implicitly {@link proto.v1.SafeFileUploadCommitRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadCommitRequest.$Properties} message SafeFileUploadCommitRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadCommitRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.context);
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId") && message.deviceId !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.deviceId);
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId") && message.operationId !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.operationId);
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId") && message.sessionId !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.sessionId);
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash") && message.contentHash !== "")
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.contentHash);
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size") && (typeof message.size === "object" ? message.size.low || message.size.high : message.size !== 0))
+                    writer.uint32(/* id 7, wireType 0 =*/56).int64(message.size);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeFileUploadCommitRequest message, length delimited. Does not implicitly {@link proto.v1.SafeFileUploadCommitRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadCommitRequest.$Properties} message SafeFileUploadCommitRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeFileUploadCommitRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeFileUploadCommitRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape} SafeFileUploadCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadCommitRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeFileUploadCommitRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.deviceId = value;
+                            else
+                                delete message.deviceId;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.operationId = value;
+                            else
+                                delete message.operationId;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.sessionId = value;
+                            else
+                                delete message.sessionId;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.contentHash = value;
+                            else
+                                delete message.contentHash;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.size = value;
+                            else
+                                delete message.size;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeFileUploadCommitRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeFileUploadCommitRequest & proto.v1.SafeFileUploadCommitRequest.$Shape} SafeFileUploadCommitRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeFileUploadCommitRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeFileUploadCommitRequest message.
+             * @function verify
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeFileUploadCommitRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    if (!$util.isString(message.deviceId))
+                        return "deviceId: string expected";
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    if (!$util.isString(message.contentHash))
+                        return "contentHash: string expected";
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high)))
+                        return "size: integer|Long expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeFileUploadCommitRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeFileUploadCommitRequest} SafeFileUploadCommitRequest
+             */
+            SafeFileUploadCommitRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeFileUploadCommitRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeFileUploadCommitRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeFileUploadCommitRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                if (object.deviceId != null)
+                    if (typeof object.deviceId !== "string" || object.deviceId.length)
+                        message.deviceId = $String(object.deviceId);
+                if (object.operationId != null)
+                    if (typeof object.operationId !== "string" || object.operationId.length)
+                        message.operationId = $String(object.operationId);
+                if (object.sessionId != null)
+                    if (typeof object.sessionId !== "string" || object.sessionId.length)
+                        message.sessionId = $String(object.sessionId);
+                if (object.contentHash != null)
+                    if (typeof object.contentHash !== "string" || object.contentHash.length)
+                        message.contentHash = $String(object.contentHash);
+                if (object.size != null)
+                    if (typeof object.size === "object" ? object.size.low || object.size.high : $Number(object.size) !== 0)
+                        if ($util.Long)
+                            message.size = $util.Long.fromValue(object.size, false);
+                        else if (typeof object.size === "string")
+                            message.size = $parseInt(object.size, 10);
+                        else if (typeof object.size === "number")
+                            message.size = object.size;
+                        else if (typeof object.size === "object")
+                            message.size = new $util.LongBits(object.size.low >>> 0, object.size.high >>> 0).toNumber();
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeFileUploadCommitRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {proto.v1.SafeFileUploadCommitRequest} message SafeFileUploadCommitRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeFileUploadCommitRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.context = "";
+                    object.deviceId = "";
+                    object.operationId = "";
+                    object.sessionId = "";
+                    object.contentHash = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.size = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.size = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    object.deviceId = message.deviceId;
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    object.operationId = message.operationId;
+                if (message.sessionId != null && $Object.hasOwnProperty.call(message, "sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.contentHash != null && $Object.hasOwnProperty.call(message, "contentHash"))
+                    object.contentHash = message.contentHash;
+                if (message.size != null && $Object.hasOwnProperty.call(message, "size"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.size = typeof message.size === "number" ? $BigInt(message.size) : $util.Long.fromBits(message.size.low >>> 0, message.size.high >>> 0, false).toBigInt();
+                    else if (typeof message.size === "number")
+                        object.size = options.longs === $String ? $String(message.size) : message.size;
+                    else
+                        object.size = options.longs === $String ? $util.Long.prototype.toString.call(message.size) : options.longs === $Number ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber() : message.size;
+                return object;
+            };
+
+            /**
+             * Converts this SafeFileUploadCommitRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeFileUploadCommitRequest.prototype.toJSON = function() {
+                return SafeFileUploadCommitRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeFileUploadCommitRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeFileUploadCommitRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeFileUploadCommitRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeFileUploadCommitRequest";
+            };
+
+            return SafeFileUploadCommitRequest;
+        })();
+
+        v1.SafeSyncErrorData = (function() {
+
+            /**
+             * Properties of a SafeSyncErrorData.
+             * @typedef {Object} proto.v1.SafeSyncErrorData.$Properties
+             * @property {string|null} [errorCode] SafeSyncErrorData errorCode
+             * @property {string|null} [resourceId] SafeSyncErrorData resourceId
+             * @property {number|Long|null} [expectedRevision] SafeSyncErrorData expectedRevision
+             * @property {number|Long|null} [actualRevision] SafeSyncErrorData actualRevision
+             * @property {string|null} [currentHash] SafeSyncErrorData currentHash
+             * @property {string|null} [currentPath] SafeSyncErrorData currentPath
+             * @property {string|null} [currentPathState] SafeSyncErrorData currentPathState
+             * @property {string|null} [operationId] SafeSyncErrorData operationId
+             * @property {boolean|null} [retryable] SafeSyncErrorData retryable
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a SafeSyncErrorData.
+             * @memberof proto.v1
+             * @interface ISafeSyncErrorData
+             * @augments proto.v1.SafeSyncErrorData.$Properties
+             * @deprecated Use proto.v1.SafeSyncErrorData.$Properties instead.
+             */
+
+            /**
+             * Shape of a SafeSyncErrorData.
+             * @typedef {proto.v1.SafeSyncErrorData.$Properties} proto.v1.SafeSyncErrorData.$Shape
+             */
+
+            /**
+             * Constructs a new SafeSyncErrorData.
+             * @memberof proto.v1
+             * @classdesc Represents a SafeSyncErrorData.
+             * @constructor
+             * @param {proto.v1.SafeSyncErrorData.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const SafeSyncErrorData = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * SafeSyncErrorData errorCode.
+             * @member {string} errorCode
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.errorCode = "";
+
+            /**
+             * SafeSyncErrorData resourceId.
+             * @member {string} resourceId
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.resourceId = "";
+
+            /**
+             * SafeSyncErrorData expectedRevision.
+             * @member {number|Long} expectedRevision
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.expectedRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncErrorData actualRevision.
+             * @member {number|Long} actualRevision
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.actualRevision = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * SafeSyncErrorData currentHash.
+             * @member {string} currentHash
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.currentHash = "";
+
+            /**
+             * SafeSyncErrorData currentPath.
+             * @member {string} currentPath
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.currentPath = "";
+
+            /**
+             * SafeSyncErrorData currentPathState.
+             * @member {string} currentPathState
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.currentPathState = "";
+
+            /**
+             * SafeSyncErrorData operationId.
+             * @member {string} operationId
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.operationId = "";
+
+            /**
+             * SafeSyncErrorData retryable.
+             * @member {boolean} retryable
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             */
+            SafeSyncErrorData.prototype.retryable = false;
+
+            /**
+             * Creates a new SafeSyncErrorData instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {proto.v1.SafeSyncErrorData.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.SafeSyncErrorData} SafeSyncErrorData instance
+             * @type {{
+             *   (properties: proto.v1.SafeSyncErrorData.$Shape): proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape;
+             *   (properties?: proto.v1.SafeSyncErrorData.$Properties): proto.v1.SafeSyncErrorData;
+             * }}
+             */
+            SafeSyncErrorData.create = function(properties) {
+                return new SafeSyncErrorData(properties);
+            };
+
+            /**
+             * Encodes the specified SafeSyncErrorData message. Does not implicitly {@link proto.v1.SafeSyncErrorData.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {proto.v1.SafeSyncErrorData.$Properties} message SafeSyncErrorData message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncErrorData.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.errorCode != null && $Object.hasOwnProperty.call(message, "errorCode") && message.errorCode !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.errorCode);
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId") && message.resourceId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.resourceId);
+                if (message.expectedRevision != null && $Object.hasOwnProperty.call(message, "expectedRevision") && (typeof message.expectedRevision === "object" ? message.expectedRevision.low || message.expectedRevision.high : message.expectedRevision !== 0))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.expectedRevision);
+                if (message.actualRevision != null && $Object.hasOwnProperty.call(message, "actualRevision") && (typeof message.actualRevision === "object" ? message.actualRevision.low || message.actualRevision.high : message.actualRevision !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.actualRevision);
+                if (message.currentHash != null && $Object.hasOwnProperty.call(message, "currentHash") && message.currentHash !== "")
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.currentHash);
+                if (message.currentPath != null && $Object.hasOwnProperty.call(message, "currentPath") && message.currentPath !== "")
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.currentPath);
+                if (message.currentPathState != null && $Object.hasOwnProperty.call(message, "currentPathState") && message.currentPathState !== "")
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.currentPathState);
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId") && message.operationId !== "")
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.operationId);
+                if (message.retryable != null && $Object.hasOwnProperty.call(message, "retryable") && message.retryable !== false)
+                    writer.uint32(/* id 9, wireType 0 =*/72).bool(message.retryable);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SafeSyncErrorData message, length delimited. Does not implicitly {@link proto.v1.SafeSyncErrorData.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {proto.v1.SafeSyncErrorData.$Properties} message SafeSyncErrorData message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SafeSyncErrorData.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a SafeSyncErrorData message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape} SafeSyncErrorData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncErrorData.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.SafeSyncErrorData(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.errorCode = value;
+                            else
+                                delete message.errorCode;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.resourceId = value;
+                            else
+                                delete message.resourceId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.expectedRevision = value;
+                            else
+                                delete message.expectedRevision;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.actualRevision = value;
+                            else
+                                delete message.actualRevision;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.currentHash = value;
+                            else
+                                delete message.currentHash;
+                            continue;
+                        }
+                    case 6: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.currentPath = value;
+                            else
+                                delete message.currentPath;
+                            continue;
+                        }
+                    case 7: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.currentPathState = value;
+                            else
+                                delete message.currentPathState;
+                            continue;
+                        }
+                    case 8: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.operationId = value;
+                            else
+                                delete message.operationId;
+                            continue;
+                        }
+                    case 9: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.retryable = value;
+                            else
+                                delete message.retryable;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a SafeSyncErrorData message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.SafeSyncErrorData & proto.v1.SafeSyncErrorData.$Shape} SafeSyncErrorData
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SafeSyncErrorData.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SafeSyncErrorData message.
+             * @function verify
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SafeSyncErrorData.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.errorCode != null && $Object.hasOwnProperty.call(message, "errorCode"))
+                    if (!$util.isString(message.errorCode))
+                        return "errorCode: string expected";
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    if (!$util.isString(message.resourceId))
+                        return "resourceId: string expected";
+                if (message.expectedRevision != null && $Object.hasOwnProperty.call(message, "expectedRevision"))
+                    if (!$util.isInteger(message.expectedRevision) && !(message.expectedRevision && $util.isInteger(message.expectedRevision.low) && $util.isInteger(message.expectedRevision.high)))
+                        return "expectedRevision: integer|Long expected";
+                if (message.actualRevision != null && $Object.hasOwnProperty.call(message, "actualRevision"))
+                    if (!$util.isInteger(message.actualRevision) && !(message.actualRevision && $util.isInteger(message.actualRevision.low) && $util.isInteger(message.actualRevision.high)))
+                        return "actualRevision: integer|Long expected";
+                if (message.currentHash != null && $Object.hasOwnProperty.call(message, "currentHash"))
+                    if (!$util.isString(message.currentHash))
+                        return "currentHash: string expected";
+                if (message.currentPath != null && $Object.hasOwnProperty.call(message, "currentPath"))
+                    if (!$util.isString(message.currentPath))
+                        return "currentPath: string expected";
+                if (message.currentPathState != null && $Object.hasOwnProperty.call(message, "currentPathState"))
+                    if (!$util.isString(message.currentPathState))
+                        return "currentPathState: string expected";
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.retryable != null && $Object.hasOwnProperty.call(message, "retryable"))
+                    if (typeof message.retryable !== "boolean")
+                        return "retryable: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a SafeSyncErrorData message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.SafeSyncErrorData} SafeSyncErrorData
+             */
+            SafeSyncErrorData.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.SafeSyncErrorData)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.SafeSyncErrorData: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.SafeSyncErrorData();
+                if (object.errorCode != null)
+                    if (typeof object.errorCode !== "string" || object.errorCode.length)
+                        message.errorCode = $String(object.errorCode);
+                if (object.resourceId != null)
+                    if (typeof object.resourceId !== "string" || object.resourceId.length)
+                        message.resourceId = $String(object.resourceId);
+                if (object.expectedRevision != null)
+                    if (typeof object.expectedRevision === "object" ? object.expectedRevision.low || object.expectedRevision.high : $Number(object.expectedRevision) !== 0)
+                        if ($util.Long)
+                            message.expectedRevision = $util.Long.fromValue(object.expectedRevision, false);
+                        else if (typeof object.expectedRevision === "string")
+                            message.expectedRevision = $parseInt(object.expectedRevision, 10);
+                        else if (typeof object.expectedRevision === "number")
+                            message.expectedRevision = object.expectedRevision;
+                        else if (typeof object.expectedRevision === "object")
+                            message.expectedRevision = new $util.LongBits(object.expectedRevision.low >>> 0, object.expectedRevision.high >>> 0).toNumber();
+                if (object.actualRevision != null)
+                    if (typeof object.actualRevision === "object" ? object.actualRevision.low || object.actualRevision.high : $Number(object.actualRevision) !== 0)
+                        if ($util.Long)
+                            message.actualRevision = $util.Long.fromValue(object.actualRevision, false);
+                        else if (typeof object.actualRevision === "string")
+                            message.actualRevision = $parseInt(object.actualRevision, 10);
+                        else if (typeof object.actualRevision === "number")
+                            message.actualRevision = object.actualRevision;
+                        else if (typeof object.actualRevision === "object")
+                            message.actualRevision = new $util.LongBits(object.actualRevision.low >>> 0, object.actualRevision.high >>> 0).toNumber();
+                if (object.currentHash != null)
+                    if (typeof object.currentHash !== "string" || object.currentHash.length)
+                        message.currentHash = $String(object.currentHash);
+                if (object.currentPath != null)
+                    if (typeof object.currentPath !== "string" || object.currentPath.length)
+                        message.currentPath = $String(object.currentPath);
+                if (object.currentPathState != null)
+                    if (typeof object.currentPathState !== "string" || object.currentPathState.length)
+                        message.currentPathState = $String(object.currentPathState);
+                if (object.operationId != null)
+                    if (typeof object.operationId !== "string" || object.operationId.length)
+                        message.operationId = $String(object.operationId);
+                if (object.retryable != null)
+                    if (object.retryable)
+                        message.retryable = $Boolean(object.retryable);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SafeSyncErrorData message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {proto.v1.SafeSyncErrorData} message SafeSyncErrorData
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SafeSyncErrorData.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.errorCode = "";
+                    object.resourceId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.expectedRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.expectedRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.actualRevision = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.actualRevision = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.currentHash = "";
+                    object.currentPath = "";
+                    object.currentPathState = "";
+                    object.operationId = "";
+                    object.retryable = false;
+                }
+                if (message.errorCode != null && $Object.hasOwnProperty.call(message, "errorCode"))
+                    object.errorCode = message.errorCode;
+                if (message.resourceId != null && $Object.hasOwnProperty.call(message, "resourceId"))
+                    object.resourceId = message.resourceId;
+                if (message.expectedRevision != null && $Object.hasOwnProperty.call(message, "expectedRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.expectedRevision = typeof message.expectedRevision === "number" ? $BigInt(message.expectedRevision) : $util.Long.fromBits(message.expectedRevision.low >>> 0, message.expectedRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.expectedRevision === "number")
+                        object.expectedRevision = options.longs === $String ? $String(message.expectedRevision) : message.expectedRevision;
+                    else
+                        object.expectedRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.expectedRevision) : options.longs === $Number ? new $util.LongBits(message.expectedRevision.low >>> 0, message.expectedRevision.high >>> 0).toNumber() : message.expectedRevision;
+                if (message.actualRevision != null && $Object.hasOwnProperty.call(message, "actualRevision"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.actualRevision = typeof message.actualRevision === "number" ? $BigInt(message.actualRevision) : $util.Long.fromBits(message.actualRevision.low >>> 0, message.actualRevision.high >>> 0, false).toBigInt();
+                    else if (typeof message.actualRevision === "number")
+                        object.actualRevision = options.longs === $String ? $String(message.actualRevision) : message.actualRevision;
+                    else
+                        object.actualRevision = options.longs === $String ? $util.Long.prototype.toString.call(message.actualRevision) : options.longs === $Number ? new $util.LongBits(message.actualRevision.low >>> 0, message.actualRevision.high >>> 0).toNumber() : message.actualRevision;
+                if (message.currentHash != null && $Object.hasOwnProperty.call(message, "currentHash"))
+                    object.currentHash = message.currentHash;
+                if (message.currentPath != null && $Object.hasOwnProperty.call(message, "currentPath"))
+                    object.currentPath = message.currentPath;
+                if (message.currentPathState != null && $Object.hasOwnProperty.call(message, "currentPathState"))
+                    object.currentPathState = message.currentPathState;
+                if (message.operationId != null && $Object.hasOwnProperty.call(message, "operationId"))
+                    object.operationId = message.operationId;
+                if (message.retryable != null && $Object.hasOwnProperty.call(message, "retryable"))
+                    object.retryable = message.retryable;
+                return object;
+            };
+
+            /**
+             * Converts this SafeSyncErrorData to JSON.
+             * @function toJSON
+             * @memberof proto.v1.SafeSyncErrorData
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SafeSyncErrorData.prototype.toJSON = function() {
+                return SafeSyncErrorData.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for SafeSyncErrorData
+             * @function getTypeUrl
+             * @memberof proto.v1.SafeSyncErrorData
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            SafeSyncErrorData.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.SafeSyncErrorData";
+            };
+
+            return SafeSyncErrorData;
+        })();
+
         return v1;
     })();
 

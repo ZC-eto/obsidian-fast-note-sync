@@ -4,6 +4,7 @@ import { ReceiveMessage, ReceiveMtimeMessage, ReceivePathMessage, SyncEndData } 
 import { hashContent, hashContentAsync, dump, dumpError, isPathExcluded, getSafeCtime, vaultDelete, checkAndNotifyCaseConflict, getPluginDir } from "../utils/helpers";
 import { SyncLogManager } from "./sync_log_manager";
 import type FastSync from "../../main";
+import { receiveSafeNoteDelete, receiveSafeNoteModify, receiveSafeNoteRename } from "./safe_sync_inbound";
 
 
 /**
@@ -52,6 +53,22 @@ export const noteModify = async function (file: TAbstractFile, plugin: FastSync,
         // 始终传递 baseHash 信息，如果不可用则标记 baseHashMissing
         ...(baseHash !== null ? { baseHash } : { baseHashMissing: true }),
       }
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateNote({
+          action: plugin.safeSyncRuntime!.hasLiveBaseline(file.path) ? "MODIFY" : "CREATE",
+          path: file.path,
+          content,
+          contentHash,
+          size: file.stat.size,
+          ctime: data.ctime,
+          mtime: data.mtime,
+        })
+        plugin.fileHashManager.setFileHash(file.path, contentHash, file.stat.mtime, file.stat.size)
+        plugin.lastSyncMtime.set(file.path, file.stat.mtime)
+        return
+      }
       // 将 hash 暂存到 pending map，等待服务端 NoteModifyAck 后再写入 hashManager
       // Temporarily store hash in pending map, update hashManager only after server NoteModifyAck
       if (contentHash != baseHash) {
@@ -98,6 +115,14 @@ export const noteDelete = async function (file: TAbstractFile, plugin: FastSync,
         path: file.path,
         pathHash: hashContent(file.path),
       }
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateNote({ action: "DELETE", path: file.path })
+        plugin.fileHashManager.removeFileHash(file.path)
+        plugin.lastSyncMtime.delete(file.path)
+        return
+      }
       await plugin.concurrencyLimiter.waitForSlot(file.path)
       void plugin.websocket.SendMessage("NoteDelete", data, undefined, () => {
         // 消息真正写入 TCP 缓冲区后加入 pending set，等待 NoteDeleteAck 再删 hash
@@ -129,6 +154,14 @@ export const noteDeleteByPath = async function (filePath: string, plugin: FastSy
     plugin.localStorageManager.savePending('pendingNoteModifies', plugin.pendingNoteModifies)
     plugin.addIgnoredFile(filePath)
     try {
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateNote({ action: "DELETE", path: filePath })
+        plugin.fileHashManager.removeFileHash(filePath)
+        plugin.lastSyncMtime.delete(filePath)
+        return
+      }
       await plugin.concurrencyLimiter.waitForSlot(filePath)
       void plugin.websocket.SendMessage("NoteDelete", {
         vault: plugin.settings.vault,
@@ -201,6 +234,23 @@ export const noteRename = async function (file: TAbstractFile, oldfile: string, 
         oldPathHash: hashContent(oldfile),
       }
 
+      const safeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+      if (safeMode === "paused") return
+      if (safeMode === "safe") {
+        await plugin.safeSyncRuntime!.mutateNote({
+          action: "RENAME",
+          path: file.path,
+          previousPath: oldfile,
+          contentHash,
+          size: file.stat.size,
+          ctime: getSafeCtime(file.stat),
+          mtime: file.stat.mtime,
+        })
+        plugin.fileHashManager.removeFileHash(oldfile)
+        plugin.fileHashManager.setFileHash(file.path, contentHash, file.stat.mtime, file.stat.size)
+        return
+      }
+
       // 将重命名信息存入 Map（key 为 newPath），等待服务端 NoteRenameAck 按 path 精确匹配后再更新 hashManager
       // Store rename info in Map (keyed by newPath), update hashManager only after server NoteRenameAck matches by path
       plugin.pendingNoteRenames.set(file.path, { oldPath: oldfile, newPath: file.path, contentHash })
@@ -225,6 +275,18 @@ export const receiveNoteSyncModify = async function (data: ReceiveMessage, plugi
   dump(`Receive note modify:`, data.path, data.contentHash, data.mtime, data.pathHash)
 
   const normalizedPath = normalizePath(data.path)
+
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      await receiveSafeNoteModify(data, plugin)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveNoteSyncModify: ${normalizedPath}`, e)
+      plugin.noteSyncTasks.failed++
+    } finally {
+      plugin.recordSyncCompleted('note', data.pageIndex)
+    }
+    return
+  }
 
   try {
     await plugin.lockManager.withLock(normalizedPath, async () => {
@@ -479,6 +541,18 @@ export const receiveNoteSyncDelete = async function (data: ReceiveMessage, plugi
   dump(`Receive note delete:`, data.path, data.mtime, data.pathHash)
   const normalizedPath = normalizePath(data.path)
 
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      await receiveSafeNoteDelete(data, plugin)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveNoteSyncDelete: ${normalizedPath}`, e)
+      plugin.noteSyncTasks.failed++
+    } finally {
+      plugin.recordSyncCompleted('note', data.pageIndex)
+    }
+    return
+  }
+
   try {
     await plugin.lockManager.withLock(normalizedPath, async () => {
       const file = plugin.app.vault.getFileByPath(normalizedPath)
@@ -551,6 +625,18 @@ export const receiveNoteSyncRename = async function (data: { path: string, oldPa
 
   const normalizedOldPath = normalizePath(data.oldPath)
   const normalizedNewPath = normalizePath(data.path)
+
+  if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
+    try {
+      await receiveSafeNoteRename(data, plugin)
+    } catch (e) {
+      dumpError(`[FastSync] Failed safe receiveNoteSyncRename: ${normalizedOldPath} -> ${normalizedNewPath}`, e)
+      plugin.noteSyncTasks.failed++
+    } finally {
+      plugin.recordSyncCompleted('note', data.pageIndex)
+    }
+    return
+  }
 
   try {
     // 对于重命名，我们需要确新路径不被占用。旧路径通常正在被移动，所以锁定新路径。

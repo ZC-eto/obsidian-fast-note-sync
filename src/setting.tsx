@@ -15,11 +15,14 @@ import { RuleEditor } from "./views/rule-editor";
 import { $ } from "./i18n/lang";
 import FastSync from "./main";
 import { updateVaultName } from "./lib/settings/vault_name";
+import { safeSyncActivationErrorMessage } from "./lib/sync/safe_sync_runtime";
 
 
 export interface PluginSettings {
   /** 是否启用同步（自动上传/下载） */
   syncEnabled: boolean
+  /** 是否启用带修订前置条件的安全多端同步 */
+  safeRevisionSyncEnabled: boolean
   /** 是否开启插件配置项同步 */
   configSyncEnabled: boolean
   /** 日志记录级别 ("off", "console", "internal") */
@@ -129,6 +132,7 @@ export interface PluginSettings {
 export const DEFAULT_SETTINGS: PluginSettings = {
   // 是否自动上传
   syncEnabled: true,
+  safeRevisionSyncEnabled: false,
   configSyncEnabled: false,
   logEnabled: "off",
   // API 网关地址
@@ -1567,6 +1571,64 @@ export class SettingTab extends PluginSettingTab {
   }
 
   private renderSyncSettings(set: HTMLElement) {
+    const safeRuntime = this.plugin.safeSyncRuntime
+    const safeStatus = safeRuntime?.status.state || "disabled"
+    const safeSetting = new Setting(set)
+      .setName($("setting.sync.safe_revision"))
+      .setClass("fns-setting-item-checkbox")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.settings.safeRevisionSyncEnabled)
+        toggle.setDisabled(!safeRuntime || safeStatus === "unsupported" || safeStatus === "activating" || safeStatus === "bootstrapping")
+        toggle.onChange((value) => {
+          if (!safeRuntime) return
+          if (value) {
+            toggle.setValue(false)
+            new ConfirmModal(
+              this.app,
+              $("setting.sync.safe_revision_confirm_title"),
+              $("setting.sync.safe_revision_confirm_message"),
+              () => {
+                void (async () => {
+                  try {
+                    const activated = await safeRuntime.setEnabled(true)
+                    if (!activated) showSyncNotice(safeRuntime.status.message || $("setting.sync.safe_revision_status_unsupported"))
+                  } catch (error) {
+                    showSyncNotice(safeSyncActivationErrorMessage(error))
+                  } finally {
+                    this.refresh()
+                  }
+                })()
+              },
+              $("ui.button.confirm"),
+              $("ui.button.cancel"),
+              true,
+              () => this.refresh(),
+            ).open()
+            return
+          }
+          if (this.plugin.settings.safeRevisionSyncEnabled || safeRuntime.status.serverState === "STRICT") {
+            toggle.setValue(true)
+            new ConfirmModal(
+              this.app,
+              $("setting.sync.safe_revision_pause_title"),
+              $("setting.sync.safe_revision_pause_message"),
+              () => { void safeRuntime.setEnabled(false).finally(() => this.refresh()) },
+              $("ui.button.confirm"),
+              $("ui.button.cancel"),
+              true,
+              () => this.refresh(),
+            ).open()
+          } else {
+            void safeRuntime.setEnabled(false).finally(() => this.refresh())
+          }
+        })
+      })
+    safeSetting.setDesc("")
+    this.setDescWithBreaks(
+      safeSetting.settingEl,
+      `${$("setting.sync.safe_revision_desc")}\n\n${$("setting.sync.safe_revision_status", { status: $(`setting.sync.safe_revision_status_${safeStatus}`) })}`,
+    )
+
     new Setting(set).setName($("setting.sync.auto_note")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
       toggle.setValue(this.plugin.settings.syncEnabled).onChange(async (value) => {
         if (value != this.plugin.settings.syncEnabled) {

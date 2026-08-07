@@ -169,6 +169,7 @@ export class WebSocketManager {
           this.plugin.isSyncRequesting = false;
         }
         clearUploadQueue();
+        this.plugin.safeSyncRuntime?.onDisconnected();
         this.plugin.concurrencyLimiter.clear();
         // 断线：清空所有在途上行批发送窗口会话的重传 timer（设计稿 §3.2 异常路径表）；
         // W==0/旧路径下没有会话注册，no-op
@@ -369,6 +370,16 @@ export class WebSocketManager {
     }
 
     if (data.code <= 0 || data.code >= 300) {
+      if (msgAction.startsWith("Safe")) {
+        const handler = receiveOperators.get(msgAction)
+        if (handler) {
+          const errorPayload = data.data && typeof data.data === "object"
+            ? { ...data.data, safeSyncError: true, code: data.code, message: data.message || "", details: data.details || "", context: data.context || "" }
+            : { safeSyncError: true, code: data.code, message: data.message || "", details: data.details || "", context: data.context || "" }
+          void handler(errorPayload, this.plugin)
+          return
+        }
+      }
       // 处理冲突相关错误码
       if (data.code === ERROR_SYNC_CONFLICT) {
         void this.handleConflictError(data);
@@ -517,6 +528,24 @@ export class WebSocketManager {
 
       if (this.plugin.fileHashManager && this.plugin.fileHashManager.isReady()) {
         dump("FileHashManager is ready, proceeding with sync");
+      }
+    }
+
+    if (this.plugin.safeSyncRuntime) {
+      const safeStatus = await this.plugin.safeSyncRuntime.onConnected()
+      if (safeStatus.state === "strict-vault-local-disabled" ||
+        (this.plugin.settings.safeRevisionSyncEnabled && safeStatus.state !== "active")) {
+        dump(`Safe revision sync paused startup sync: ${safeStatus.state}`)
+        return
+      }
+      if (safeStatus.state === "active") {
+        try {
+          await this.plugin.safeSyncRuntime.prepareRemoteEvents()
+        } catch (error) {
+          dump(`Safe revision sync paused while loading events: ${error instanceof Error ? error.message : String(error)}`)
+          this.plugin.settingTab?.refresh()
+          return
+        }
       }
     }
 

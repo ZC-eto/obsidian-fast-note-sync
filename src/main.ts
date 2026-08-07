@@ -31,6 +31,7 @@ import { $ } from "./i18n/lang";
 import { SsoImportModal } from "./views/sso-import-modal";
 import { StatusBarManager } from "./lib/ui/status_bar_manager";
 import { SyncProgressTracker } from "./lib/sync/sync_progress_tracker";
+import { SafeSyncRuntime } from "./lib/sync/safe_sync_runtime";
 
 
 
@@ -66,6 +67,7 @@ export default class FastSync extends Plugin {
   fileCloudPreview: FileCloudPreview              // 云端文件预览管理器
   folderSnapshotManager: FolderSnapshotManager    // 文件夹快照管理器
   statusBarManager: StatusBarManager              // 状态栏管理器
+  safeSyncRuntime?: SafeSyncRuntime               // 安全修订同步运行时
   readonly progressTracker = new SyncProgressTracker() // 进度追踪器
   private menuManagerInitialized = false          // 防止 onLayoutReady 重复初始化 / Guard against duplicate onLayoutReady init
 
@@ -551,6 +553,8 @@ export default class FastSync extends Plugin {
       }
       await Promise.all(initPromises)
 
+      this.safeSyncRuntime = new SafeSyncRuntime(this)
+
       // 崩溃恢复：从 localStorage 恢复持久化的 pending Map，过滤本地已不存在的路径
       // Crash recovery: restore persisted pending Maps, filtering out paths that no longer exist locally
       const allFiles = this.app.vault.getAllLoadedFiles()
@@ -649,6 +653,7 @@ export default class FastSync extends Plugin {
     this.fileHashManager?.flush()
     this.configHashManager?.flush()
     this.folderSnapshotManager?.flush()
+    this.safeSyncRuntime?.close()
     // 取消注册文件事件
     void this.reloadServices(false)
     this.updateStatusBar("")

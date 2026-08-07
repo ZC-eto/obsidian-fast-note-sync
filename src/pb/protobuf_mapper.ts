@@ -1,5 +1,6 @@
 import * as WSAction from "../lib/sync/websocket_action";
 import { proto } from "./v1/sync";
+import type * as $protobuf from "protobufjs";
 
 
 /**
@@ -124,6 +125,47 @@ function enSendDataPayload(action: WSAction.WSSendAction, payload: unknown): Uin
         case WSAction.SettingSyncPageAck: {
             const msg = proto.v1.SettingSyncPageAckRequest.create(properties);
             return proto.v1.SettingSyncPageAckRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveStatus: {
+            const msg = proto.v1.SafeSyncStatusRequest.create(properties);
+            return proto.v1.SafeSyncStatusRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveBootstrapStart: {
+            const msg = proto.v1.SafeSyncBootstrapStartRequest.create(properties);
+            return proto.v1.SafeSyncBootstrapStartRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveBootstrapPage: {
+            const msg = proto.v1.SafeSyncBootstrapPageRequest.create(properties);
+            return proto.v1.SafeSyncBootstrapPageRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveBootstrapCommit: {
+            const msg = proto.v1.SafeSyncBootstrapCommitRequest.create(properties);
+            return proto.v1.SafeSyncBootstrapCommitRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveBootstrapCancel: {
+            const msg = proto.v1.SafeSyncBootstrapCancelRequest.create(properties);
+            return proto.v1.SafeSyncBootstrapCancelRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveEvents: {
+            const msg = proto.v1.SafeSyncEventsRequest.create(properties);
+            return proto.v1.SafeSyncEventsRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveNoteMutation:
+        case WSAction.SafeSyncReceiveFolderMutation:
+        case WSAction.SafeSyncReceiveFileMutation: {
+            const msg = proto.v1.SafeMutationRequest.create(properties);
+            return proto.v1.SafeMutationRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveFileUploadStart: {
+            const msg = proto.v1.SafeFileUploadStartRequest.fromObject({
+                mutation: properties,
+                chunkSize: properties.chunkSize,
+            });
+            return proto.v1.SafeFileUploadStartRequest.encode(msg).finish();
+        }
+        case WSAction.SafeSyncReceiveFileUploadCommit: {
+            const msg = proto.v1.SafeFileUploadCommitRequest.create(properties);
+            return proto.v1.SafeFileUploadCommitRequest.encode(msg).finish();
         }
         default: {
             // Fallback to JSON encoding if not supported explicitly in proto definitions
@@ -542,10 +584,47 @@ function deReceiveProtobufToDTO(action: WSAction.WSReceiveAction, data: Uint8Arr
                 return tryJsonDecode();
             }
         }
+        case WSAction.SafeSyncStatus:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncStatusResponse, tryJsonDecode);
+        case WSAction.SafeSyncBootstrapStartAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncBootstrapStartResponse, tryJsonDecode);
+        case WSAction.SafeSyncBootstrapPageAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncBootstrapPageResponse, tryJsonDecode);
+        case WSAction.SafeSyncBootstrapCommitAck:
+        case WSAction.SafeSyncBootstrapCancelAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncStatusResponse, tryJsonDecode);
+        case WSAction.SafeSyncEventsAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncEventsResponse, tryJsonDecode);
+        case WSAction.SafeSyncNoteMutationAck:
+        case WSAction.SafeSyncFolderMutationAck:
+        case WSAction.SafeSyncFileMutationAck:
+        case WSAction.SafeSyncFileUploadCommitAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeMutationResponse, tryJsonDecode);
+        case WSAction.SafeSyncFileUploadStartAck:
+            return decodeSafeSyncMessage(data, proto.v1.SafeFileUploadStartResponse, tryJsonDecode);
+        case WSAction.SafeSyncEvent:
+            return decodeSafeSyncMessage(data, proto.v1.SafeSyncEvent, tryJsonDecode);
         default:
             // Fallback to JSON decoding if not supported explicitly in proto definitions
             // 对于 proto 定义中未明确支持的消息，降级使用 JSON 解码
             return tryJsonDecode();
+    }
+}
+
+interface ProtobufMessageCodec {
+    decode(data: Uint8Array): unknown;
+    toObject(message: unknown, options?: $protobuf.IConversionOptions): { [key: string]: unknown };
+}
+
+function decodeSafeSyncMessage(
+    data: Uint8Array,
+    codec: ProtobufMessageCodec,
+    fallback: () => unknown,
+): unknown {
+    try {
+        return codec.toObject(codec.decode(data), { defaults: true, longs: Number });
+    } catch {
+        return fallback();
     }
 }
 
@@ -589,7 +668,20 @@ export function deReceivePacket(data: Uint8Array): DeserializedWSResponse {
 
     const wsResp = proto.v1.WSResponse.decode(wsMsg.data);
 
-    const dtoData = deReceiveProtobufToDTO(action, wsResp.data);
+    let dtoData: unknown;
+    if (!wsResp.status && action.startsWith("Safe") && wsResp.data.length > 0) {
+        try {
+            const errorData = proto.v1.SafeSyncErrorData.toObject(
+                proto.v1.SafeSyncErrorData.decode(wsResp.data),
+                { defaults: true, longs: Number }
+            );
+            dtoData = errorData.errorCode ? errorData : deReceiveProtobufToDTO(action, wsResp.data);
+        } catch {
+            dtoData = deReceiveProtobufToDTO(action, wsResp.data);
+        }
+    } else {
+        dtoData = deReceiveProtobufToDTO(action, wsResp.data);
+    }
 
     return {
         action: action,

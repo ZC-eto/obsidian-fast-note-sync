@@ -74,6 +74,10 @@ export interface FileUploadMessage {
     mtime: number;
     sessionId: string;
     chunkSize: number;
+    /** 安全上传由服务端恢复的下一分片位置 */
+    nextChunkIndex?: number;
+    /** 安全上传分片完成后显式提交；旧上传路径不设置 */
+    onUploadReady?: () => Promise<void>;
     /** 所属下载页（0-based），见 ReceiveMessage.pageIndex 注释 / owning download page, see ReceiveMessage.pageIndex */
     pageIndex?: number;
 }
@@ -104,6 +108,8 @@ export interface FileDownloadSession {
     /** 所属下载页（0-based），从 receiveFileSyncUpdate 的 pageIndex 透传，供分片下载会话完成时归账（见 ReceiveMessage.pageIndex 注释） */
     pageIndex?: number;
     initialSlotKey?: string;
+    /** 安全同步事件只在完整文件校验并落盘后提交 */
+    safeSyncEvent?: import("../sync/safe_sync_engine").SafeSyncEvent;
 }
 
 export interface ReceiveMtimeMessage {
