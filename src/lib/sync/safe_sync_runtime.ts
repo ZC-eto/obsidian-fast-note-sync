@@ -251,7 +251,7 @@ export class SafeSyncRuntime {
   private async getLocalManifest() {
     const manifest: Array<{ resourceType: "NOTE" | "FILE" | "FOLDER"; path: string; contentHash: string; size: number }> = []
     for (const entry of this.plugin.app.vault.getAllLoadedFiles()) {
-      if (!entry.path) continue
+      if (!entry.path || entry.path === "/") continue
       if (entry instanceof TFolder) {
         if (!isFolderSyncPathExcluded(entry.path, this.plugin)) {
           manifest.push({ resourceType: "FOLDER", path: entry.path, contentHash: "", size: 0 })

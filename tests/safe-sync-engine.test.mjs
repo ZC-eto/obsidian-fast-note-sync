@@ -182,6 +182,27 @@ assert.equal((await emptyVault.activate()).state, "active")
 assert.equal((await emptyVault.refreshStatus(true)).state, "active", "an empty bootstrapped Vault must remain active after reconnect")
 assert.equal(emptyTransport.calls.filter((call) => call.action === "SafeSyncBootstrapStart").length, 1)
 
+const rootOnlyStore = new MemoryStore()
+const rootOnlyTransport = new ScriptedTransport({
+  SafeSyncStatus: [
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-root", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-root", cursor: "cursor-root" }],
+  SafeSyncBootstrapPage: [{ sessionId: "session-root", snapshotVaultRevision: 0, manifestHash: "manifest-root", items: [], nextCursor: "" }],
+  SafeSyncBootstrapCommit: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+})
+const rootOnlyVault = new SafeSyncEngine({
+  vault: "root-only-vault",
+  serverUrl: "https://sync.example.com",
+  transport: rootOnlyTransport,
+  createStateStore: () => rootOnlyStore,
+  getLocalManifest: async () => [{ resourceType: "FOLDER", path: "/", contentHash: "", size: 0 }],
+  operationId: () => "op-root",
+  now: () => 1_000,
+})
+assert.equal((await rootOnlyVault.activate()).state, "active", "the Vault root must not cause a manifest mismatch")
+
 const cancelStore = new MemoryStore()
 cancelStore.persistedBootstrapComplete = true
 const cancelTransport = new ScriptedTransport({

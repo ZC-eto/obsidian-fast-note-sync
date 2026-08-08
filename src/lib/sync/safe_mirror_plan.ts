@@ -96,7 +96,7 @@ export function compareSafeMirrorDeletionOrder(
 function liveItemsByPath(items: SafeMirrorManifestItem[]): Map<string, SafeMirrorManifestItem> {
   const result = new Map<string, SafeMirrorManifestItem>()
   for (const item of items) {
-    if (!item.path || item.state === "DELETED") continue
+    if (!item.path || item.path === "/" || item.state === "DELETED") continue
     result.set(item.path, item)
   }
   return result

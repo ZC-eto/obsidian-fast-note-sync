@@ -43,6 +43,13 @@ assert.deepEqual(plan.replacements.map((value) => value.path), ["replace"])
 assert.equal(safeMirrorPlanChangeCount(plan), 3)
 assert.equal(plan.highRiskDelete, true)
 
+const localRootOnly = createSafeMirrorPlan("LOCAL_TO_REMOTE", [item("FOLDER", "/", "", 0)], [])
+assert.equal(localRootOnly.sourceCount, 0)
+assert.equal(safeMirrorPlanChangeCount(localRootOnly), 0, "the Vault root must not be created remotely")
+const remoteRootOnly = createSafeMirrorPlan("LOCAL_TO_REMOTE", [], [item("FOLDER", "/", "", 0)])
+assert.equal(remoteRootOnly.targetCount, 0)
+assert.equal(safeMirrorPlanChangeCount(remoteRootOnly), 0, "the Vault root must not be deleted remotely")
+
 const largeTarget = Array.from({ length: 500 }, (_, index) => item("NOTE", `n-${index}.md`, String(index), 1))
 const fortyNineDeletes = createSafeMirrorPlan("LOCAL_TO_REMOTE", largeTarget.slice(49), largeTarget)
 assert.equal(fortyNineDeletes.deletes.length, 49)

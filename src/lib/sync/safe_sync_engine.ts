@@ -661,8 +661,8 @@ function remoteEventMatchesBaseline(event: SafeSyncEvent, store: SafeSyncStateSt
 }
 
 function compareManifests(localItems: SafeLocalManifestItem[], remoteItems: SafeSyncManifestItem[]): SafeSyncManifestMismatch[] {
-  const local = new Map(localItems.map((item) => [item.path, item]))
-  const remote = new Map(remoteItems.map((item) => [item.path, item]))
+  const local = new Map(localItems.filter((item) => item.path && item.path !== "/").map((item) => [item.path, item]))
+  const remote = new Map(remoteItems.filter((item) => item.path && item.path !== "/").map((item) => [item.path, item]))
   const mismatches: SafeSyncManifestMismatch[] = []
   for (const [path, remoteItem] of remote) {
     const localItem = local.get(path)
