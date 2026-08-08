@@ -44,6 +44,7 @@ class MemoryStore {
     this.persistedBootstrapComplete = true
   }
   async putPending(pending) { this.pending.set(pending.operationId, pending) }
+  async removePending(operationId) { this.pending.delete(operationId) }
   async acknowledge(ack) {
     const pending = this.pending.get(ack.operationId)
     if (!pending) throw new Error("missing pending")
@@ -295,6 +296,29 @@ await active.mutate("NOTE", { action: "MODIFY", path: "a.md", content: "changed"
 assert.equal(activeTransport.calls.find((call) => call.action === "SafeNoteMutation").payload.expectedPathState, "PRESENT")
 assert.equal(activeStore.getBaseline("a.md").resourceRevision, 2)
 assert.equal(activeStore.pending.size, 0)
+
+const failedMutationStore = new MemoryStore()
+failedMutationStore.baselines.set("failed.md", {
+  path: "failed.md", resourceType: "NOTE", resourceId: "failed", resourceRevision: 1,
+  contentHash: "before", vaultRevision: 0, state: "LIVE", size: 6,
+})
+const failedMutation = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: new ScriptedTransport({
+    SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+    SafeNoteMutation: [new Error("mutation rejected")],
+  }),
+  createStateStore: () => failedMutationStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-failed",
+  now: () => 1_000,
+})
+assert.equal((await failedMutation.refreshStatus(true)).state, "active")
+await assert.rejects(() => failedMutation.mutate("NOTE", {
+  action: "MODIFY", path: "failed.md", content: "after", contentHash: "after", size: 5,
+}), /mutation rejected/)
+assert.equal(failedMutationStore.pending.size, 0, "a rejected mutation must not leave a stale pending operation")
 const upload = await active.startFileUpload({ action: "CREATE", path: "asset.bin", contentHash: "hash-file", size: 4, ctime: 1, mtime: 2 }, 1024)
 assert.equal(activeTransport.calls.find((call) => call.action === "SafeFileUploadStart").payload.expectedPathState, "ABSENT")
 assert.equal(upload.sessionId, "upload-a")

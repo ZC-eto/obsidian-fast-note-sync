@@ -183,6 +183,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     hasLiveBaseline: (target) => remoteMap.has(target),
     startFileUpload: async () => { throw new Error("unexpected attachment upload in this test") },
     commitFileUpload: async () => undefined,
+    discardPendingForPaths: async () => 0,
   }
   const plugin = {
     settings: { syncRole, safeRevisionSyncEnabled: false },

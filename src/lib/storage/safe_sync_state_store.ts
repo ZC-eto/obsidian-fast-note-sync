@@ -177,6 +177,12 @@ export class SafeSyncStateStore {
     await this.persist()
   }
 
+  async removePending(operationId: string): Promise<void> {
+    if (!this.state.pending[operationId]) return
+    delete this.state.pending[operationId]
+    await this.persist()
+  }
+
   async acknowledge(ack: SafeMutationAck): Promise<void> {
     const pending = this.state.pending[ack.operationId]
     if (!pending || pending.status !== "pending") throw new Error("safe sync ack has no matching pending mutation")

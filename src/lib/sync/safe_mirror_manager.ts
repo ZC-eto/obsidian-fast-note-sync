@@ -100,6 +100,9 @@ export class SafeMirrorManager {
       if (record) {
         await this.recovery.update(record, "FAILED", error instanceof Error ? error.message : String(error)).catch(() => undefined)
       }
+      if (committed) {
+        await this.requireRuntime().discardPendingForPaths(allPlanItems(session.plan).map((item) => item.path)).catch(() => undefined)
+      }
       if (!committed) await this.cancel().catch(() => undefined)
       throw error
     }

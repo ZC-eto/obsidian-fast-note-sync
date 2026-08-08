@@ -98,6 +98,7 @@ interface SafeSyncStateStoreLike {
   listRetryablePending(now?: number): SafePendingMutation[]
   replaceBootstrapBaselines(baselines: SafeRevisionBaseline[], latestVaultRevision: number): Promise<void>
   putPending(pending: SafePendingMutation): Promise<void>
+  removePending(operationId: string): Promise<void>
   acknowledge(ack: SafeMutationAck): Promise<void>
   applyRemoteBaseline(baseline: SafeRevisionBaseline, previousPath?: string): Promise<void>
   advanceVaultRevision(vaultRevision: number): Promise<void>
@@ -300,6 +301,14 @@ export class SafeSyncEngine {
     return this.options.getLocalManifest()
   }
 
+  async discardPendingForPaths(paths: string[]): Promise<number> {
+    const store = this.requireStore()
+    const targets = new Set(paths)
+    const pending = store.listRetryablePending().filter((item) => targets.has(item.path) || Boolean(item.previousPath && targets.has(item.previousPath)))
+    for (const item of pending) await store.removePending(item.operationId)
+    return pending.length
+  }
+
   async mutate(resourceType: "NOTE" | "FILE" | "FOLDER", input: SafeMutationInput): Promise<SafeMutationAck> {
     if (this.status.state !== "active") throw new Error("safe sync mutation requires an active client")
     const store = this.requireStore()
@@ -343,7 +352,13 @@ export class SafeSyncEngine {
     })
 
     const action = resourceType === "NOTE" ? "SafeNoteMutation" : resourceType === "FILE" ? "SafeFileMutation" : "SafeFolderMutation"
-    const response = await this.options.transport.request(action, payload)
+    let response: Record<string, unknown>
+    try {
+      response = await this.options.transport.request(action, payload)
+    } catch (error) {
+      await store.removePending(operationId).catch(() => undefined)
+      throw error
+    }
     const ack: SafeMutationAck = {
       operationId,
       path: input.path,
@@ -398,7 +413,13 @@ export class SafeSyncEngine {
       status: "pending",
       payload,
     })
-    const response = await this.options.transport.request("SafeFileUploadStart", { ...payload, chunkSize })
+    let response: Record<string, unknown>
+    try {
+      response = await this.options.transport.request("SafeFileUploadStart", { ...payload, chunkSize })
+    } catch (error) {
+      await store.removePending(operationId).catch(() => undefined)
+      throw error
+    }
     const responseOperationID = requiredString(response, "operationId")
     if (responseOperationID !== operationId) throw new Error("safe file upload session operationId mismatch")
     return {
@@ -416,14 +437,20 @@ export class SafeSyncEngine {
     if (pending.payload.contentHash !== contentHash || pending.payload.size !== size) {
       throw new Error("safe file upload commit does not match pending content")
     }
-    const response = await this.options.transport.request("SafeFileUploadCommit", {
-      vault: this.options.vault,
-      deviceId: store.deviceId,
-      operationId,
-      sessionId,
-      contentHash,
-      size,
-    })
+    let response: Record<string, unknown>
+    try {
+      response = await this.options.transport.request("SafeFileUploadCommit", {
+        vault: this.options.vault,
+        deviceId: store.deviceId,
+        operationId,
+        sessionId,
+        contentHash,
+        size,
+      })
+    } catch (error) {
+      await store.removePending(operationId).catch(() => undefined)
+      throw error
+    }
     const ack: SafeMutationAck = {
       operationId,
       path: pending.path,

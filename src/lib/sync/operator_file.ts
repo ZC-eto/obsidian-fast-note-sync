@@ -515,14 +515,19 @@ export const fileRename = async function (file: TAbstractFile, oldfile: string, 
  * 接收服务端文件上传指令 (FileUpload)
  */
 export const receiveFileUpload = async function (data: FileUploadMessage, plugin: FastSync) {
-  if (plugin.settings.syncEnabled == false) return
+  if (plugin.settings.syncEnabled == false) {
+    if (data.awaitCompletion) throw new Error(`附件同步已关闭，无法完成上传：${data.path}`)
+    return
+  }
 
   if (plugin.settings.readonlySyncEnabled) {
+    if (data.awaitCompletion) throw new Error(`只读模式禁止上传附件：${data.path}`)
     dump(`Read-only mode: Intercepted file upload request for ${data.path}`)
     plugin.recordSyncCompleted('file', data.pageIndex)
     return
   }
   if (isPathExcluded(data.path, plugin)) {
+    if (data.awaitCompletion) throw new Error(`附件路径已被排除，无法完成上传：${data.path}`)
     plugin.recordSyncCompleted('file', data.pageIndex)
     return
   }
@@ -531,11 +536,12 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
 
   const file = plugin.app.vault.getFileByPath(normalizePath(data.path))
   if (!file) {
+    if (data.awaitCompletion) throw new Error(`待上传附件不存在：${data.path}`)
     dump(`File not found for upload: ${data.path} `)
     plugin.recordSyncCompleted('file', data.pageIndex)
     return
   }
-  if (isLargeBinarySyncRisk(file.stat.size, plugin)) {
+  if (!data.awaitCompletion && isLargeBinarySyncRisk(file.stat.size, plugin)) {
     dump(`Skip file upload for large attachment (${describeBinarySyncLimit()} limit): ${data.path}`, file.stat.size)
     notifyLargeFileSkipped(plugin, data.path, file.stat.size, `Fast Note Sync skipped large file upload: ${data.path}`)
     plugin.recordSyncCompleted('file', data.pageIndex)
@@ -580,6 +586,7 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
         plugin.totalChunksToUpload -= actualTotalChunks
         plugin.concurrencyLimiter.releaseSlot(data.path)
         plugin.recordSyncCompleted('file', data.pageIndex)
+        if (data.awaitCompletion) throw new Error(`无法读取待上传附件：${data.path}`)
         return;
       }
 
@@ -713,6 +720,7 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
             status: 'pending',
             message: '连接已断开，等待重连后续传'
           });
+          if (data.awaitCompletion) throw new Error(`附件上传连接已断开：${data.path}`)
           return;
         }
 
@@ -723,6 +731,7 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
           try { plugin.app.saveLocalStorage(checkpointKey, null) } catch { /* ignore */ }
           plugin.concurrencyLimiter.releaseSlot(data.path)
           plugin.recordSyncCompleted('file', data.pageIndex)
+          if (data.awaitCompletion) throw new Error(`附件上传已取消：${data.path}`)
           return;
         }
 
@@ -787,6 +796,7 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
       plugin.totalChunksToUpload -= actualTotalChunks
       plugin.concurrencyLimiter.releaseSlot(data.path);
       plugin.recordSyncCompleted('file', data.pageIndex)
+      if (data.awaitCompletion) throw e
     } finally {
       // 任务结束（完成或取消/失败），移除活跃标记
       activeUploadsMap.delete(data.path);

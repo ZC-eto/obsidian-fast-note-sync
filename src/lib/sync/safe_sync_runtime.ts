@@ -238,6 +238,10 @@ export class SafeSyncRuntime {
     return this.engine.store?.getBaseline(path)
   }
 
+  discardPendingForPaths(paths: string[]): Promise<number> {
+    return this.engine.discardPendingForPaths(paths)
+  }
+
   close(): void {
     if (this.roleHeartbeat) window.clearInterval(this.roleHeartbeat)
     this.engine.cancelRemoteEvents(new Error("safe sync runtime closed"))
