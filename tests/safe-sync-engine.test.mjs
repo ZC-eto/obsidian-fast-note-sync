@@ -229,6 +229,58 @@ assert.equal(cancelPreview.status.state, "bootstrapping")
 await cancelPreview.cancelMirrorBootstrap(true)
 assert.equal(cancelPreview.status.state, "active", "closing a mirror preview must preserve the enabled local preference")
 
+const refreshOnlyStore = new MemoryStore()
+refreshOnlyStore.persistedBootstrapComplete = true
+const refreshOnlyTransport = new ScriptedTransport({
+  SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+})
+const refreshOnlyCancel = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: refreshOnlyTransport,
+  createStateStore: () => refreshOnlyStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-refresh-only",
+  now: () => 1_000,
+})
+await refreshOnlyCancel.cancelMirrorBootstrap(true)
+assert.equal(refreshOnlyCancel.status.state, "active", "cancel without a local session must still refresh stale bootstrap status")
+
+const retryCancelStore = new MemoryStore()
+retryCancelStore.persistedBootstrapComplete = true
+const retryCancelTransport = new ScriptedTransport({
+  SafeSyncStatus: [
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "BOOTSTRAPPING", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    new Error("status unavailable"),
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-retry-cancel", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-retry-cancel", cursor: "cursor-retry-cancel" }],
+  SafeSyncBootstrapPage: [{ sessionId: "session-retry-cancel", snapshotVaultRevision: 0, manifestHash: "manifest-retry-cancel", items: [], nextCursor: "" }],
+  SafeSyncBootstrapCancel: [
+    new Error("cancel response unavailable"),
+    new Error("cancel response unavailable again"),
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+})
+const retryCancel = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: retryCancelTransport,
+  createStateStore: () => retryCancelStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-retry-cancel",
+  now: () => 1_000,
+})
+await retryCancel.beginMirrorBootstrap()
+await assert.rejects(() => retryCancel.cancelMirrorBootstrap(true), /cancel response unavailable/)
+assert.equal(retryCancel.status.state, "bootstrapping")
+await assert.rejects(() => retryCancel.cancelMirrorBootstrap(true), /cancel response unavailable again/)
+assert.equal(retryCancel.status.state, "error")
+await retryCancel.cancelMirrorBootstrap(true)
+assert.equal(retryCancel.status.state, "active", "a failed cancel response must preserve the session for retry")
+assert.equal(retryCancelTransport.calls.filter((call) => call.action === "SafeSyncBootstrapCancel").length, 3)
+
 const failedPageStore = new MemoryStore()
 const failedPageTransport = new ScriptedTransport({
   SafeSyncStatus: [

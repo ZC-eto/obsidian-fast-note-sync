@@ -291,9 +291,21 @@ export class SafeSyncEngine {
 
   async cancelMirrorBootstrap(localRequested = false): Promise<void> {
     const snapshot = this.mirrorBootstrap
+    if (!snapshot) {
+      await this.refreshStatus(localRequested)
+      return
+    }
+    try {
+      await this.options.transport.request("SafeSyncBootstrapCancel", { vault: this.options.vault, sessionId: snapshot.sessionId })
+    } catch (error) {
+      const refreshed = await this.refreshStatus(localRequested).catch(() => undefined)
+      if (refreshed && refreshed.state !== "error" && refreshed.serverState !== "BOOTSTRAPPING") {
+        this.mirrorBootstrap = undefined
+        return
+      }
+      throw error
+    }
     this.mirrorBootstrap = undefined
-    if (!snapshot) return
-    await this.options.transport.request("SafeSyncBootstrapCancel", { vault: this.options.vault, sessionId: snapshot.sessionId })
     await this.refreshStatus(localRequested)
   }
 
