@@ -65,24 +65,24 @@ export class SafeMirrorManager {
 
   async apply(session: SafeMirrorSession, onProgress: ProgressCallback = () => undefined): Promise<SafeMirrorRecoveryRecord> {
     if (!this.activeSession || this.activeSession.id !== session.id) throw new Error("镜像计划已失效")
-    if (session.snapshot.expiresAt <= Date.now()) throw new Error("镜像计划已过期，请重新生成")
-    if (safeMirrorPlanChangeCount(session.plan) === 0) {
-      await this.cancel()
-      throw new Error("本地与远端已经一致，无需覆盖")
-    }
-    if (session.plan.direction === "LOCAL_TO_REMOTE" && this.plugin.settings.syncRole === "remote-mirror") {
-      throw new Error("远端镜像端不能覆盖远端，请先切换为双向或本地发布端")
-    }
-    const currentLocal = await this.requireRuntime().engine.localManifest()
-    if (safeMirrorPlanChangeCount(createSafeMirrorPlan("LOCAL_TO_REMOTE", currentLocal, session.localItems)) !== 0) {
-      throw new Error("本地内容在预览后已变化，请重新生成差异预览")
-    }
-
-    const record = await this.recovery.create(session.plan.direction, safeMirrorPlanChangeCount(session.plan))
+    let record: SafeMirrorRecoveryRecord | undefined
+    let committed = false
     try {
+      if (session.snapshot.expiresAt <= Date.now()) throw new Error("镜像计划已过期，请重新生成")
+      if (safeMirrorPlanChangeCount(session.plan) === 0) throw new Error("本地与远端已经一致，无需覆盖")
+      if (session.plan.direction === "LOCAL_TO_REMOTE" && this.plugin.settings.syncRole === "remote-mirror") {
+        throw new Error("远端镜像端不能覆盖远端，请先切换为双向或本地发布端")
+      }
+      const currentLocal = await this.requireRuntime().engine.localManifest()
+      if (safeMirrorPlanChangeCount(createSafeMirrorPlan("LOCAL_TO_REMOTE", currentLocal, session.localItems)) !== 0) {
+        throw new Error("本地内容在预览后已变化，请重新生成差异预览")
+      }
+
+      record = await this.recovery.create(session.plan.direction, safeMirrorPlanChangeCount(session.plan))
       await this.captureTarget(session, record, onProgress)
       await this.recovery.update(record, "READY")
       await this.requireRuntime().engine.commitMirrorBootstrap(session.snapshot)
+      committed = true
       this.activeSession = undefined
       this.plugin.settings.safeRevisionSyncEnabled = true
       await this.plugin.saveSettings()
@@ -96,7 +96,10 @@ export class SafeMirrorManager {
       await this.recovery.update(record, "COMPLETED")
       return record
     } catch (error) {
-      await this.recovery.update(record, "FAILED", error instanceof Error ? error.message : String(error))
+      if (record) {
+        await this.recovery.update(record, "FAILED", error instanceof Error ? error.message : String(error)).catch(() => undefined)
+      }
+      if (!committed) await this.cancel().catch(() => undefined)
       throw error
     }
   }

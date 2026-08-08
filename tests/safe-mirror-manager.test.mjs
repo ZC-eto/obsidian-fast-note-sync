@@ -116,6 +116,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   const ignored = new Set()
   let saveCount = 0
   let commitCount = 0
+  let cancelCount = 0
 
   const manifest = (items) => [...items.values()].map(({ content: _content, ctime: _ctime, mtime: _mtime, ...item }) => ({ ...item }))
   const localFile = (resource) => resource && resource.resourceType !== "FOLDER" ? {
@@ -155,7 +156,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     },
     async localManifest() { return manifest(localMap) },
     async commitMirrorBootstrap() { commitCount++; runtime.status = { state: "active" } },
-    async cancelMirrorBootstrap() {},
+    async cancelMirrorBootstrap() { cancelCount++ },
   }
   const applyMutation = (resourceType, input) => {
     if (input.action === "DELETE") {
@@ -220,6 +221,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     remoteMap,
     get saveCount() { return saveCount },
     get commitCount() { return commitCount },
+    get cancelCount() { return cancelCount },
     assertNoIgnoredPaths() { assert.equal(ignored.size, 0) },
   }
 }
@@ -296,6 +298,8 @@ function textAt(items, target) {
   harness.localMap.set("note.md", makeResource("NOTE", "note.md", "after-preview"))
   await assert.rejects(() => manager.apply(session), /本地内容在预览后已变化/)
   assert.equal(harness.commitCount, 0)
+  assert.equal(harness.cancelCount, 1)
+  assert.equal(manager.session, undefined)
 }
 
 // REQ-OBS-001: an expired preview cannot be applied.
@@ -305,6 +309,8 @@ function textAt(items, target) {
   const session = await manager.prepare("LOCAL_TO_REMOTE")
   await assert.rejects(() => manager.apply(session), /镜像计划已过期/)
   assert.equal(harness.commitCount, 0)
+  assert.equal(harness.cancelCount, 1)
+  assert.equal(manager.session, undefined)
 }
 
 // REQ-ROLE-001: a remote mirror device cannot authoritatively replace the server.
@@ -314,6 +320,23 @@ function textAt(items, target) {
   const session = await manager.prepare("LOCAL_TO_REMOTE")
   await assert.rejects(() => manager.apply(session), /远端镜像端不能覆盖远端/)
   assert.equal(harness.commitCount, 0)
+  assert.equal(harness.cancelCount, 1)
+  assert.equal(manager.session, undefined)
+}
+
+// REQ-BACKUP-001: a stale remote manifest fails safely and releases bootstrap state.
+{
+  const harness = makeHarness({
+    local: [makeResource("NOTE", "note.md", "local")],
+    remote: [makeResource("NOTE", "note.md", "remote-before")],
+  })
+  const manager = new SafeMirrorManager(harness.plugin)
+  const session = await manager.prepare("LOCAL_TO_REMOTE")
+  harness.remoteMap.set("note.md", makeResource("NOTE", "note.md", "remote-after-preview"))
+  await assert.rejects(() => manager.apply(session), /远端内容在预览后已变化/)
+  assert.equal(harness.commitCount, 0)
+  assert.equal(harness.cancelCount, 1)
+  assert.equal(manager.session, undefined)
 }
 
 console.log("safe mirror manager integration tests passed")
