@@ -338,6 +338,7 @@ function textAt(items, target) {
   assert.equal(harness.commitCount, 0)
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
+  await assert.rejects(() => manager.rollbackLatest(), /没有可恢复的权威覆盖记录/)
 }
 
 // REQ-MIRROR-001: Windows CRLF disk size must not be sent for normalized note content.
@@ -353,6 +354,24 @@ function textAt(items, target) {
   const record = await manager.apply(session)
   assert.equal(record.status, "COMPLETED")
   assert.equal(harness.remoteMap.get("windows.md").size, local.size)
+}
+
+// REQ-BACKUP-001: a Windows CRLF note recovery record must use normalized content size.
+{
+  const local = makeResource("NOTE", "windows-rollback.md", "line-1\nline-2")
+  local.statSize = local.size + 1
+  const harness = makeHarness({
+    local: [local],
+    remote: [makeResource("NOTE", "windows-rollback.md", "remote-new")],
+  })
+  const manager = new SafeMirrorManager(harness.plugin)
+  const session = await manager.prepare("REMOTE_TO_LOCAL")
+  const record = await manager.apply(session)
+  assert.equal(record.entries[0].size, local.size, "恢复包必须记录规范化文本字节大小")
+
+  const rolledBack = await manager.rollbackLatest()
+  assert.equal(rolledBack.status, "ROLLED_BACK")
+  assert.equal(textAt(harness.localMap, "windows-rollback.md"), "line-1\nline-2")
 }
 
 console.log("safe mirror manager integration tests passed")

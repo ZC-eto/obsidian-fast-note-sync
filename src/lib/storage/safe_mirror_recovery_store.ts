@@ -2,7 +2,7 @@ import type FastSync from "../../main"
 import { generateUUID, getPluginDir } from "../utils/helpers"
 import type { SafeMirrorDirection, SafeMirrorResourceType } from "../sync/safe_mirror_plan"
 
-export type SafeMirrorRecoveryStatus = "PREPARING" | "READY" | "APPLYING" | "COMPLETED" | "FAILED" | "ROLLED_BACK"
+export type SafeMirrorRecoveryStatus = "PREPARING" | "READY" | "APPLYING" | "COMPLETED" | "FAILED" | "ABORTED" | "ROLLED_BACK"
 
 export const SAFE_MIRROR_RECOVERY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000
 

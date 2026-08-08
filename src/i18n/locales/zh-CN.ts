@@ -179,7 +179,7 @@ export default {
   "setting.shortcut.open_settings_desc": "设置快速打开插件设置面板的快捷键。点击输入框后按下键盘组合键即可设置。",
 
   // --- setting.support ---
-  "setting.support.title": "赞助与支持",
+  "setting.support.title": "维护与支持",
   "setting.support.desc": "如果这个插件帮助到您，并且想要它继续开发，请在以下方式支持我们，感谢您对开源软件的支持！",
   "setting.support.kofi": "非中国地区 ( Ko-fi )",
   "setting.support.wechat": "中国地区 ( 微信扫码打赏 )",

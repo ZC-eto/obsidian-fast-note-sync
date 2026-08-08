@@ -1,6 +1,6 @@
 {
   "name": "fast-note-sync",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "type": "module",
   "description": "Real-time sync of your vaults across server, mobile, and web; shareable with anyone; supports REST and MCP integrations to build your personal AI knowledge base.",
   "main": "main.js",
@@ -12,8 +12,9 @@
     "lint:css": "stylelint \"src/**/*.scss\"",
     "fix": "eslint --fix src",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "test": "npm-run-all2 --sequential test:auth test:mirror test:safe-mirror test:safe-mirror-manager test:vault-name test:proto-safe test:safe-state test:safe-engine test:safe-inbound test:safe-transport",
+    "test": "npm-run-all2 --sequential test:auth test:hash-range test:mirror test:safe-mirror test:safe-mirror-manager test:vault-name test:proto-safe test:safe-state test:safe-engine test:safe-inbound test:safe-transport",
     "test:auth": "node tests/websocket-auth-error.test.mjs",
+    "test:hash-range": "node tests/file-hash-range.test.mjs",
     "test:mirror": "node tests/file-mirror-restore.test.mjs",
     "test:safe-mirror": "node tests/safe-mirror-plan.test.mjs",
     "test:safe-mirror-manager": "node tests/safe-mirror-manager.test.mjs",

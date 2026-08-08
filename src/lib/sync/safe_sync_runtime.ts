@@ -266,10 +266,9 @@ export class SafeSyncRuntime {
       if (!(entry instanceof TFile) || isPathExcluded(entry.path, this.plugin)) continue
       const isNote = entry.path.endsWith(".md")
       const content = isNote ? await this.plugin.app.vault.read(entry) : undefined
-      let contentHash = content === undefined
-        ? this.plugin.fileHashManager.getValidHash(entry.path, entry.stat.mtime, entry.stat.size)
+      const contentHash = content === undefined
+        ? await hashFileAsync(this.plugin.app, entry.path)
         : await hashContentAsync(content)
-      if (contentHash == null) contentHash = await hashFileAsync(this.plugin.app, entry.path)
       manifest.push({
         resourceType: isNote ? "NOTE" : "FILE",
         path: entry.path,

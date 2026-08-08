@@ -165,7 +165,7 @@ export default {
   "setting.shortcut.open_settings_desc": "プラグイン設定パネルをすばやく開くショートカットキーを設定します。入力フィールドをクリックし、キーの組み合わせを押して設定してください。",
 
   // --- setting.support ---
-  "setting.support.title": "スポンサーシップとサポート",
+  "setting.support.title": "メンテナンスとサポート",
   "setting.support.desc": "このプラグインが役立ち、開発を継続したい場合は、以下の方法でサポートしてください。オープンソースソフトウェアへのサポートに感謝します！",
   "setting.support.kofi": "中国以外地域 ( Ko-fi )",
   "setting.support.wechat": "中国地域 ( WeChat スキャンで寄付 )",

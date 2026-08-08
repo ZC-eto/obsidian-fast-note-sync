@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { KofiImage, WXImage } from "src/lib/utils/helpers_image";
 import { createPortal } from "react-dom";
 import { dump } from "src/lib/utils/helpers";
 import { setIcon } from "obsidian";
@@ -491,35 +490,12 @@ export const SupportView = ({ plugin }: { plugin: FastSync }) => {
   return (
     <div className="fns-support-view-wrapper fns-supporters-list-card">
       <div className="fns-support-header-desc">
-        {$("setting.support.desc")}
+        当前版本由 ZC-eto 自维护，问题反馈、功能建议和版本更新均使用自己的 Fork。
       </div>
-
       <div className="fns-support-cards-container">
-        {/* Ko-fi Card */}
-        <div className="fns-support-card fns-kofi-card">
-          <div className="fns-support-card-header">
-            <span className="fns-support-card-icon">☕</span>
-            <span className="fns-support-card-title">{$("setting.support.kofi")}</span>
-          </div>
-          <div className="fns-support-card-body">
-            <a href="https://ko-fi.com/haierkeys" target="_blank" rel="noreferrer" className="fns-support-link">
-              <img src={KofiImage} className="fns-support-img-kofi" alt="Ko-fi" />
-            </a>
-          </div>
-        </div>
-
-        {/* WeChat Pay Card */}
-        <div className="fns-support-card fns-wechat-card">
-          <div className="fns-support-card-header">
-            <span className="fns-support-card-icon">🧧</span>
-            <span className="fns-support-card-title">{$("setting.support.wechat")}</span>
-          </div>
-          <div className="fns-support-card-body">
-            <div className="fns-wechat-qr-wrapper">
-              <img src={WXImage} className="fns-support-img-wechat" alt="WeChat Pay" />
-            </div>
-          </div>
-        </div>
+        <a href="https://github.com/ZC-eto/obsidian-fast-note-sync" target="_blank" rel="noreferrer" className="fns-support-link">
+          ZC-eto/obsidian-fast-note-sync
+        </a>
       </div>
 
       {/* Supporters List Section */}

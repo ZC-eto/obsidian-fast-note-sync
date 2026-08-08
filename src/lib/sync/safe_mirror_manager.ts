@@ -98,7 +98,7 @@ export class SafeMirrorManager {
       return record
     } catch (error) {
       if (record) {
-        await this.recovery.update(record, "FAILED", error instanceof Error ? error.message : String(error)).catch(() => undefined)
+        await this.recovery.update(record, committed ? "FAILED" : "ABORTED", error instanceof Error ? error.message : String(error)).catch(() => undefined)
       }
       if (committed) {
         await this.requireRuntime().discardPendingForPaths(allPlanItems(session.plan).map((item) => item.path)).catch(() => undefined)
@@ -159,7 +159,7 @@ export class SafeMirrorManager {
     await this.recovery.addEntry(record, {
       ...recoveryEntry(target, true),
       contentHash,
-      size: abstract.stat.size,
+      size: content.byteLength,
       ctime: getSafeCtime(abstract.stat),
       mtime: abstract.stat.mtime,
     }, content)
@@ -253,6 +253,7 @@ export class SafeMirrorManager {
       chunkSize,
       nextChunkIndex: upload.nextChunkIndex,
       awaitCompletion: true,
+      expectedContentHash: item.contentHash,
       onUploadReady: () => runtime.commitFileUpload(upload.operationId, upload.sessionId, item.contentHash, local.stat.size).then(() => undefined),
     }, this.plugin)
   }

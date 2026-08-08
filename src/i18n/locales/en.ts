@@ -179,7 +179,7 @@ export default {
   "setting.shortcut.open_settings_desc": "Set the shortcut to quickly open the plugin settings panel. Click the input field and press the key combination.",
 
   // --- setting.support ---
-  "setting.support.title": "Sponsorship & Support",
+  "setting.support.title": "Maintenance & Support",
   "setting.support.desc": "If this plugin has helped you and you want it to continue development, please support us via the following methods. Thank you for your support of open-source software!",
   "setting.support.kofi": "Non-China Region (Ko-fi)",
   "setting.support.wechat": "China Region (WeChat Scan to Donate)",

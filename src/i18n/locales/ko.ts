@@ -165,7 +165,7 @@ export default {
   "setting.shortcut.open_settings_desc": "플러그인 설정 패널을 빠르게 열 단축키를 설정합니다. 입력란을 클릭한 후 키 조합을 누르면 설정할 수 있습니다.",
 
   // --- setting.support ---
-  "setting.support.title": "후원 및 지원",
+  "setting.support.title": "유지 관리 및 지원",
   "setting.support.desc": "이 플러그인이 도움이 되었고 계속 개발되기를 원하신다면 아래 방법으로 우리를 지원해 주세요. 오픈 소스 소프트웨어에 대한 귀하의 지원에 감사드립니다!",
   "setting.support.kofi": "중국 지역 외 ( Ko-fi )",
   "setting.support.wechat": "중국 지역 ( WeChat 스캔으로 팁 지급 )",

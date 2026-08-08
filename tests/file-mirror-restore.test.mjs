@@ -119,8 +119,9 @@ function makeFakePlugin(localStorageMap, fileMap, { onGetFiles } = {}) {
   };
 }
 
-const MIRROR_PATH = ".obsidian/plugins/fast-note-sync/fileHashMap.json";
+const MIRROR_PATH = ".obsidian/plugins/fast-note-sync/fileHashMap-v2.json";
 const SYNC_MIRROR_PATH = ".obsidian/plugins/fast-note-sync/syncHashMap.json";
+const STORAGE_KEY = "fns-fileHashMap-v2";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // === 场景 A：写入哈希 → flush → localStorage 与镜像文件都有数据 ===
@@ -136,7 +137,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   mgr.flush();
   await sleep(20); // 等 adapter.write 异步落盘
 
-  assert.equal(ls.has("fns-fileHashMap"), true, "localStorage 应有稳定 key 数据");
+  assert.equal(ls.has(STORAGE_KEY), true, "localStorage 应有 v2 稳定 key 数据");
   assert.equal(filesA.has(MIRROR_PATH), true, "镜像文件应已写入");
   assert.equal(filesA.has(SYNC_MIRROR_PATH), true, "同步基准镜像文件应已写入");
   const mirrored = JSON.parse(filesA.get(MIRROR_PATH));
@@ -156,7 +157,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   assert.equal(rebuilt, false, "镜像命中时不应触发全量重建（不应调用 vault.getFiles）");
   assert.equal(mgr2.getPathHash("notes/a.md"), "hash-a", "应从镜像恢复哈希");
   assert.equal(mgr2.getValidHash("img/b.png", 222, 20), "hash-b", "mtime/size 应一并恢复");
-  assert.equal(ls.has("fns-fileHashMap"), true, "恢复后应回写 localStorage");
+  assert.equal(ls.has(STORAGE_KEY), true, "恢复后应回写 v2 localStorage");
 }
 
 // === 场景 C：localStorage 与镜像均无 → 走重建路径（getFiles 被调用），不报错 ===
@@ -171,16 +172,30 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   assert.equal(mgr.isReady(), true);
 }
 
-// === 场景 D：旧版绑定库名的 key 迁移到稳定 key ===
+// === 场景 D：任何旧版 key 都不得迁移到 v2 稳定 key ===
 {
   const ls = new Map();
   const files = new Map();
+  let rebuilt = false;
   ls.set("fns-TestVault-fileHashMap", JSON.stringify({ "old/n.md": { hash: "h-old", mtime: 1, size: 2 } }));
-  const plugin = makeFakePlugin(ls, files);
+  const plugin = makeFakePlugin(ls, files, { onGetFiles: () => { rebuilt = true; } });
   const mgr = new FileHashManager(plugin);
   await mgr.initialize();
-  assert.equal(mgr.getPathHash("old/n.md"), "h-old", "旧 key 数据应可读到");
-  assert.equal(ls.has("fns-fileHashMap"), true, "旧 key 数据应迁移到稳定 key");
+  assert.equal(rebuilt, true, "旧版绑定库名缓存不得迁移，应使用新算法重建");
+  assert.equal(mgr.getValidHash("old/n.md", 1, 2), null, "不得继续使用旧版绑定库名缓存");
+}
+
+// === 场景 E：存在已知错误算法生成的 v1 稳定缓存时必须冷重建，不能迁移 ===
+{
+  const ls = new Map();
+  const files = new Map();
+  let rebuilt = false;
+  ls.set("fns-fileHashMap", JSON.stringify({ "bad.pdf": { hash: "stale-v1", mtime: 1, size: 2 } }));
+  const plugin = makeFakePlugin(ls, files, { onGetFiles: () => { rebuilt = true; } });
+  const mgr = new FileHashManager(plugin);
+  await mgr.initialize();
+  assert.equal(rebuilt, true, "v1 稳定缓存不得迁移，应使用新算法重建");
+  assert.equal(mgr.getValidHash("bad.pdf", 1, 2), null, "不得继续使用 v1 错误哈希");
 }
 
 console.log("file-mirror-restore.test.mjs: all scenarios passed");

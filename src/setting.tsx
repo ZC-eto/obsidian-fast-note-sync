@@ -730,12 +730,6 @@ export class SettingTab extends PluginSettingTab {
         window.open("https://github.com/ZC-eto/obsidian-fast-note-sync/issues", "_blank")
       }
 
-      const telegramButton = debugDiv.createEl("button")
-      telegramButton.setText($("setting.support.telegram"))
-      telegramButton.onclick = () => {
-        window.open("https://t.me/obsidian_users", "_blank")
-      }
-
       const logViewButton = debugDiv.createEl("button")
       logViewButton.setText($("ui.log.view_log"))
       logViewButton.onclick = () => {
@@ -837,7 +831,11 @@ export class SettingTab extends PluginSettingTab {
                 `${getPluginDir(this.plugin)}/data.json`,
                 `${getPluginDir(this.plugin)}/configHashMap.json`,
                 `${getPluginDir(this.plugin)}/fileHashMap.json`,
+                `${getPluginDir(this.plugin)}/fileHashMap-v2.json`,
+                `${getPluginDir(this.plugin)}/syncHashMap.json`,
                 `${getPluginDir(this.plugin)}/folderSnapshot.json`,
+                `${getPluginDir(this.plugin)}/safe-sync`,
+                `${getPluginDir(this.plugin)}/recovery`,
                 `${this.app.vault.configDir}/community-plugins.json`,
               ]
               this.plugin.settings.syncExcludeFolders = JSON.stringify(defaultExcludes.map((pattern) => ({ pattern, caseSensitive: false })))

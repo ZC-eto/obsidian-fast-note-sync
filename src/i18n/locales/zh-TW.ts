@@ -179,7 +179,7 @@ export default {
   "setting.shortcut.open_settings_desc": "設定快速開啟外掛程式設定面板的快捷鍵。點擊輸入框後按下鍵盤組合鍵即可設定。",
 
   // --- setting.support ---
-  "setting.support.title": "贊助與支援",
+  "setting.support.title": "維護與支援",
   "setting.support.desc": "如果這個插件幫助到您，並且想要它繼續開發，請在以下方式支援我們，感謝您對開源軟件的支援！",
   "setting.support.kofi": "非中國地區 ( Ko-fi )",
   "setting.support.wechat": "中國地區 ( 微信掃碼打賞 )",

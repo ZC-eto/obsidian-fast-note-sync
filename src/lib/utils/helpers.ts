@@ -320,8 +320,13 @@ export const configIsPathExcluded = function (relativePath: string, plugin: Fast
   if (
     normalizedPath === `${pluginSelfDir}/configHashMap.json` ||
     normalizedPath === `${pluginSelfDir}/fileHashMap.json` ||
+    normalizedPath === `${pluginSelfDir}/fileHashMap-v2.json` ||
     normalizedPath === `${pluginSelfDir}/syncHashMap.json` ||
     normalizedPath === `${pluginSelfDir}/folderSnapshot.json` ||
+    normalizedPath === `${pluginSelfDir}/safe-sync` ||
+    normalizedPath.startsWith(`${pluginSelfDir}/safe-sync/`) ||
+    normalizedPath === `${pluginSelfDir}/recovery` ||
+    normalizedPath.startsWith(`${pluginSelfDir}/recovery/`) ||
     normalizedPath === `${pluginSelfDir}/conflict-notes` ||
     normalizedPath.startsWith(`${pluginSelfDir}/conflict-notes/`)
   ) {
@@ -501,13 +506,7 @@ async function readRange(app: App, path: string, offset: number, length: number)
     })
 
     if (response.status === 206 || response.status === 200) {
-      let buffer = await response.arrayBuffer()
-      // 如果服务器不支持 206 返回了 200 (全量)，或返回数据量超过预期，则进行截取以保持一致性
-      // If server doesn't support 206 (returns 200) or returns more data than expected, slice to maintain consistency
-      if (buffer.byteLength > length) {
-        return buffer.slice(0, length)
-      }
-      return buffer
+      return normalizeRangeResponse(await response.arrayBuffer(), response.status, offset, length)
     }
     throw new Error(`Failed to read file range via fetch: ${response.status}`)
   } catch (error) {
@@ -518,6 +517,17 @@ async function readRange(app: App, path: string, offset: number, length: number)
   } finally {
     window.clearTimeout(timeoutId)
   }
+}
+
+export function normalizeRangeResponse(buffer: ArrayBuffer, status: number, offset: number, length: number): ArrayBuffer {
+  if (status === 206) {
+    if (buffer.byteLength < length) throw new Error(`Partial range response is too short: need ${length}, got ${buffer.byteLength}`)
+    return buffer.byteLength > length ? buffer.slice(0, length) : buffer
+  }
+  if (status !== 200) throw new Error(`Unexpected range response status: ${status}`)
+  if (buffer.byteLength === length) return buffer
+  if (offset >= 0 && buffer.byteLength >= offset + length) return buffer.slice(offset, offset + length)
+  throw new Error(`Full range response is too short: need ${offset + length}, got ${buffer.byteLength}`)
 }
 
 /**

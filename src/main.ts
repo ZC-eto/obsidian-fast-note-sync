@@ -749,7 +749,11 @@ export default class FastSync extends Plugin {
         `${pluginSelfDir}/data.json`,
         `${pluginSelfDir}/configHashMap.json`,
         `${pluginSelfDir}/fileHashMap.json`,
+        `${pluginSelfDir}/fileHashMap-v2.json`,
+        `${pluginSelfDir}/syncHashMap.json`,
         `${pluginSelfDir}/folderSnapshot.json`,
+        `${pluginSelfDir}/safe-sync`,
+        `${pluginSelfDir}/recovery`,
         `${this.app.vault.configDir}/community-plugins.json`,
       ];
       defaultExcludes.forEach(pattern => {

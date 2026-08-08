@@ -34,10 +34,10 @@ export class FileHashManager {
     this.plugin = plugin;
     // 与 vault 名无关的稳定存储键：iCloud 手机端会把库文件夹改名，绑定 vault 名的旧 key 会失效
     // (与 local_storage_manager.ts getInternalKey 的修复同理)，历史键迁移见 loadFromStorage
-    this.storageKey = `fns-fileHashMap`;
+    this.storageKey = `fns-fileHashMap-v2`;
     this.syncStorageKey = `fns-syncHashMap`;
     this.debouncedFlush = debounce(() => this.flush(), 500);
-    this.mirror = new LocalStateFileMirror(plugin, "fileHashMap.json");
+    this.mirror = new LocalStateFileMirror(plugin, "fileHashMap-v2.json");
     this.syncMirror = new LocalStateFileMirror(plugin, "syncHashMap.json");
   }
 
@@ -324,30 +324,9 @@ export class FileHashManager {
    */
   private loadFromStorage(): boolean {
     try {
-      let data = this.plugin.app.loadLocalStorage(this.storageKey) as string | null;
-
-      // 迁移逻辑：如果新键无数据，按由新到旧依次回溯历史键格式
-      if (!data) {
-        const vaultName = this.plugin.app.vault.getName();
-        const legacyKeys = [
-          `fns-${vaultName}-fileHashMap`,                      // 上一版：绑定本地库名的稳定前缀
-          `fast-note-sync-${vaultName}-fileHashMap`,           // 更早版
-          `fast-note-sync-${vaultName}-file-hash-map`,         // 更更早版
-          `fast-note-sync-file-hash-map-${vaultName}`,         // 最原始格式
-        ];
-        for (const legacyKey of legacyKeys) {
-          data = this.plugin.app.loadLocalStorage(legacyKey) as string | null;
-          if (data) break;
-        }
-
-        if (data) {
-          dump("FileHashManager: 发现旧版哈希表数据，执行迁移");
-          this.plugin.app.saveLocalStorage(this.storageKey, data);
-        } else {
-          return false;
-        }
-      }
-
+      const data = this.plugin.app.loadLocalStorage(this.storageKey) as string | null;
+      // v2 修复了大附件 Range 取片算法。任何旧键都可能包含错误哈希，必须冷重建。
+      if (!data) return false;
       return this.parseAndLoad(data);
     } catch (error) {
       dump("FileHashManager: 从 localStorage 加载失败", error);

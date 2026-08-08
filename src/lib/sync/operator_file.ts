@@ -590,7 +590,14 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
         return;
       }
 
+      if (content.byteLength !== file.stat.size) {
+        throw new Error(`附件大小在预览后已变化：${data.path}`)
+      }
+
       const contentHash = await hashFileAsync(plugin.app, file.path)
+      if (data.expectedContentHash && contentHash !== data.expectedContentHash) {
+        throw new Error(`附件内容在预览后已变化：${data.path}`)
+      }
       logMemorySnapshot(`after upload hash ${data.path}`)
       // 将 hash 暂存到 pending map，等待服务端 FileUploadAck 后再写入 hashManager
       // Temporarily store hash in pending map, update hashManager only after server FileUploadAck

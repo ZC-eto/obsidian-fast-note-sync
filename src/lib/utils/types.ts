@@ -80,6 +80,8 @@ export interface FileUploadMessage {
     onUploadReady?: () => Promise<void>;
     /** 镜像事务需要等待上传和安全提交完成后再处理下一项 */
     awaitCompletion?: boolean;
+    /** 权威覆盖预览中的源内容哈希；上传前必须再次匹配 */
+    expectedContentHash?: string;
     /** 所属下载页（0-based），见 ReceiveMessage.pageIndex 注释 / owning download page, see ReceiveMessage.pageIndex */
     pageIndex?: number;
 }

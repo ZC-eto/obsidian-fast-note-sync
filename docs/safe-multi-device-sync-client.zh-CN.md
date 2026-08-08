@@ -4,8 +4,8 @@
 
 - 状态：当前 Windows 自用范围已实现并发布；两个权威覆盖方向与回滚已通过隔离集成测试，Android 安装按用户要求后续单独进行
 - 日期：2026-08-08
-- 插件交付版本：`2.5.4`
-- 当前 fork 自用构建版本：`2.5.4`
+- 插件交付版本：`2.5.5`
+- 当前 fork 自用构建版本：`2.5.5`
 - 工作分支：`feat/safe-multi-device-sync`
 
 ## 权威规格
@@ -36,6 +36,7 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 - 点击执行后会重新校验本地清单；预览后本地或远端发生变化时计划失效，必须重新生成差异。服务端会在普通同步切换到安全基准前按当前实际记录刷新清单，避免把迁移时的旧哈希误判为远端中途变化。
 - 覆盖在提交安全基准前失败时会自动取消 bootstrap 并清空活动预览，不会把设置页遗留在错误的建立基准状态；若已提交为 `STRICT` 后执行失败，则保留恢复包供用户回滚。
 - 覆盖过程异常退出后，状态为 `APPLYING` 的最近恢复包仍可回滚；嵌套目录先处理子项再处理父目录。
+- 恢复包尚未完整生成、覆盖尚未开始时发生的失败会记录为 `ABORTED`，不会出现在可回滚入口；只有已进入覆盖阶段的 `FAILED` 记录可以回滚。
 - 设置状态完整区分 `disabled`、`unsupported`、`activating`、`bootstrapping`、`active`、`strict-vault-local-disabled` 和 `error`。
 - 服务端不是 PostgreSQL 用户库、SQLite 导入未验证或不支持安全协议时，toggle 保持关闭，不创建本地 active 状态。
 - baseline、pending、稳定 deviceId 和空 Vault bootstrap 完成标记按 `serverFingerprint + uid + vaultId` 写入插件私有 JSON，并保留 localStorage 缓存；状态文件损坏时 fail-closed。
@@ -55,7 +56,8 @@ Windows 插件 `2.5.0` 已写入真实 Obsidian 安装目录并完成普通同�
 - 回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.4.0-before-safe-sync-20260807-091747`
 - 服务地址：`https://fast-note-sync-safe-1irxvu-6387b0-23-144-4-140.sslip.io`
 - 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
-- 持久状态：`fileHashMap.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留
+- 持久状态：`fileHashMap-v2.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留；v1 文件哈希缓存不再迁移，升级后会按修复后的 Range 读取规则重建
+- `safe-sync/` 的设备状态和 `recovery/` 的权威覆盖恢复包属于设备私有数据，即使启用旧“配置同步”也会被硬排除，不上传到远端或其他设备
 - 运行验证：Obsidian 已加载 `2.5.0`，WebSocket 已连接并鉴权，普通增量同步完成；设置页可见“安全多端同步”、问号帮助、设备角色、两个覆盖方向和回滚入口
 - 服务能力：客户端观察到 capability 可用，服务端状态为 `OFF`；`safeRevisionSyncEnabled=false`，没有进入 bootstrap
 - 文件核对：Windows 实际安装的 `main.js` SHA-256 为 `5b9c4f506dd01e5e653c630d8a013f8e175f74a40b3072ca3d12c1125d3c77ef`，与 GitHub `2.5.0` Release 资产一致；原 `data.json`、hash map 和 folder snapshot 均保留
