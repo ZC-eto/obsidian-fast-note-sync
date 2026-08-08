@@ -6,6 +6,8 @@ export type SafeMirrorRecoveryStatus = "PREPARING" | "READY" | "APPLYING" | "COM
 
 export const SAFE_MIRROR_RECOVERY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000
 
+const LATEST_OPERATION_STATUSES = new Set<SafeMirrorRecoveryStatus>(["APPLYING", "COMPLETED", "FAILED", "ROLLED_BACK"])
+
 export interface SafeMirrorRecoveryEntry {
   path: string
   resourceType: SafeMirrorResourceType
@@ -69,18 +71,40 @@ export class SafeMirrorRecoveryStore {
     if (error) record.error = error
     else delete record.error
     await this.save(record)
-    await this.plugin.app.vault.adapter.write(`${this.root}/latest.json`, JSON.stringify({ id: record.id }))
+    if (LATEST_OPERATION_STATUSES.has(status)) {
+      await this.plugin.app.vault.adapter.write(`${this.root}/latest.json`, JSON.stringify({ id: record.id }))
+    }
   }
 
   async latest(): Promise<SafeMirrorRecoveryRecord | undefined> {
     await this.pruneExpired()
     try {
       const pointer = JSON.parse(await this.plugin.app.vault.adapter.read(`${this.root}/latest.json`)) as { id?: string }
-      if (!pointer.id) return undefined
-      return JSON.parse(await this.plugin.app.vault.adapter.read(this.recordFile(pointer.id))) as SafeMirrorRecoveryRecord
+      if (pointer.id) {
+        const record = JSON.parse(await this.plugin.app.vault.adapter.read(this.recordFile(pointer.id))) as SafeMirrorRecoveryRecord
+        if (LATEST_OPERATION_STATUSES.has(record.status)) return record
+      }
     } catch {
-      return undefined
+      // Fall through and repair an old or stale pointer from the retained records.
     }
+    try {
+      const listing = await this.plugin.app.vault.adapter.list(this.root)
+      const folders = [...listing.folders].sort((a, b) => recoveryCreatedAt(b) - recoveryCreatedAt(a))
+      for (const folder of folders) {
+        const id = folder.slice(folder.lastIndexOf("/") + 1)
+        try {
+          const record = JSON.parse(await this.plugin.app.vault.adapter.read(this.recordFile(id))) as SafeMirrorRecoveryRecord
+          if (!LATEST_OPERATION_STATUSES.has(record.status)) continue
+          await this.plugin.app.vault.adapter.write(`${this.root}/latest.json`, JSON.stringify({ id: record.id }))
+          return record
+        } catch {
+          // A damaged record must not hide an older valid recovery point.
+        }
+      }
+    } catch {
+      // Missing recovery storage means there is no recoverable operation.
+    }
+    return undefined
   }
 
   readContent(entry: SafeMirrorRecoveryEntry): Promise<ArrayBuffer> {
@@ -124,4 +148,10 @@ export class SafeMirrorRecoveryStore {
       if (Number.isFinite(createdAt) && createdAt < cutoff) await adapter.rmdir(folder, true)
     }
   }
+}
+
+function recoveryCreatedAt(folder: string): number {
+  const id = folder.slice(folder.lastIndexOf("/") + 1)
+  const createdAt = Number(id.split("-", 1)[0])
+  return Number.isFinite(createdAt) ? createdAt : 0
 }

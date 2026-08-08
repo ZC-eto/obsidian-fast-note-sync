@@ -112,6 +112,7 @@ export class SafeSyncRuntime {
   }
 
   writeMode(): SafeSyncWriteMode {
+    if (this.plugin.safeMirrorManager?.isBusy) return "paused"
     if (this.plugin.settings.safeRevisionSyncEnabled) {
       return this.status.state === "active" ? "safe" : "paused"
     }

@@ -39,6 +39,7 @@ export class SafeMirrorManager {
   private readonly api: HttpApiService
   private readonly recovery: SafeMirrorRecoveryStore
   private activeSession?: SafeMirrorSession
+  private maintenanceBusy = false
 
   constructor(private readonly plugin: FastSync) {
     this.api = new HttpApiService(plugin)
@@ -49,14 +50,24 @@ export class SafeMirrorManager {
     return this.activeSession
   }
 
+  get isBusy(): boolean {
+    return this.maintenanceBusy
+  }
+
   async prepare(direction: SafeMirrorDirection): Promise<SafeMirrorSession> {
+    if (this.maintenanceBusy) throw new Error("权威覆盖或恢复正在执行")
     if (!this.plugin.websocket.isConnected()) throw new Error("服务端未连接")
     if (this.activeSession) await this.cancel()
     const snapshot = await this.requireRuntime().engine.beginMirrorBootstrap()
-    const localItems = await this.requireRuntime().engine.localManifest()
-    const plan = createSafeMirrorPlan(direction, localItems, snapshot.remoteItems)
-    this.activeSession = { id: generateUUID(), createdAt: Date.now(), snapshot, localItems, plan }
-    return this.activeSession
+    try {
+      const localItems = await this.requireRuntime().engine.localManifest()
+      const plan = createSafeMirrorPlan(direction, localItems, snapshot.remoteItems)
+      this.activeSession = { id: generateUUID(), createdAt: Date.now(), snapshot, localItems, plan }
+      return this.activeSession
+    } catch (error) {
+      await this.cancelMirrorBootstrapPreservingPreference().catch(() => undefined)
+      throw error
+    }
   }
 
   async cancel(): Promise<void> {
@@ -66,6 +77,8 @@ export class SafeMirrorManager {
 
   async apply(session: SafeMirrorSession, onProgress: ProgressCallback = () => undefined): Promise<SafeMirrorRecoveryRecord> {
     if (!this.activeSession || this.activeSession.id !== session.id) throw new Error("镜像计划已失效")
+    if (this.maintenanceBusy) throw new Error("权威覆盖或恢复正在执行")
+    this.maintenanceBusy = true
     let record: SafeMirrorRecoveryRecord | undefined
     let committed = false
     try {
@@ -105,17 +118,26 @@ export class SafeMirrorManager {
       }
       if (!committed) await this.cancel().catch(() => undefined)
       throw error
+    } finally {
+      this.maintenanceBusy = false
     }
   }
 
   async rollbackLatest(onProgress: ProgressCallback = () => undefined): Promise<SafeMirrorRecoveryRecord> {
-    const record = await this.recovery.latest()
-    if (!record || !["APPLYING", "COMPLETED", "FAILED"].includes(record.status)) throw new Error("没有可恢复的权威覆盖记录")
-    if (record.direction === "REMOTE_TO_LOCAL") await this.restoreLocal(record, onProgress)
-    else await this.restoreRemote(record, onProgress)
-    await this.verifyRecovery(record)
-    await this.recovery.update(record, "ROLLED_BACK")
-    return record
+    if (this.maintenanceBusy) throw new Error("权威覆盖或恢复正在执行")
+    this.maintenanceBusy = true
+    try {
+      const record = await this.recovery.latest()
+      if (!record || !["APPLYING", "COMPLETED", "FAILED"].includes(record.status)) throw new Error("没有可恢复的权威覆盖记录")
+      await this.validateRecoveryContents(record)
+      if (record.direction === "REMOTE_TO_LOCAL") await this.restoreLocal(record, onProgress)
+      else await this.restoreRemote(record, onProgress)
+      await this.verifyRecovery(record)
+      await this.recovery.update(record, "ROLLED_BACK")
+      return record
+    } finally {
+      this.maintenanceBusy = false
+    }
   }
 
   private async captureTarget(session: SafeMirrorSession, record: SafeMirrorRecoveryRecord, onProgress: ProgressCallback): Promise<void> {
@@ -131,6 +153,18 @@ export class SafeMirrorManager {
         await this.captureRemoteTarget(record, target)
       }
       onProgress({ completed: ++completed, total: items.length, path: item.path, phase: "BACKUP" })
+    }
+  }
+
+  private async validateRecoveryContents(record: SafeMirrorRecoveryRecord): Promise<void> {
+    for (const entry of record.entries) {
+      if (!entry.existed || entry.resourceType === "FOLDER") continue
+      const content = await this.recovery.readContent(entry)
+      if (content.byteLength !== entry.size) throw new Error(`恢复包内容大小不一致：${entry.path}`)
+      const contentHash = entry.resourceType === "NOTE"
+        ? await hashContentAsync(new TextDecoder().decode(content))
+        : await hashArrayBuffer(content)
+      if (contentHash !== entry.contentHash) throw new Error(`恢复包内容哈希不一致：${entry.path}`)
     }
   }
 

@@ -114,6 +114,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   const localMap = new Map(local.map((item) => [item.path, cloneResource(item)]))
   const remoteMap = new Map(remote.map((item) => [item.path, cloneResource(item)]))
   const ignored = new Set()
+  const mutationBusyStates = []
   let saveCount = 0
   let commitCount = 0
   let cancelCount = 0
@@ -159,6 +160,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     async cancelMirrorBootstrap() { cancelCount++ },
   }
   const applyMutation = (resourceType, input) => {
+    mutationBusyStates.push(plugin.safeMirrorManager?.isBusy)
     if (input.action === "DELETE") {
       const prefix = `${input.path}/`
       for (const key of [...remoteMap.keys()]) if (key === input.path || key.startsWith(prefix)) remoteMap.delete(key)
@@ -223,6 +225,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     get saveCount() { return saveCount },
     get commitCount() { return commitCount },
     get cancelCount() { return cancelCount },
+    mutationBusyStates,
     assertNoIgnoredPaths() { assert.equal(ignored.size, 0) },
   }
 }
@@ -239,6 +242,7 @@ function textAt(items, target) {
     remote: [makeResource("NOTE", "shared.md", "remote-old"), makeResource("NOTE", "remote-only.md", "remote-only")],
   })
   const manager = new SafeMirrorManager(harness.plugin)
+  harness.plugin.safeMirrorManager = manager
   const session = await manager.prepare("LOCAL_TO_REMOTE")
   assert.equal(session.plan.updates.length, 1)
   assert.equal(session.plan.creates.length, 1)
@@ -253,6 +257,7 @@ function textAt(items, target) {
   assert.equal(harness.plugin.settings.safeRevisionSyncEnabled, true)
   assert.equal(harness.commitCount, 1)
   assert.equal(harness.saveCount, 1)
+  assert.ok(harness.mutationBusyStates.every(Boolean), "ordinary sync must stay paused during authoritative mutations")
 
   const rolledBack = await manager.rollbackLatest()
   assert.equal(rolledBack.status, "ROLLED_BACK")
@@ -268,6 +273,7 @@ function textAt(items, target) {
     remote: [makeResource("NOTE", "shared.md", "remote-new"), makeResource("FILE", "asset.bin", Uint8Array.from([9, 8, 7])), makeResource("NOTE", "remote-only.md", "download-me")],
   })
   const manager = new SafeMirrorManager(harness.plugin)
+  harness.plugin.safeMirrorManager = manager
   const session = await manager.prepare("REMOTE_TO_LOCAL")
   assert.equal(session.plan.updates.length, 2)
   assert.equal(session.plan.creates.length, 1)
@@ -279,6 +285,7 @@ function textAt(items, target) {
   assert.equal(textAt(harness.localMap, "shared.md"), "remote-new")
   assert.deepEqual([...harness.localMap.get("asset.bin").content], [9, 8, 7])
   assert.equal(textAt(harness.localMap, "remote-only.md"), "download-me")
+  assert.equal(manager.isBusy, false)
   assert.equal(harness.localMap.has("local-only.md"), false)
   harness.assertNoIgnoredPaths()
 
@@ -295,12 +302,14 @@ function textAt(items, target) {
 {
   const harness = makeHarness({ local: [makeResource("NOTE", "note.md", "before")], remote: [] })
   const manager = new SafeMirrorManager(harness.plugin)
+  harness.plugin.safeMirrorManager = manager
   const session = await manager.prepare("LOCAL_TO_REMOTE")
   harness.localMap.set("note.md", makeResource("NOTE", "note.md", "after-preview"))
   await assert.rejects(() => manager.apply(session), /本地内容在预览后已变化/)
   assert.equal(harness.commitCount, 0)
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
+  assert.equal(manager.isBusy, false)
 }
 
 // REQ-OBS-001: an expired preview cannot be applied.
@@ -339,6 +348,33 @@ function textAt(items, target) {
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
   await assert.rejects(() => manager.rollbackLatest(), /没有可恢复的权威覆盖记录/)
+}
+
+// REQ-OBS-001: local manifest failures must release the server bootstrap immediately.
+{
+  const harness = makeHarness({ local: [makeResource("NOTE", "note.md", "local")], remote: [] })
+  harness.plugin.safeSyncRuntime.engine.localManifest = async () => { throw new Error("local manifest failed") }
+  const manager = new SafeMirrorManager(harness.plugin)
+  await assert.rejects(() => manager.prepare("LOCAL_TO_REMOTE"), /local manifest failed/)
+  assert.equal(harness.cancelCount, 1)
+  assert.equal(manager.session, undefined)
+}
+
+// REQ-BACKUP-001: corrupted recovery content fails before any target mutation.
+{
+  const harness = makeHarness({
+    local: [makeResource("NOTE", "note.md", "local-new")],
+    remote: [makeResource("NOTE", "note.md", "remote-old")],
+  })
+  const manager = new SafeMirrorManager(harness.plugin)
+  harness.plugin.safeMirrorManager = manager
+  const session = await manager.prepare("LOCAL_TO_REMOTE")
+  await manager.apply(session)
+  const contentFile = manager.recovery.record.entries[0].contentFile
+  manager.recovery.contents.set(contentFile, arrayBuffer("corrupted"))
+  await assert.rejects(() => manager.rollbackLatest(), /恢复包内容/)
+  assert.equal(textAt(harness.remoteMap, "note.md"), "local-new")
+  assert.equal(manager.isBusy, false)
 }
 
 // REQ-MIRROR-001: Windows CRLF disk size must not be sent for normalized note content.
