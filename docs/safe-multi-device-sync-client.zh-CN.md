@@ -55,6 +55,7 @@ Windows 插件 `2.5.8` 已写入真实 Obsidian 安装目录；设置页、问�
 - Vault：`E:\Document\Notes`
 - 插件目录：`E:\Document\Notes\.obsidian\plugins\fast-note-sync`
 - 安装版本：`2.5.8`，Release tag 与分支提交均为 `b00534a`
+- Android 手工安装包：`E:\Tools\Obsidian\android-plugin\fast-note-sync-v2.5.8.zip`；SHA-256 为 `2779a335d00287b15b5c57a8822694c458d4f94b8fe535285942fcb04728e483`，包内 `manifest.json` 已确认版本为 `2.5.8`、`isDesktopOnly=false`、作者为 `ZC-eto`
 - 最近回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.5.7-before-2.5.8-20260808-165400`；前一份为 `2.5.6-before-2.5.7-20260808-163700`
 - 服务地址：`https://fast-note-sync-safe-1irxvu-6387b0-23-144-4-140.sslip.io`
 - 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
