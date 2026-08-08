@@ -16,6 +16,7 @@ import {
   type SafeMirrorResourceType,
 } from "./safe_mirror_plan"
 import type { SafeMirrorBootstrapSnapshot } from "./safe_sync_engine"
+import { safeSyncTextSize } from "./safe_sync_content"
 
 export interface SafeMirrorSession {
   id: string
@@ -235,7 +236,7 @@ export class SafeMirrorManager {
     if (!(local instanceof TFile)) throw new Error(`本地源文件不存在：${item.path}`)
     if (item.resourceType === "NOTE") {
       const content = await this.plugin.app.vault.read(local)
-      await runtime.mutateNote({ action, path: item.path, content, contentHash: item.contentHash, size: local.stat.size, ctime: getSafeCtime(local.stat), mtime: local.stat.mtime })
+      await runtime.mutateNote({ action, path: item.path, content, contentHash: item.contentHash, size: safeSyncTextSize(content), ctime: getSafeCtime(local.stat), mtime: local.stat.mtime })
       return
     }
     const chunkSize = 1024 * 1024
@@ -367,7 +368,7 @@ export class SafeMirrorManager {
         await runtime.mutateFolder({ action: baseline ? "MODIFY" : "CREATE", path: entry.path })
       } else if (entry.resourceType === "NOTE") {
         const content = new TextDecoder().decode(await this.recovery.readContent(entry))
-        await runtime.mutateNote({ action: baseline ? "MODIFY" : "CREATE", path: entry.path, content, contentHash: entry.contentHash, size: entry.size, ctime: entry.ctime, mtime: entry.mtime })
+        await runtime.mutateNote({ action: baseline ? "MODIFY" : "CREATE", path: entry.path, content, contentHash: entry.contentHash, size: safeSyncTextSize(content), ctime: entry.ctime, mtime: entry.mtime })
       } else {
         await this.writeRemoteFileContent(entry, await this.recovery.readContent(entry), baseline ? "MODIFY" : "CREATE")
       }

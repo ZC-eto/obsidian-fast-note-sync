@@ -8,6 +8,7 @@ import { generateUUID, getPluginDir, hashContentAsync, hashFileAsync, isFolderSy
 import { SafeRemoteDeleteProtector, SafeRemoteDeleteResult } from "./safe_remote_delete_protector"
 import { receiveSafeDirectEvent } from "./safe_sync_inbound"
 import { applySyncRoleSettingConflicts, type SyncRole } from "./safe_sync_role"
+import { safeSyncTextSize } from "./safe_sync_content"
 
 export type SafeSyncWriteMode = "legacy" | "safe" | "paused"
 export type { SyncRole } from "./safe_sync_role"
@@ -122,7 +123,7 @@ export class SafeSyncRuntime {
   }
 
   mutateNote(input: SafeMutationInput) {
-    return this.engine.mutate("NOTE", input)
+    return this.engine.mutate("NOTE", input.content === undefined ? input : { ...input, size: safeSyncTextSize(input.content) })
   }
 
   mutateFolder(input: SafeMutationInput) {
@@ -259,17 +260,17 @@ export class SafeSyncRuntime {
         continue
       }
       if (!(entry instanceof TFile) || isPathExcluded(entry.path, this.plugin)) continue
-      let contentHash = this.plugin.fileHashManager.getValidHash(entry.path, entry.stat.mtime, entry.stat.size)
-      if (contentHash == null) {
-        contentHash = entry.path.endsWith(".md")
-          ? await hashContentAsync(await this.plugin.app.vault.read(entry))
-          : await hashFileAsync(this.plugin.app, entry.path)
-      }
+      const isNote = entry.path.endsWith(".md")
+      const content = isNote ? await this.plugin.app.vault.read(entry) : undefined
+      let contentHash = content === undefined
+        ? this.plugin.fileHashManager.getValidHash(entry.path, entry.stat.mtime, entry.stat.size)
+        : await hashContentAsync(content)
+      if (contentHash == null) contentHash = await hashFileAsync(this.plugin.app, entry.path)
       manifest.push({
-        resourceType: entry.path.endsWith(".md") ? "NOTE" : "FILE",
+        resourceType: isNote ? "NOTE" : "FILE",
         path: entry.path,
         contentHash,
-        size: entry.stat.size,
+        size: content === undefined ? entry.stat.size : safeSyncTextSize(content),
       })
     }
     return manifest

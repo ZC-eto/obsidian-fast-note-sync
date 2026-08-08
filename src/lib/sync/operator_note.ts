@@ -5,6 +5,7 @@ import { hashContent, hashContentAsync, dump, dumpError, isPathExcluded, getSafe
 import { SyncLogManager } from "./sync_log_manager";
 import type FastSync from "../../main";
 import { receiveSafeNoteDelete, receiveSafeNoteModify, receiveSafeNoteRename } from "./safe_sync_inbound";
+import { safeSyncTextSize } from "./safe_sync_content";
 
 
 /**
@@ -61,7 +62,7 @@ export const noteModify = async function (file: TAbstractFile, plugin: FastSync,
           path: file.path,
           content,
           contentHash,
-          size: file.stat.size,
+          size: safeSyncTextSize(content),
           ctime: data.ctime,
           mtime: data.mtime,
         })
@@ -220,9 +221,9 @@ export const noteRename = async function (file: TAbstractFile, oldfile: string, 
   await plugin.lockManager.withLock(file.path, async () => {
     plugin.addIgnoredFile(file.path)
     try {
+      const content = await plugin.app.vault.read(file)
       let contentHash = plugin.fileHashManager.getPathHash(oldfile)
       if (contentHash == null) {
-        const content: string = await plugin.app.vault.read(file)
         contentHash = await hashContentAsync(content)
       }
 
@@ -242,7 +243,7 @@ export const noteRename = async function (file: TAbstractFile, oldfile: string, 
           path: file.path,
           previousPath: oldfile,
           contentHash,
-          size: file.stat.size,
+          size: safeSyncTextSize(content),
           ctime: getSafeCtime(file.stat),
           mtime: file.stat.mtime,
         })

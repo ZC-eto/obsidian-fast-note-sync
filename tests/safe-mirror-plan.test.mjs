@@ -18,6 +18,7 @@ async function loadModule(relativePath) {
 }
 
 const { compareSafeMirrorDeletionOrder, createSafeMirrorPlan, safeMirrorPlanChangeCount } = await loadModule("src/lib/sync/safe_mirror_plan.ts")
+const { safeSyncTextSize } = await loadModule("src/lib/sync/safe_sync_content.ts")
 const {
   applySyncRoleSettingConflicts,
   isOfflineDeleteSyncManagedByRole,
@@ -49,6 +50,9 @@ assert.equal(safeMirrorPlanChangeCount(localRootOnly), 0, "the Vault root must n
 const remoteRootOnly = createSafeMirrorPlan("LOCAL_TO_REMOTE", [], [item("FOLDER", "/", "", 0)])
 assert.equal(remoteRootOnly.targetCount, 0)
 assert.equal(safeMirrorPlanChangeCount(remoteRootOnly), 0, "the Vault root must not be deleted remotely")
+assert.equal(safeSyncTextSize("a\nb"), 3)
+assert.equal(safeSyncTextSize("a\r\nb"), 4)
+assert.equal(safeSyncTextSize("中文"), 6)
 
 const largeTarget = Array.from({ length: 500 }, (_, index) => item("NOTE", `n-${index}.md`, String(index), 1))
 const fortyNineDeletes = createSafeMirrorPlan("LOCAL_TO_REMOTE", largeTarget.slice(49), largeTarget)

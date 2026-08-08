@@ -122,7 +122,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   const localFile = (resource) => resource && resource.resourceType !== "FOLDER" ? {
     kind: "file",
     path: resource.path,
-    stat: { size: resource.size, ctime: resource.ctime, mtime: resource.mtime },
+    stat: { size: resource.statSize ?? resource.size, ctime: resource.ctime, mtime: resource.mtime },
   } : null
   const localAbstract = (resource) => resource?.resourceType === "FOLDER" ? { kind: "folder", path: resource.path } : localFile(resource)
   const vault = {
@@ -337,6 +337,21 @@ function textAt(items, target) {
   assert.equal(harness.commitCount, 0)
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
+}
+
+// REQ-MIRROR-001: Windows CRLF disk size must not be sent for normalized note content.
+{
+  const local = makeResource("NOTE", "windows.md", "line-1\nline-2")
+  local.statSize = local.size + 1
+  const harness = makeHarness({
+    local: [local],
+    remote: [makeResource("NOTE", "windows.md", "old")],
+  })
+  const manager = new SafeMirrorManager(harness.plugin)
+  const session = await manager.prepare("LOCAL_TO_REMOTE")
+  const record = await manager.apply(session)
+  assert.equal(record.status, "COMPLETED")
+  assert.equal(harness.remoteMap.get("windows.md").size, local.size)
 }
 
 console.log("safe mirror manager integration tests passed")
