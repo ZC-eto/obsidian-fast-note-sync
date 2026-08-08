@@ -246,6 +246,60 @@ const refreshOnlyCancel = new SafeSyncEngine({
 await refreshOnlyCancel.cancelMirrorBootstrap(true)
 assert.equal(refreshOnlyCancel.status.state, "active", "cancel without a local session must still refresh stale bootstrap status")
 
+const resumedCancelStore = new MemoryStore()
+resumedCancelStore.persistedBootstrapComplete = true
+const resumedCancelTransport = new ScriptedTransport({
+  SafeSyncStatus: [
+    { capability: true, state: "BOOTSTRAPPING", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-resumed-cancel", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-resumed-cancel", cursor: "cursor-resumed-cancel" }],
+  SafeSyncBootstrapCancel: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+})
+const resumedCancel = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: resumedCancelTransport,
+  createStateStore: () => resumedCancelStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-resumed-cancel",
+  now: () => 1_000,
+})
+await resumedCancel.cancelMirrorBootstrap(true)
+assert.equal(resumedCancel.status.state, "active", "a restarted client must reclaim and cancel its bootstrap session")
+assert.equal(resumedCancelTransport.calls.filter((call) => call.action === "SafeSyncBootstrapStart").length, 1)
+assert.equal(resumedCancelTransport.calls.filter((call) => call.action === "SafeSyncBootstrapCancel").length, 1)
+
+const foreignCancelStore = new MemoryStore()
+foreignCancelStore.persistedBootstrapComplete = true
+const foreignCancelTransport = new ScriptedTransport({
+  SafeSyncStatus: [{ capability: true, state: "BOOTSTRAPPING", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+  SafeSyncBootstrapStart: [new Error("another device owns the bootstrap session")],
+})
+const foreignCancel = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: foreignCancelTransport,
+  createStateStore: () => foreignCancelStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-foreign-cancel",
+  now: () => 1_000,
+})
+await assert.rejects(() => foreignCancel.cancelMirrorBootstrap(true), /another device owns/)
+assert.equal(foreignCancel.status.state, "bootstrapping", "a client must not cancel another device's bootstrap")
+assert.equal(foreignCancelTransport.calls.filter((call) => call.action === "SafeSyncBootstrapCancel").length, 0)
+
+const unavailableCancel = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: new ScriptedTransport({ SafeSyncStatus: [new Error("status unavailable during cancel")] }),
+  createStateStore: () => { throw new Error("failed status must not create state") },
+  getLocalManifest: async () => [],
+  operationId: () => "op-unavailable-cancel",
+  now: () => 1_000,
+})
+await assert.rejects(() => unavailableCancel.cancelMirrorBootstrap(true), /status unavailable during cancel/)
+
 const retryCancelStore = new MemoryStore()
 retryCancelStore.persistedBootstrapComplete = true
 const retryCancelTransport = new ScriptedTransport({
