@@ -5163,3 +5163,142 @@ body .suggestion-container {
 .fns-clickable {
   cursor: pointer;
 }
+
+.fns-safe-sync-help-modal,
+.fns-safe-mirror-modal {
+  width: min(760px, calc(100vw - 32px));
+}
+
+.fns-safe-sync-help {
+  line-height: 1.55;
+
+  ul {
+    margin: 16px 0;
+    padding-left: 22px;
+  }
+}
+
+.fns-safe-sync-help-warning,
+.fns-safe-mirror-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-orange);
+  background: var(--background-secondary);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: var(--color-orange);
+  }
+}
+
+.fns-safe-mirror-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.fns-safe-mirror-stat {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+
+  span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+  }
+}
+
+.fns-safe-mirror-changes {
+  max-height: min(45vh, 420px);
+  margin: 14px 0;
+  overflow: auto;
+  border-block: 1px solid var(--background-modifier-border);
+}
+
+.fns-safe-mirror-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 34px;
+  padding: 5px 2px;
+  border-bottom: 1px solid var(--background-modifier-border-faint);
+}
+
+.fns-safe-mirror-action {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+
+  &.is-delete,
+  &.is-replace {
+    color: var(--text-error);
+  }
+}
+
+.fns-safe-mirror-path {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-small);
+}
+
+.fns-safe-mirror-more {
+  padding: 8px 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.fns-safe-mirror-progress {
+  margin: 14px 0;
+
+  &.is-error .fns-safe-mirror-progress-text {
+    color: var(--text-error);
+  }
+}
+
+.fns-safe-mirror-progress-text {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+  font-size: var(--font-ui-small);
+}
+
+.fns-safe-mirror-progress-track {
+  height: 6px;
+  overflow: hidden;
+  background: var(--background-modifier-border);
+  border-radius: 3px;
+}
+
+.fns-safe-mirror-progress-bar {
+  width: 0;
+  height: 100%;
+  background: var(--interactive-accent);
+  transition: width 120ms ease-out;
+}
+
+@media (width <= 520px) {
+  .fns-safe-mirror-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fns-safe-mirror-row {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+}

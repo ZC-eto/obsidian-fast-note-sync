@@ -2,10 +2,10 @@
 
 ## 文档状态
 
-- 状态：第一阶段实现、本地验证和 Windows 实机普通同步 smoke 已完成；Android 与首次安全同步激活待执行
-- 日期：2026-08-07
-- 插件基线：`2.4.0`
-- 当前 fork 自用构建版本：`2.4.1`
+- 状态：安全修订同步、设备角色、两个权威覆盖方向和最近一次回滚已实现；发布与新部署验证进行中
+- 日期：2026-08-08
+- 插件交付版本：`2.5.0`
+- 当前 fork 自用构建版本：`2.5.0`
 - 工作分支：`feat/safe-multi-device-sync`
 
 ## 权威规格
@@ -18,25 +18,31 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 
 该文档是唯一权威规格。本文件只说明插件端入口，避免插件端与服务端各维护一份容易漂移的完整协议文档。
 
-## 当前第一阶段交付边界
+## 当前交付边界
 
-当前 feature 只交付安全修订同步：默认关闭的显式设置、capability/bootstrap、Resource/Vault Revision、operationId 幂等、修改/删除/重命名前置条件、本地 baseline/pending、远端删除保护与恢复原像。首次激活必须零 unresolved mismatch；本地关闭只暂停该设备，不解除服务端严格 Vault。
+当前 feature 交付安全修订同步、三种设备角色、“本地覆盖远端”、“远端覆盖本地”、差异预览、高风险确认、目标端恢复包、最近一次回滚与最终哈希校验。安全多端同步仍需用户在设置中显式开启；首次普通激活要求本地与远端零差异，有差异时可先使用权威覆盖完成对齐。
 
-`MirrorPlan` / `MirrorApply`、本地发布端、远端镜像端、设备租约、权威覆盖、事务报告与整批回滚属于后续独立 feature，本阶段不实现也不在设置中暴露。
+权威覆盖首版只处理 Markdown 笔记、普通附件、文件夹和空目录，不处理 Obsidian 配置目录。差异计划 10 分钟过期，恢复包保留 30 天；删除或类型替换达到 50 项或目标清单 10% 时，必须输入“确认覆盖”才能执行。
 
 ## 当前客户端行为
 
 - 设置页提供默认关闭的 `safeRevisionSyncEnabled` toggle；只有用户确认开启后才进入 bootstrap。关闭时仅暂停本机，不能解除服务端 STRICT。
+- “安全多端同步”右侧的问号会解释修订保护、三种角色、两个覆盖方向、恢复包与 Obsidian 配置目录边界。
+- 双向端可上传和下载；本地发布端持有 2 分钟租约时阻止其他设备安全写入；远端镜像端只下载。
+- 设备角色管理旧“只读同步”设置；远端镜像端同时锁定并关闭“离线删除上传”，避免与旧开关互相矛盾。
+- 权威覆盖与旧“完整同步”、“按时间合并”互不复用；每次都先扫描并显示新建、更新、删除和类型替换。
+- 点击执行后会重新校验本地清单；预览后本地或远端发生变化时计划失效，必须重新生成差异。
+- 覆盖过程异常退出后，状态为 `APPLYING` 的最近恢复包仍可回滚；嵌套目录先处理子项再处理父目录。
 - 设置状态完整区分 `disabled`、`unsupported`、`activating`、`bootstrapping`、`active`、`strict-vault-local-disabled` 和 `error`。
 - 服务端不是 PostgreSQL 用户库、SQLite 导入未验证或不支持安全协议时，toggle 保持关闭，不创建本地 active 状态。
 - baseline、pending、稳定 deviceId 和空 Vault bootstrap 完成标记按 `serverFingerprint + uid + vaultId` 写入插件私有 JSON，并保留 localStorage 缓存；状态文件损坏时 fail-closed。
 - bootstrap 只接受远端 live 下载后 hash 匹配或两端 hash 相同的资源。本地独有、hash 不同、远端墓碑但本地仍存在都记为 mismatch，不上传、不删除、不提交激活。
 - pending 只有收到匹配 operationId 的 ACK 后才推进 baseline；超过 30 天保留窗口的 pending 标记为 expired，不再自动重发。
 - 远端事件按连续 Vault Revision 串行领取和提交；分页中断、WebSocket 断开或应用尚未完成时不推进持久游标，重连后从最后确认 Revision 重拉。
-- 远端删除先检查 pending、baseline 和当前 hash，再写入 `.obsidian/plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
+- 远端删除先检查 pending、baseline 和当前 hash，再写入 Obsidian 配置目录下的 `plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
 - 安全附件下载的分片、hash、大小和临时写盘任一步失败都会拒绝当前事件，不留下已推进的 baseline。
 
-Windows 插件已写入真实 Obsidian 安装目录并完成普通同步 smoke；Android 仍未安装。安全同步开关保持关闭，尚未执行 bootstrap、删除、镜像或覆盖测试。
+此前 Windows 插件 `2.4.1` 已写入真实 Obsidian 安装目录并完成普通同步 smoke；`2.5.0` 将先在复制 Vault 上验证两个权威覆盖方向，再替换真实 Windows 插件。Android 本轮不安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API，供后续手工导入。
 
 ## Windows 自用安装记录
 
@@ -81,9 +87,9 @@ tests/
 实现前基线曾存在 `test:auth` 和 `test:mirror` 不可归因失败；当前分支已经建立统一 `pnpm test`，覆盖原有测试和安全同步 protobuf、状态存储、引擎、入站处理与传输测试。
 
 - `pnpm test`：通过。
-- `pnpm lint`：通过，0 error；`safe_sync_websocket_transport.ts` 仍有 4 条 `globalThis` warning。
+- `pnpm lint`：通过，0 warning、0 error；`pnpm lint:css`：通过。
 - `pnpm build`：通过。
-- 当前运行环境 Node `v22.20.0`，项目声明 `>=24.14.0`，因此 pnpm 命令仍显示 engine warning；发布构建应改用满足声明的 Node 版本复验。
+- 当前复验环境为 Node `v24.14.0`、pnpm `11.1.2`，满足项目声明的运行版本。
 
 Windows 实机加载、普通增量同步和 Dokploy 新服务连接已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.4.1`。Android、跨设备同步和首次安全同步 bootstrap 尚未执行，不能据此文档声称这些场景已经验收完成。
 

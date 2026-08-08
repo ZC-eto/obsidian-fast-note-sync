@@ -29,6 +29,17 @@ const request = proto.v1.SafeSyncBootstrapCommitRequest.decode(requestEnvelope.d
 assert.equal(request.vault, "vault-a");
 assert.equal(request.snapshotVaultRevision.toString(), "17");
 
+const roleRequestWire = mapper.enSendDTOToProtobuf("DeviceRoleRegister", {
+  vault: "vault-a",
+  deviceId: "device-a",
+  role: "LOCAL_PUBLISHER",
+  context: "ctx-role",
+});
+const roleRequestEnvelope = proto.v1.WSMessage.decode(roleRequestWire);
+const roleRequest = proto.v1.DeviceRoleRegisterRequest.decode(roleRequestEnvelope.data);
+assert.equal(roleRequest.deviceId, "device-a");
+assert.equal(roleRequest.role, "LOCAL_PUBLISHER");
+
 const fileMutationWire = mapper.enSendDTOToProtobuf("SafeFileMutation", {
   vault: "vault-a",
   deviceId: "device-a",
@@ -60,6 +71,18 @@ assert.equal(decodedStatus.data.state, "STRICT");
 assert.equal(decodedStatus.data.latestVaultRevision, 21);
 assert.equal(decodedStatus.data.uid, 3);
 assert.equal(decodedStatus.data.vaultId, 9);
+
+const rolePayload = proto.v1.DeviceRoleStatusResponse.encode({
+  deviceId: "device-a",
+  role: "LOCAL_PUBLISHER",
+  publisherDeviceId: "device-a",
+  publisherLeaseExpiresAt: 1234,
+  writable: true,
+}).finish();
+const roleResponse = buildResponse("DeviceRoleStatus", 1, true, rolePayload);
+const decodedRole = mapper.deReceivePacket(roleResponse);
+assert.equal(decodedRole.data.role, "LOCAL_PUBLISHER");
+assert.equal(decodedRole.data.writable, true);
 
 const eventPayload = proto.v1.SafeSyncEvent.encode({
   vaultRevision: 22,

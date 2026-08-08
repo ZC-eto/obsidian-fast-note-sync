@@ -16,6 +16,11 @@ import { $ } from "./i18n/lang";
 import FastSync from "./main";
 import { updateVaultName } from "./lib/settings/vault_name";
 import { safeSyncActivationErrorMessage } from "./lib/sync/safe_sync_runtime";
+import type { SyncRole } from "./lib/sync/safe_sync_runtime";
+import { isOfflineDeleteSyncManagedByRole, isReadonlySyncManagedByRole } from "./lib/sync/safe_sync_role";
+import type { SafeMirrorDirection } from "./lib/sync/safe_mirror_plan";
+import { safeMirrorPlanChangeCount } from "./lib/sync/safe_mirror_plan";
+import { SafeMirrorPlanModal, SafeSyncHelpModal } from "./views/safe-mirror-modal";
 
 
 export interface PluginSettings {
@@ -23,6 +28,8 @@ export interface PluginSettings {
   syncEnabled: boolean
   /** 是否启用带修订前置条件的安全多端同步 */
   safeRevisionSyncEnabled: boolean
+  /** 当前设备在安全同步中的写入角色 */
+  syncRole: SyncRole
   /** 是否开启插件配置项同步 */
   configSyncEnabled: boolean
   /** 日志记录级别 ("off", "console", "internal") */
@@ -81,8 +88,6 @@ export interface PluginSettings {
   /** 是否显示分享图标（原生文件管理器 & Notebook Navigator）
    * Whether to show share icon (native file explorer & Notebook Navigator) */
   showShareIcon: boolean
-  /** 插件更新源 */
-  updateSource: "github" | "cnb"
   /** 手机端状态点位置 */
   mobileStatusDotPosition: "hidden" | "top-right" | "top-left" | "bottom-right" | "bottom-left" | "menu-bar"
   /** 是否显示更新红点提示（侧边栏及图标） */
@@ -133,6 +138,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   // 是否自动上传
   syncEnabled: true,
   safeRevisionSyncEnabled: false,
+  syncRole: "bidirectional",
   configSyncEnabled: false,
   logEnabled: "off",
   // API 网关地址
@@ -163,7 +169,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   autoPauseMinimized: false,
   sharedPaths: [],
   showShareIcon: true,
-  updateSource: "github",
   mobileStatusDotPosition: "menu-bar",
   showUpgradeBadge: true,
   concurrencyControlEnabled: true,
@@ -528,18 +533,6 @@ export class SettingTab extends PluginSettingTab {
     )
     this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.startup_delay_desc"))
 
-    new Setting(set).setName($("setting.debug.update_source")).addDropdown((dropdown) =>
-      dropdown
-        .addOption("github", "GitHub")
-        .addOption("cnb", "腾讯 cnb")
-        .setValue(this.plugin.settings.updateSource || "github")
-        .onChange(async (value: "github" | "cnb") => {
-          this.plugin.settings.updateSource = value
-          await this.plugin.saveAndReloadServices()
-        }),
-    )
-    this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.debug.update_source_desc"))
-
     new Setting(set).setName($("setting.support.title")).setHeading().setClass("fast-note-sync-settings-tag")
 
     const supportSet = set.createDiv()
@@ -723,7 +716,7 @@ export class SettingTab extends PluginSettingTab {
           $("ui.title.notice"),
           $("setting.support.issue_notice"),
           () => {
-            window.open("https://github.com/haierkeys/obsidian-fast-note-sync/issues", "_blank")
+            window.open("https://github.com/ZC-eto/obsidian-fast-note-sync/issues", "_blank")
           },
           $("ui.button.goto_feedback"),
           $("ui.button.cancel"),
@@ -734,7 +727,7 @@ export class SettingTab extends PluginSettingTab {
       const featureButton = debugDiv.createEl("button")
       featureButton.setText($("setting.support.feature"))
       featureButton.onclick = () => {
-        window.open("https://github.com/haierkeys/obsidian-fast-note-sync/issues", "_blank")
+        window.open("https://github.com/ZC-eto/obsidian-fast-note-sync/issues", "_blank")
       }
 
       const telegramButton = debugDiv.createEl("button")
@@ -1027,19 +1020,12 @@ export class SettingTab extends PluginSettingTab {
           btn.textContent = $("setting.debug.version_installing") || "正在安装...";
 
           try {
-            const source = this.plugin.settings.updateSource || "github";
             const zipFileName = `fast-note-sync-v${latest}.zip`;
             const pluginDir = getPluginDir(this.plugin);
 
-            let url = "";
-            if (source === "github") {
-              url = `https://github.com/haierkeys/obsidian-fast-note-sync/releases/download/${latest}/${zipFileName}`;
-            } else {
-              // CNB 链接格式：releases/download/{version}/fast-note-sync-v{version}.zip
-              url = `https://cnb.cool/haierkeys/obsidian-fast-note-sync/-/releases/download/${latest}/${zipFileName}`;
-            }
+            const url = `https://github.com/ZC-eto/obsidian-fast-note-sync/releases/download/${latest}/${zipFileName}`;
 
-            dump(`[fast-note-sync] preparing download. Source: ${source}, Tag: ${tag}, Zip: ${zipFileName}, Dir: ${pluginDir}, URL: ${url}`);
+            dump(`[fast-note-sync] preparing download. Source: github, Tag: ${tag}, Zip: ${zipFileName}, Dir: ${pluginDir}, URL: ${url}`);
             showSyncNotice($("ui.version.downloading_file", { file: zipFileName }) || `正在下载 ${zipFileName}...`);
 
             // 3. 跨域下载 Zip 包 / Download zip with requestUrl to bypass CORS and gain speed
@@ -1573,6 +1559,7 @@ export class SettingTab extends PluginSettingTab {
   private renderSyncSettings(set: HTMLElement) {
     const safeRuntime = this.plugin.safeSyncRuntime
     const safeStatus = safeRuntime?.status.state || "disabled"
+    const roleSettingsAvailable = Boolean(safeRuntime?.status.capability)
     const safeSetting = new Setting(set)
       .setName($("setting.sync.safe_revision"))
       .setClass("fns-setting-item-checkbox")
@@ -1623,11 +1610,71 @@ export class SettingTab extends PluginSettingTab {
           }
         })
       })
+      .addExtraButton((button) => button
+        .setIcon("help-circle")
+        .setTooltip($("setting.sync.safe_help_tooltip"))
+        .onClick(() => new SafeSyncHelpModal(this.app).open()))
     safeSetting.setDesc("")
     this.setDescWithBreaks(
       safeSetting.settingEl,
       `${$("setting.sync.safe_revision_desc")}\n\n${$("setting.sync.safe_revision_status", { status: $(`setting.sync.safe_revision_status_${safeStatus}`) })}`,
     )
+
+    new Setting(set)
+      .setName($("setting.sync.role"))
+      .setDesc($("setting.sync.role_desc"))
+      .addDropdown((dropdown) => dropdown
+        .addOption("bidirectional", $("setting.sync.role_bidirectional"))
+        .addOption("local-publisher", $("setting.sync.role_local_publisher"))
+        .addOption("remote-mirror", $("setting.sync.role_remote_mirror"))
+        .setValue(this.plugin.settings.syncRole)
+        .setDisabled(!safeRuntime || !safeRuntime.status.capability)
+        .onChange(async (value: SyncRole) => {
+          if (!safeRuntime) return
+          const previous = this.plugin.settings.syncRole
+          try {
+            await safeRuntime.setDeviceRole(value)
+            this.refresh()
+          } catch (error) {
+            this.plugin.settings.syncRole = previous
+            showSyncNotice(error instanceof Error ? error.message : String(error))
+            this.refresh()
+          }
+        }))
+
+    new Setting(set)
+      .setName($("setting.sync.mirror_actions"))
+      .setDesc($("setting.sync.mirror_actions_desc"))
+      .setClass("fns-safe-mirror-setting")
+      .addButton((button) => button
+        .setButtonText($("setting.sync.mirror_local"))
+        .setTooltip($("setting.sync.mirror_local_desc"))
+        .setDisabled(!safeRuntime || !safeRuntime.status.capability)
+        .onClick(() => { void this.openMirrorPlan("LOCAL_TO_REMOTE") }))
+      .addButton((button) => button
+        .setButtonText($("setting.sync.mirror_remote"))
+        .setTooltip($("setting.sync.mirror_remote_desc"))
+        .setDisabled(!safeRuntime || !safeRuntime.status.capability)
+        .onClick(() => { void this.openMirrorPlan("REMOTE_TO_LOCAL") }))
+      .addExtraButton((button) => button
+        .setIcon("history")
+        .setTooltip($("setting.sync.mirror_rollback"))
+        .onClick(() => {
+          new ConfirmModal(
+            this.app,
+            $("setting.sync.mirror_rollback_confirm_title"),
+            $("setting.sync.mirror_rollback_confirm_message"),
+            () => {
+              void this.plugin.safeMirrorManager?.rollbackLatest((progress) => {
+                showSyncNotice(`${$("setting.sync.mirror_phase_rollback")} ${progress.completed}/${progress.total}`, 1500)
+              }).then(() => showSyncNotice($("setting.sync.mirror_rollback_done")))
+                .catch((error: unknown) => showSyncNotice(error instanceof Error ? error.message : String(error)))
+            },
+            $("setting.sync.mirror_rollback_confirm_action"),
+            $("ui.button.cancel"),
+            true,
+          ).open()
+        }))
 
     new Setting(set).setName($("setting.sync.auto_note")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
       toggle.setValue(this.plugin.settings.syncEnabled).onChange(async (value) => {
@@ -1756,15 +1803,19 @@ export class SettingTab extends PluginSettingTab {
       this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.max_concurrency_desc"))
     }
 
-    new Setting(set).setName($("setting.sync.offline_delete")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
-      toggle.setValue(this.plugin.settings.offlineDeleteSyncEnabled).onChange(async (value) => {
+    const offlineDeleteManaged = roleSettingsAvailable && isOfflineDeleteSyncManagedByRole(this.plugin.settings.syncRole)
+    const offlineDeleteSetting = new Setting(set).setName($("setting.sync.offline_delete")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
+      toggle.setValue(this.plugin.settings.offlineDeleteSyncEnabled).setDisabled(offlineDeleteManaged).onChange(async (value) => {
         if (value != this.plugin.settings.offlineDeleteSyncEnabled) {
           this.plugin.settings.offlineDeleteSyncEnabled = value
           await this.plugin.saveAndReloadServices()
         }
       }),
     )
-    this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.offline_delete_desc"))
+    this.setDescWithBreaks(
+      offlineDeleteSetting.settingEl,
+      `${$("setting.sync.offline_delete_desc")}${offlineDeleteManaged ? `\n\n${$("setting.sync.role_managed_offline_delete")}` : ""}`,
+    )
 
     new Setting(set).setName($("setting.sync.manual_sync")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
       toggle.setValue(this.plugin.settings.manualSyncEnabled).onChange(async (value) => {
@@ -1776,15 +1827,19 @@ export class SettingTab extends PluginSettingTab {
     )
     this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.manual_sync_desc"))
 
-    new Setting(set).setName($("setting.sync.readonly_sync")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
-      toggle.setValue(this.plugin.settings.readonlySyncEnabled).onChange(async (value) => {
+    const readonlyManaged = roleSettingsAvailable && isReadonlySyncManagedByRole(this.plugin.settings.syncRole)
+    const readonlySetting = new Setting(set).setName($("setting.sync.readonly_sync")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
+      toggle.setValue(this.plugin.settings.readonlySyncEnabled).setDisabled(readonlyManaged).onChange(async (value) => {
         if (value != this.plugin.settings.readonlySyncEnabled) {
           this.plugin.settings.readonlySyncEnabled = value
           await this.plugin.saveAndReloadServices()
         }
       }),
     )
-    this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.readonly_sync_desc"))
+    this.setDescWithBreaks(
+      readonlySetting.settingEl,
+      `${$("setting.sync.readonly_sync_desc")}${readonlyManaged ? `\n\n${$("setting.sync.role_managed_readonly")}` : ""}`,
+    )
 
     new Setting(set).setName($("setting.sync.auto_pause_minimized")).setClass("fns-setting-item-checkbox").addToggle((toggle) =>
       toggle.setValue(this.plugin.settings.autoPauseMinimized).onChange(async (value) => {
@@ -1901,6 +1956,33 @@ export class SettingTab extends PluginSettingTab {
           }),
       )
     this.setDescWithBreaks(set.lastElementChild as HTMLElement, $("setting.sync.merge_strategy_desc"))
+  }
+
+  private async openMirrorPlan(direction: SafeMirrorDirection): Promise<void> {
+    const manager = this.plugin.safeMirrorManager
+    if (!manager) return
+    try {
+      showSyncNotice($("setting.sync.mirror_preparing"))
+      const session = await manager.prepare(direction)
+      if (safeMirrorPlanChangeCount(session.plan) === 0) {
+        await manager.cancel()
+        showSyncNotice($("setting.sync.mirror_already_equal"))
+        return
+      }
+      new SafeMirrorPlanModal(
+        this.plugin,
+        session,
+        async (onProgress) => {
+          await manager.apply(session, onProgress)
+          showSyncNotice($("setting.sync.mirror_done"), 10000)
+          this.refresh()
+        },
+        () => manager.cancel(),
+      ).open()
+    } catch (error) {
+      showSyncNotice(error instanceof Error ? error.message : String(error), 10000)
+      await manager.cancel().catch(() => undefined)
+    }
   }
 
   private renderCloudSettings(set: HTMLElement) {

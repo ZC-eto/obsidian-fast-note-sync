@@ -142,6 +142,17 @@ export interface FileInfoResponse {
     updatedAt: string;
 }
 
+export interface NoteContentResponse {
+    id: number;
+    path: string;
+    pathHash: string;
+    content: string;
+    contentHash: string;
+    size?: number;
+    ctime: number;
+    mtime: number;
+}
+
 export interface ApiResponse<T = unknown> {
     code: number;
     message?: string;
@@ -487,6 +498,45 @@ export class HttpApiService {
 
         const res = json as ApiResponse<FileInfoResponse>;
         return res.data;
+    }
+
+    async getNoteContent(path: string, signal?: AbortSignal): Promise<NoteContentResponse> {
+        const params = new URLSearchParams({
+            vault: this.plugin.settings.vault,
+            path,
+            pathHash: hashContent(path),
+            isRecycle: "false"
+        });
+        const { status, json } = await this.request(`/api/note?${params.toString()}`, { method: "GET", signal });
+        if (status !== 200 || !this.isSuccess(json)) {
+            const res = json as ApiResponse<unknown>;
+            throw new Error(res?.message || `HTTP ${status}: Failed to fetch note content`);
+        }
+        return (json as ApiResponse<NoteContentResponse>).data;
+    }
+
+    async downloadFileContent(path: string): Promise<ArrayBuffer> {
+        const base = (this.plugin.runApi || this.plugin.settings.api).replace(/\/+$/, "");
+        const params = new URLSearchParams({
+            vault: this.plugin.settings.vault,
+            path,
+            pathHash: hashContent(path),
+            isRecycle: "false"
+        });
+        const headers: Record<string, string> = {
+            "x-client": CLIENT_TYPE,
+            "x-client-name": encodeURIComponent(this.plugin.getClientName()),
+            "x-client-version": this.plugin.manifest.version || "",
+        };
+        if (this.plugin.settings.apiToken) headers.Authorization = `Bearer ${this.plugin.settings.apiToken}`;
+        const response = await requestUrl({
+            url: addRandomParam(`${base}/api/file?${params.toString()}`),
+            method: "GET",
+            headers,
+            throw: false,
+        });
+        if (response.status !== 200) throw new Error(`HTTP ${response.status}: Failed to download attachment`);
+        return response.arrayBuffer;
     }
 
     /**

@@ -31426,6 +31426,747 @@ export const proto = $root.proto = (() => {
             return SafeSyncStatusResponse;
         })();
 
+        v1.DeviceRoleRegisterRequest = (function() {
+
+            /**
+             * Properties of a DeviceRoleRegisterRequest.
+             * @typedef {Object} proto.v1.DeviceRoleRegisterRequest.$Properties
+             * @property {string|null} [vault] DeviceRoleRegisterRequest vault
+             * @property {string|null} [deviceId] DeviceRoleRegisterRequest deviceId
+             * @property {string|null} [role] DeviceRoleRegisterRequest role
+             * @property {string|null} [context] DeviceRoleRegisterRequest context
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a DeviceRoleRegisterRequest.
+             * @memberof proto.v1
+             * @interface IDeviceRoleRegisterRequest
+             * @augments proto.v1.DeviceRoleRegisterRequest.$Properties
+             * @deprecated Use proto.v1.DeviceRoleRegisterRequest.$Properties instead.
+             */
+
+            /**
+             * Shape of a DeviceRoleRegisterRequest.
+             * @typedef {proto.v1.DeviceRoleRegisterRequest.$Properties} proto.v1.DeviceRoleRegisterRequest.$Shape
+             */
+
+            /**
+             * Constructs a new DeviceRoleRegisterRequest.
+             * @memberof proto.v1
+             * @classdesc Represents a DeviceRoleRegisterRequest.
+             * @constructor
+             * @param {proto.v1.DeviceRoleRegisterRequest.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const DeviceRoleRegisterRequest = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * DeviceRoleRegisterRequest vault.
+             * @member {string} vault
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @instance
+             */
+            DeviceRoleRegisterRequest.prototype.vault = "";
+
+            /**
+             * DeviceRoleRegisterRequest deviceId.
+             * @member {string} deviceId
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @instance
+             */
+            DeviceRoleRegisterRequest.prototype.deviceId = "";
+
+            /**
+             * DeviceRoleRegisterRequest role.
+             * @member {string} role
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @instance
+             */
+            DeviceRoleRegisterRequest.prototype.role = "";
+
+            /**
+             * DeviceRoleRegisterRequest context.
+             * @member {string} context
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @instance
+             */
+            DeviceRoleRegisterRequest.prototype.context = "";
+
+            /**
+             * Creates a new DeviceRoleRegisterRequest instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {proto.v1.DeviceRoleRegisterRequest.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.DeviceRoleRegisterRequest} DeviceRoleRegisterRequest instance
+             * @type {{
+             *   (properties: proto.v1.DeviceRoleRegisterRequest.$Shape): proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape;
+             *   (properties?: proto.v1.DeviceRoleRegisterRequest.$Properties): proto.v1.DeviceRoleRegisterRequest;
+             * }}
+             */
+            DeviceRoleRegisterRequest.create = function(properties) {
+                return new DeviceRoleRegisterRequest(properties);
+            };
+
+            /**
+             * Encodes the specified DeviceRoleRegisterRequest message. Does not implicitly {@link proto.v1.DeviceRoleRegisterRequest.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {proto.v1.DeviceRoleRegisterRequest.$Properties} message DeviceRoleRegisterRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeviceRoleRegisterRequest.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault") && message.vault !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.vault);
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId") && message.deviceId !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.deviceId);
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role") && message.role !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.role);
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context") && message.context !== "")
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.context);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DeviceRoleRegisterRequest message, length delimited. Does not implicitly {@link proto.v1.DeviceRoleRegisterRequest.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {proto.v1.DeviceRoleRegisterRequest.$Properties} message DeviceRoleRegisterRequest message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeviceRoleRegisterRequest.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a DeviceRoleRegisterRequest message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape} DeviceRoleRegisterRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeviceRoleRegisterRequest.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.DeviceRoleRegisterRequest(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.vault = value;
+                            else
+                                delete message.vault;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.deviceId = value;
+                            else
+                                delete message.deviceId;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.role = value;
+                            else
+                                delete message.role;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.context = value;
+                            else
+                                delete message.context;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a DeviceRoleRegisterRequest message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape} DeviceRoleRegisterRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeviceRoleRegisterRequest.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DeviceRoleRegisterRequest message.
+             * @function verify
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            DeviceRoleRegisterRequest.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    if (!$util.isString(message.vault))
+                        return "vault: string expected";
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    if (!$util.isString(message.deviceId))
+                        return "deviceId: string expected";
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role"))
+                    if (!$util.isString(message.role))
+                        return "role: string expected";
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    if (!$util.isString(message.context))
+                        return "context: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a DeviceRoleRegisterRequest message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.DeviceRoleRegisterRequest} DeviceRoleRegisterRequest
+             */
+            DeviceRoleRegisterRequest.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.DeviceRoleRegisterRequest)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.DeviceRoleRegisterRequest: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.DeviceRoleRegisterRequest();
+                if (object.vault != null)
+                    if (typeof object.vault !== "string" || object.vault.length)
+                        message.vault = $String(object.vault);
+                if (object.deviceId != null)
+                    if (typeof object.deviceId !== "string" || object.deviceId.length)
+                        message.deviceId = $String(object.deviceId);
+                if (object.role != null)
+                    if (typeof object.role !== "string" || object.role.length)
+                        message.role = $String(object.role);
+                if (object.context != null)
+                    if (typeof object.context !== "string" || object.context.length)
+                        message.context = $String(object.context);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a DeviceRoleRegisterRequest message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {proto.v1.DeviceRoleRegisterRequest} message DeviceRoleRegisterRequest
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DeviceRoleRegisterRequest.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.vault = "";
+                    object.deviceId = "";
+                    object.role = "";
+                    object.context = "";
+                }
+                if (message.vault != null && $Object.hasOwnProperty.call(message, "vault"))
+                    object.vault = message.vault;
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    object.deviceId = message.deviceId;
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role"))
+                    object.role = message.role;
+                if (message.context != null && $Object.hasOwnProperty.call(message, "context"))
+                    object.context = message.context;
+                return object;
+            };
+
+            /**
+             * Converts this DeviceRoleRegisterRequest to JSON.
+             * @function toJSON
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            DeviceRoleRegisterRequest.prototype.toJSON = function() {
+                return DeviceRoleRegisterRequest.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for DeviceRoleRegisterRequest
+             * @function getTypeUrl
+             * @memberof proto.v1.DeviceRoleRegisterRequest
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            DeviceRoleRegisterRequest.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.DeviceRoleRegisterRequest";
+            };
+
+            return DeviceRoleRegisterRequest;
+        })();
+
+        v1.DeviceRoleStatusResponse = (function() {
+
+            /**
+             * Properties of a DeviceRoleStatusResponse.
+             * @typedef {Object} proto.v1.DeviceRoleStatusResponse.$Properties
+             * @property {string|null} [deviceId] DeviceRoleStatusResponse deviceId
+             * @property {string|null} [role] DeviceRoleStatusResponse role
+             * @property {string|null} [publisherDeviceId] DeviceRoleStatusResponse publisherDeviceId
+             * @property {number|Long|null} [publisherLeaseExpiresAt] DeviceRoleStatusResponse publisherLeaseExpiresAt
+             * @property {boolean|null} [writable] DeviceRoleStatusResponse writable
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+
+            /**
+             * Properties of a DeviceRoleStatusResponse.
+             * @memberof proto.v1
+             * @interface IDeviceRoleStatusResponse
+             * @augments proto.v1.DeviceRoleStatusResponse.$Properties
+             * @deprecated Use proto.v1.DeviceRoleStatusResponse.$Properties instead.
+             */
+
+            /**
+             * Shape of a DeviceRoleStatusResponse.
+             * @typedef {proto.v1.DeviceRoleStatusResponse.$Properties} proto.v1.DeviceRoleStatusResponse.$Shape
+             */
+
+            /**
+             * Constructs a new DeviceRoleStatusResponse.
+             * @memberof proto.v1
+             * @classdesc Represents a DeviceRoleStatusResponse.
+             * @constructor
+             * @param {proto.v1.DeviceRoleStatusResponse.$Properties=} [properties] Properties to set
+             * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+             */
+            const DeviceRoleStatusResponse = function (properties) {
+                if (properties)
+                    for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                            this[keys[i]] = properties[keys[i]];
+            };
+
+            /**
+             * DeviceRoleStatusResponse deviceId.
+             * @member {string} deviceId
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             */
+            DeviceRoleStatusResponse.prototype.deviceId = "";
+
+            /**
+             * DeviceRoleStatusResponse role.
+             * @member {string} role
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             */
+            DeviceRoleStatusResponse.prototype.role = "";
+
+            /**
+             * DeviceRoleStatusResponse publisherDeviceId.
+             * @member {string} publisherDeviceId
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             */
+            DeviceRoleStatusResponse.prototype.publisherDeviceId = "";
+
+            /**
+             * DeviceRoleStatusResponse publisherLeaseExpiresAt.
+             * @member {number|Long} publisherLeaseExpiresAt
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             */
+            DeviceRoleStatusResponse.prototype.publisherLeaseExpiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * DeviceRoleStatusResponse writable.
+             * @member {boolean} writable
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             */
+            DeviceRoleStatusResponse.prototype.writable = false;
+
+            /**
+             * Creates a new DeviceRoleStatusResponse instance using the specified properties.
+             * @function create
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {proto.v1.DeviceRoleStatusResponse.$Properties=} [properties] Properties to set
+             * @returns {proto.v1.DeviceRoleStatusResponse} DeviceRoleStatusResponse instance
+             * @type {{
+             *   (properties: proto.v1.DeviceRoleStatusResponse.$Shape): proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape;
+             *   (properties?: proto.v1.DeviceRoleStatusResponse.$Properties): proto.v1.DeviceRoleStatusResponse;
+             * }}
+             */
+            DeviceRoleStatusResponse.create = function(properties) {
+                return new DeviceRoleStatusResponse(properties);
+            };
+
+            /**
+             * Encodes the specified DeviceRoleStatusResponse message. Does not implicitly {@link proto.v1.DeviceRoleStatusResponse.verify|verify} messages.
+             * @function encode
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {proto.v1.DeviceRoleStatusResponse.$Properties} message DeviceRoleStatusResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeviceRoleStatusResponse.encode = function (message, writer, _depth) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId") && message.deviceId !== "")
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.deviceId);
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role") && message.role !== "")
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.role);
+                if (message.publisherDeviceId != null && $Object.hasOwnProperty.call(message, "publisherDeviceId") && message.publisherDeviceId !== "")
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.publisherDeviceId);
+                if (message.publisherLeaseExpiresAt != null && $Object.hasOwnProperty.call(message, "publisherLeaseExpiresAt") && (typeof message.publisherLeaseExpiresAt === "object" ? message.publisherLeaseExpiresAt.low || message.publisherLeaseExpiresAt.high : message.publisherLeaseExpiresAt !== 0))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int64(message.publisherLeaseExpiresAt);
+                if (message.writable != null && $Object.hasOwnProperty.call(message, "writable") && message.writable !== false)
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.writable);
+                if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+                    for (let i = 0; i < message.$unknowns.length; ++i)
+                        writer.raw(message.$unknowns[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified DeviceRoleStatusResponse message, length delimited. Does not implicitly {@link proto.v1.DeviceRoleStatusResponse.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {proto.v1.DeviceRoleStatusResponse.$Properties} message DeviceRoleStatusResponse message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            DeviceRoleStatusResponse.encodeDelimited = function(message, writer) {
+                return this.encode(message, (writer || $Writer.create()).fork()).ldelim();
+            };
+
+            /**
+             * Decodes a DeviceRoleStatusResponse message from the specified reader or buffer.
+             * @function decode
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape} DeviceRoleStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeviceRoleStatusResponse.decode = function (reader, length, _end, _depth, _target) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $Reader.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let end = length === $undefined ? reader.len : reader.pos + length, message = _target || new $root.proto.v1.DeviceRoleStatusResponse(), value;
+                while (reader.pos < end) {
+                    let start = reader.pos;
+                    let tag = reader.tag();
+                    if (tag === _end) {
+                        _end = $undefined;
+                        break;
+                    }
+                    let wireType = tag & 7;
+                    switch (tag >>>= 3) {
+                    case 1: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.deviceId = value;
+                            else
+                                delete message.deviceId;
+                            continue;
+                        }
+                    case 2: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.role = value;
+                            else
+                                delete message.role;
+                            continue;
+                        }
+                    case 3: {
+                            if (wireType !== 2)
+                                break;
+                            if ((value = reader.stringVerify()).length)
+                                message.publisherDeviceId = value;
+                            else
+                                delete message.publisherDeviceId;
+                            continue;
+                        }
+                    case 4: {
+                            if (wireType !== 0)
+                                break;
+                            if (typeof (value = reader.int64()) === "object" ? value.low || value.high : value !== 0)
+                                message.publisherLeaseExpiresAt = value;
+                            else
+                                delete message.publisherLeaseExpiresAt;
+                            continue;
+                        }
+                    case 5: {
+                            if (wireType !== 0)
+                                break;
+                            if (value = reader.bool())
+                                message.writable = value;
+                            else
+                                delete message.writable;
+                            continue;
+                        }
+                    }
+                    reader.skipType(wireType, _depth, tag);
+                    if (!reader.discardUnknown) {
+                        $util.makeProp(message, "$unknowns", false);
+                        (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+                    }
+                }
+                if (_end !== $undefined)
+                    throw $Error("missing end group");
+                return message;
+            };
+
+            /**
+             * Decodes a DeviceRoleStatusResponse message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape} DeviceRoleStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            DeviceRoleStatusResponse.decodeDelimited = function(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a DeviceRoleStatusResponse message.
+             * @function verify
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            DeviceRoleStatusResponse.verify = function (message, _depth) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    return "max depth exceeded";
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    if (!$util.isString(message.deviceId))
+                        return "deviceId: string expected";
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role"))
+                    if (!$util.isString(message.role))
+                        return "role: string expected";
+                if (message.publisherDeviceId != null && $Object.hasOwnProperty.call(message, "publisherDeviceId"))
+                    if (!$util.isString(message.publisherDeviceId))
+                        return "publisherDeviceId: string expected";
+                if (message.publisherLeaseExpiresAt != null && $Object.hasOwnProperty.call(message, "publisherLeaseExpiresAt"))
+                    if (!$util.isInteger(message.publisherLeaseExpiresAt) && !(message.publisherLeaseExpiresAt && $util.isInteger(message.publisherLeaseExpiresAt.low) && $util.isInteger(message.publisherLeaseExpiresAt.high)))
+                        return "publisherLeaseExpiresAt: integer|Long expected";
+                if (message.writable != null && $Object.hasOwnProperty.call(message, "writable"))
+                    if (typeof message.writable !== "boolean")
+                        return "writable: boolean expected";
+                return null;
+            };
+
+            /**
+             * Creates a DeviceRoleStatusResponse message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {proto.v1.DeviceRoleStatusResponse} DeviceRoleStatusResponse
+             */
+            DeviceRoleStatusResponse.fromObject = function (object, _depth) {
+                if (object instanceof $root.proto.v1.DeviceRoleStatusResponse)
+                    return object;
+                if (!$util.isObject(object))
+                    throw $TypeError(".proto.v1.DeviceRoleStatusResponse: object expected");
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let message = new $root.proto.v1.DeviceRoleStatusResponse();
+                if (object.deviceId != null)
+                    if (typeof object.deviceId !== "string" || object.deviceId.length)
+                        message.deviceId = $String(object.deviceId);
+                if (object.role != null)
+                    if (typeof object.role !== "string" || object.role.length)
+                        message.role = $String(object.role);
+                if (object.publisherDeviceId != null)
+                    if (typeof object.publisherDeviceId !== "string" || object.publisherDeviceId.length)
+                        message.publisherDeviceId = $String(object.publisherDeviceId);
+                if (object.publisherLeaseExpiresAt != null)
+                    if (typeof object.publisherLeaseExpiresAt === "object" ? object.publisherLeaseExpiresAt.low || object.publisherLeaseExpiresAt.high : $Number(object.publisherLeaseExpiresAt) !== 0)
+                        if ($util.Long)
+                            message.publisherLeaseExpiresAt = $util.Long.fromValue(object.publisherLeaseExpiresAt, false);
+                        else if (typeof object.publisherLeaseExpiresAt === "string")
+                            message.publisherLeaseExpiresAt = $parseInt(object.publisherLeaseExpiresAt, 10);
+                        else if (typeof object.publisherLeaseExpiresAt === "number")
+                            message.publisherLeaseExpiresAt = object.publisherLeaseExpiresAt;
+                        else if (typeof object.publisherLeaseExpiresAt === "object")
+                            message.publisherLeaseExpiresAt = new $util.LongBits(object.publisherLeaseExpiresAt.low >>> 0, object.publisherLeaseExpiresAt.high >>> 0).toNumber();
+                if (object.writable != null)
+                    if (object.writable)
+                        message.writable = $Boolean(object.writable);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a DeviceRoleStatusResponse message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {proto.v1.DeviceRoleStatusResponse} message DeviceRoleStatusResponse
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            DeviceRoleStatusResponse.toObject = function (message, options, _depth) {
+                if (!options)
+                    options = {};
+                if (_depth === $undefined)
+                    _depth = 0;
+                if (_depth > $util.recursionLimit)
+                    throw $Error("max depth exceeded");
+                let object = {};
+                if (options.defaults) {
+                    object.deviceId = "";
+                    object.role = "";
+                    object.publisherDeviceId = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.publisherLeaseExpiresAt = options.longs === $String ? long.toString() : options.longs === $Number ? long.toNumber() : typeof $BigInt !== "undefined" && options.longs === $BigInt ? long.toBigInt() : long;
+                    } else
+                        object.publisherLeaseExpiresAt = options.longs === $String ? "0" : typeof $BigInt !== "undefined" && options.longs === $BigInt ? $BigInt("0") : 0;
+                    object.writable = false;
+                }
+                if (message.deviceId != null && $Object.hasOwnProperty.call(message, "deviceId"))
+                    object.deviceId = message.deviceId;
+                if (message.role != null && $Object.hasOwnProperty.call(message, "role"))
+                    object.role = message.role;
+                if (message.publisherDeviceId != null && $Object.hasOwnProperty.call(message, "publisherDeviceId"))
+                    object.publisherDeviceId = message.publisherDeviceId;
+                if (message.publisherLeaseExpiresAt != null && $Object.hasOwnProperty.call(message, "publisherLeaseExpiresAt"))
+                    if (typeof $BigInt !== "undefined" && options.longs === $BigInt)
+                        object.publisherLeaseExpiresAt = typeof message.publisherLeaseExpiresAt === "number" ? $BigInt(message.publisherLeaseExpiresAt) : $util.Long.fromBits(message.publisherLeaseExpiresAt.low >>> 0, message.publisherLeaseExpiresAt.high >>> 0, false).toBigInt();
+                    else if (typeof message.publisherLeaseExpiresAt === "number")
+                        object.publisherLeaseExpiresAt = options.longs === $String ? $String(message.publisherLeaseExpiresAt) : message.publisherLeaseExpiresAt;
+                    else
+                        object.publisherLeaseExpiresAt = options.longs === $String ? $util.Long.prototype.toString.call(message.publisherLeaseExpiresAt) : options.longs === $Number ? new $util.LongBits(message.publisherLeaseExpiresAt.low >>> 0, message.publisherLeaseExpiresAt.high >>> 0).toNumber() : message.publisherLeaseExpiresAt;
+                if (message.writable != null && $Object.hasOwnProperty.call(message, "writable"))
+                    object.writable = message.writable;
+                return object;
+            };
+
+            /**
+             * Converts this DeviceRoleStatusResponse to JSON.
+             * @function toJSON
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            DeviceRoleStatusResponse.prototype.toJSON = function() {
+                return DeviceRoleStatusResponse.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            /**
+             * Gets the type url for DeviceRoleStatusResponse
+             * @function getTypeUrl
+             * @memberof proto.v1.DeviceRoleStatusResponse
+             * @static
+             * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns {string} The type url
+             */
+            DeviceRoleStatusResponse.getTypeUrl = function(prefix) {
+                if (prefix === $undefined)
+                    prefix = "type.googleapis.com";
+                return prefix + "/proto.v1.DeviceRoleStatusResponse";
+            };
+
+            return DeviceRoleStatusResponse;
+        })();
+
         v1.SafeSyncBootstrapStartRequest = (function() {
 
             /**

@@ -10,7 +10,7 @@ interface PendingRequest {
   context: string
   resolve(value: Record<string, unknown>): void
   reject(error: Error): void
-  timer: ReturnType<typeof setTimeout>
+  timer: number
 }
 
 export class SafeSyncTransportError extends Error {
@@ -40,7 +40,7 @@ export class SafeSyncWebSocketTransport implements SafeSyncTransport {
     }
     const context = this.sender.requestId()
     return new Promise((resolve, reject) => {
-      const timer = globalThis.setTimeout(() => {
+      const timer = window.setTimeout(() => {
         this.pending.delete(responseAction)
         reject(new Error(`safe sync request timed out: ${action}`))
       }, this.timeoutMs)
@@ -48,7 +48,7 @@ export class SafeSyncWebSocketTransport implements SafeSyncTransport {
       void this.sender.send(action, payload, context).catch((error: unknown) => {
         const current = this.pending.get(responseAction)
         if (!current || current.context !== context) return
-        globalThis.clearTimeout(current.timer)
+        window.clearTimeout(current.timer)
         this.pending.delete(responseAction)
         reject(error instanceof Error ? error : new Error(String(error)))
       })
@@ -61,7 +61,7 @@ export class SafeSyncWebSocketTransport implements SafeSyncTransport {
     const data = payload as Record<string, unknown>
     const context = typeof data.context === "string" ? data.context : ""
     if (context && context !== pending.context) return false
-    globalThis.clearTimeout(pending.timer)
+    window.clearTimeout(pending.timer)
     this.pending.delete(action)
     if (data.safeSyncError === true) {
       pending.reject(new SafeSyncTransportError(
@@ -78,7 +78,7 @@ export class SafeSyncWebSocketTransport implements SafeSyncTransport {
 
   close(reason: string = "safe sync transport closed"): void {
     for (const pending of this.pending.values()) {
-      globalThis.clearTimeout(pending.timer)
+      window.clearTimeout(pending.timer)
       pending.reject(new Error(reason))
     }
     this.pending.clear()
@@ -98,5 +98,6 @@ function responseActionFor(action: SafeSyncRequestAction): string {
     case "SafeFileMutation": return "SafeFileMutationAck"
     case "SafeFileUploadStart": return "SafeFileUploadStartAck"
     case "SafeFileUploadCommit": return "SafeFileUploadCommitAck"
+    case "DeviceRoleRegister": return "DeviceRoleStatus"
   }
 }

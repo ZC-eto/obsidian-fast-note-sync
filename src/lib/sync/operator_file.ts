@@ -795,7 +795,9 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
   }
 
   // 任务立即执行，受外部 ConcurrencyLimiter 控制
-  void runUpload()
+  const upload = runUpload()
+  if (data.awaitCompletion) await upload
+  else void upload
 }
 
 /**

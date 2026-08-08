@@ -1,17 +1,16 @@
-[简体中文](https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/docs/README.zh-CN.md) / [English](https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/README.md) / [日本語](https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/docs/README.ja.md) / [한국어](https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/docs/README.ko.md) / [繁體中文](https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/docs/README.zh-TW.md)
+[简体中文](https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/docs/README.zh-CN.md) / [English](https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/README.md) / [日本語](https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/docs/README.ja.md) / [한국어](https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/docs/README.ko.md) / [繁體中文](https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/docs/README.zh-TW.md)
 
-有問題請新建 [issue](https://github.com/haierkeys/obsidian-fast-note-sync/issues/new) , 或加入電報交流群尋求幫助: [https://t.me/obsidian_users](https://t.me/obsidian_users)
+有問題請新建 [issue](https://github.com/ZC-eto/obsidian-fast-note-sync/issues/new) , 或加入電報交流群尋求幫助: [https://t.me/obsidian_users](https://t.me/obsidian_users)
 
-中國大陸地區，推薦使用騰訊 `cnb.cool` 鏡像庫: [https://cnb.cool/haierkeys/obsidian-fast-note-sync](https://cnb.cool/haierkeys/obsidian-fast-note-sync)
 
 
 
 <h1 align="center">Fast Note Sync For Obsidian</h1>
 
 <p align="center">
-    <a href="https://github.com/haierkeys/obsidian-fast-note-sync/releases"><img src="https://img.shields.io/github/release/haierkeys/obsidian-fast-note-sync?style=flat-square" alt="release"></a>
-    <a href="https://github.com/haierkeys/obsidian-fast-note-sync/releases"><img src="https://img.shields.io/github/v/tag/haierkeys/obsidian-fast-note-sync?label=release-alpha&style=flat-square" alt="alpha-release"></a>
-    <a href="https://github.com/haierkeys/obsidian-fast-note-sync/blob/master/LICENSE"><img src="https://img.shields.io/github/license/haierkeys/obsidian-fast-note-sync?style=flat-square" alt="license"></a>
+    <a href="https://github.com/ZC-eto/obsidian-fast-note-sync/releases"><img src="https://img.shields.io/github/release/ZC-eto/obsidian-fast-note-sync?style=flat-square" alt="release"></a>
+    <a href="https://github.com/ZC-eto/obsidian-fast-note-sync/releases"><img src="https://img.shields.io/github/v/tag/ZC-eto/obsidian-fast-note-sync?label=release-alpha&style=flat-square" alt="alpha-release"></a>
+    <a href="https://github.com/ZC-eto/obsidian-fast-note-sync/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ZC-eto/obsidian-fast-note-sync?style=flat-square" alt="license"></a>
     <img src="https://img.shields.io/badge/Language-TypeScript-00ADD8?style=flat-square" alt="TypeScript">
 </p>
 
@@ -24,7 +23,7 @@
 </p>
 
 <p align="center">
-  需配合獨立服務端使用：<a href="https://github.com/haierkeys/fast-note-sync-service">Fast Note Sync Service</a>
+  需配合獨立服務端使用：<a href="https://github.com/ZC-eto/fast-note-sync-service">Fast Note Sync Service</a>
 </p>
 
 <div align="center">
@@ -82,8 +81,7 @@
   | [<img src="/docs/images/kofi.png" alt="BuyMeACoffee" height="150">](https://ko-fi.com/haierkeys) | 或 | <img src="/docs/images/wxds.png" height="150"> |
 
 - 已支持名單：
-  - <a href="https://github.com/haierkeys/fast-note-sync-service/blob/master/docs/Support.zh-TW.md">Support.zh-TW.md</a>
-  - <a href="https://cnb.cool/haierkeys/fast-note-sync-service/-/blob/master/docs/Support.zh-TW.md">Support.zh-TW.md (cnb.cool 鏡像庫)</a>
+  - <a href="https://github.com/ZC-eto/fast-note-sync-service/blob/master/docs/Support.zh-TW.md">Support.zh-TW.md</a>
 
 
 ## 🚀 快速開始
@@ -91,16 +89,15 @@
 **第一步：獲取插件**
 
 * **商店搜索：** 打開 Obsidian **設置** > **社區插件** > **瀏覽**，搜索 `Fast Note Sync` 進行安裝。 *(註：若商店未上架，請選擇手動安裝)*
-* **手動下載：** 從 [GitHub 發佈頁](https://github.com/haierkeys/obsidian-fast-note-sync/releases) 獲取 `main.js`、`styles.css`、`manifest.json` 等文件，放入 `.obsidian/plugins/fast-note-sync` 文件夾中。
+* **手動下載：** 從 [GitHub 發佈頁](https://github.com/ZC-eto/obsidian-fast-note-sync/releases) 獲取 `main.js`、`styles.css`、`manifest.json` 等文件，放入 `.obsidian/plugins/fast-note-sync` 文件夾中。
 
 **第二步：授權同步**
 
-1. 訪問您搭建的 **[Fast Note Sync Service](https://github.com/haierkeys/fast-note-sync-service)** Web 界面。
+1. 訪問您搭建的 **[Fast Note Sync Service](https://github.com/ZC-eto/fast-note-sync-service)** Web 界面。
 2. 在左側導航欄中選擇 **「筆記庫」**。
 3. 點擊 **「一鍵授權 Obsidian」**，系統會自動喚起 Obsidian 並自動完成傳遞授權信息，當然你也可以手動複製授權到插件內。
 
 ## 📦 服務端部署
 
 後端服務設置，請參考：
-- <a href="https://github.com/haierkeys/fast-note-sync-service">Fast Note Sync Service</a>
-- <a href="https://cnb.cool/haierkeys/fast-note-sync-service">Fast Note Sync Service (cnb.cool 鏡像庫)</a>
+- <a href="https://github.com/ZC-eto/fast-note-sync-service">Fast Note Sync Service</a>

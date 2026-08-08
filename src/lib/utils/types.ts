@@ -78,6 +78,8 @@ export interface FileUploadMessage {
     nextChunkIndex?: number;
     /** 安全上传分片完成后显式提交；旧上传路径不设置 */
     onUploadReady?: () => Promise<void>;
+    /** 镜像事务需要等待上传和安全提交完成后再处理下一项 */
+    awaitCompletion?: boolean;
     /** 所属下载页（0-based），见 ReceiveMessage.pageIndex 注释 / owning download page, see ReceiveMessage.pageIndex */
     pageIndex?: number;
 }

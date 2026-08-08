@@ -10922,6 +10922,280 @@ export namespace proto {
         }
 
         /**
+         * Properties of a DeviceRoleRegisterRequest.
+         * @deprecated Use proto.v1.DeviceRoleRegisterRequest.$Properties instead.
+         */
+        type IDeviceRoleRegisterRequest = proto.v1.DeviceRoleRegisterRequest.$Properties;
+
+        /** Represents a DeviceRoleRegisterRequest. */
+        class DeviceRoleRegisterRequest {
+
+            /**
+             * Constructs a new DeviceRoleRegisterRequest.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.DeviceRoleRegisterRequest.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** DeviceRoleRegisterRequest vault. */
+            vault: string;
+
+            /** DeviceRoleRegisterRequest deviceId. */
+            deviceId: string;
+
+            /** DeviceRoleRegisterRequest role. */
+            role: string;
+
+            /** DeviceRoleRegisterRequest context. */
+            context: string;
+
+            /**
+             * Creates a new DeviceRoleRegisterRequest instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DeviceRoleRegisterRequest instance
+             */
+            static create(properties: proto.v1.DeviceRoleRegisterRequest.$Shape): proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape;
+            static create(properties?: proto.v1.DeviceRoleRegisterRequest.$Properties): proto.v1.DeviceRoleRegisterRequest;
+
+            /**
+             * Encodes the specified DeviceRoleRegisterRequest message. Does not implicitly {@link proto.v1.DeviceRoleRegisterRequest.verify|verify} messages.
+             * @param message DeviceRoleRegisterRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.DeviceRoleRegisterRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DeviceRoleRegisterRequest message, length delimited. Does not implicitly {@link proto.v1.DeviceRoleRegisterRequest.verify|verify} messages.
+             * @param message DeviceRoleRegisterRequest message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.DeviceRoleRegisterRequest.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DeviceRoleRegisterRequest message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape} DeviceRoleRegisterRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape;
+
+            /**
+             * Decodes a DeviceRoleRegisterRequest message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape} DeviceRoleRegisterRequest
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.DeviceRoleRegisterRequest & proto.v1.DeviceRoleRegisterRequest.$Shape;
+
+            /**
+             * Verifies a DeviceRoleRegisterRequest message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a DeviceRoleRegisterRequest message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DeviceRoleRegisterRequest
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.DeviceRoleRegisterRequest;
+
+            /**
+             * Creates a plain object from a DeviceRoleRegisterRequest message. Also converts values to other types if specified.
+             * @param message DeviceRoleRegisterRequest
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.DeviceRoleRegisterRequest, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this DeviceRoleRegisterRequest to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for DeviceRoleRegisterRequest
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace DeviceRoleRegisterRequest {
+
+            /** Properties of a DeviceRoleRegisterRequest. */
+            interface $Properties {
+
+                /** DeviceRoleRegisterRequest vault */
+                vault?: (string|null);
+
+                /** DeviceRoleRegisterRequest deviceId */
+                deviceId?: (string|null);
+
+                /** DeviceRoleRegisterRequest role */
+                role?: (string|null);
+
+                /** DeviceRoleRegisterRequest context */
+                context?: (string|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a DeviceRoleRegisterRequest. */
+            type $Shape = proto.v1.DeviceRoleRegisterRequest.$Properties;
+        }
+
+        /**
+         * Properties of a DeviceRoleStatusResponse.
+         * @deprecated Use proto.v1.DeviceRoleStatusResponse.$Properties instead.
+         */
+        type IDeviceRoleStatusResponse = proto.v1.DeviceRoleStatusResponse.$Properties;
+
+        /** Represents a DeviceRoleStatusResponse. */
+        class DeviceRoleStatusResponse {
+
+            /**
+             * Constructs a new DeviceRoleStatusResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.v1.DeviceRoleStatusResponse.$Properties);
+
+            /** Unknown fields preserved while decoding when enabled */
+            $unknowns?: Uint8Array[];
+
+            /** DeviceRoleStatusResponse deviceId. */
+            deviceId: string;
+
+            /** DeviceRoleStatusResponse role. */
+            role: string;
+
+            /** DeviceRoleStatusResponse publisherDeviceId. */
+            publisherDeviceId: string;
+
+            /** DeviceRoleStatusResponse publisherLeaseExpiresAt. */
+            publisherLeaseExpiresAt: (number|Long);
+
+            /** DeviceRoleStatusResponse writable. */
+            writable: boolean;
+
+            /**
+             * Creates a new DeviceRoleStatusResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DeviceRoleStatusResponse instance
+             */
+            static create(properties: proto.v1.DeviceRoleStatusResponse.$Shape): proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape;
+            static create(properties?: proto.v1.DeviceRoleStatusResponse.$Properties): proto.v1.DeviceRoleStatusResponse;
+
+            /**
+             * Encodes the specified DeviceRoleStatusResponse message. Does not implicitly {@link proto.v1.DeviceRoleStatusResponse.verify|verify} messages.
+             * @param message DeviceRoleStatusResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encode(message: proto.v1.DeviceRoleStatusResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DeviceRoleStatusResponse message, length delimited. Does not implicitly {@link proto.v1.DeviceRoleStatusResponse.verify|verify} messages.
+             * @param message DeviceRoleStatusResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            static encodeDelimited(message: proto.v1.DeviceRoleStatusResponse.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DeviceRoleStatusResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns {proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape} DeviceRoleStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape;
+
+            /**
+             * Decodes a DeviceRoleStatusResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns {proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape} DeviceRoleStatusResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.v1.DeviceRoleStatusResponse & proto.v1.DeviceRoleStatusResponse.$Shape;
+
+            /**
+             * Verifies a DeviceRoleStatusResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            static verify(message: { [k: string]: unknown }): (string|null);
+
+            /**
+             * Creates a DeviceRoleStatusResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DeviceRoleStatusResponse
+             */
+            static fromObject(object: { [k: string]: unknown }): proto.v1.DeviceRoleStatusResponse;
+
+            /**
+             * Creates a plain object from a DeviceRoleStatusResponse message. Also converts values to other types if specified.
+             * @param message DeviceRoleStatusResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            static toObject(message: proto.v1.DeviceRoleStatusResponse, options?: $protobuf.IConversionOptions): { [k: string]: unknown };
+
+            /**
+             * Converts this DeviceRoleStatusResponse to JSON.
+             * @returns JSON object
+             */
+            toJSON(): { [k: string]: unknown };
+
+            /**
+             * Gets the type url for DeviceRoleStatusResponse
+             * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+             * @returns The type url
+             */
+            static getTypeUrl(prefix?: string): string;
+        }
+
+        namespace DeviceRoleStatusResponse {
+
+            /** Properties of a DeviceRoleStatusResponse. */
+            interface $Properties {
+
+                /** DeviceRoleStatusResponse deviceId */
+                deviceId?: (string|null);
+
+                /** DeviceRoleStatusResponse role */
+                role?: (string|null);
+
+                /** DeviceRoleStatusResponse publisherDeviceId */
+                publisherDeviceId?: (string|null);
+
+                /** DeviceRoleStatusResponse publisherLeaseExpiresAt */
+                publisherLeaseExpiresAt?: (number|Long|null);
+
+                /** DeviceRoleStatusResponse writable */
+                writable?: (boolean|null);
+
+                /** Unknown fields preserved while decoding when enabled */
+                $unknowns?: Uint8Array[];
+            }
+
+            /** Shape of a DeviceRoleStatusResponse. */
+            type $Shape = proto.v1.DeviceRoleStatusResponse.$Properties;
+        }
+
+        /**
          * Properties of a SafeSyncBootstrapStartRequest.
          * @deprecated Use proto.v1.SafeSyncBootstrapStartRequest.$Properties instead.
          */

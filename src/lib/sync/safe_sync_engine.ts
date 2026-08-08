@@ -39,6 +39,7 @@ export type SafeSyncRequestAction =
   | "SafeFileMutation"
   | "SafeFileUploadStart"
   | "SafeFileUploadCommit"
+  | "DeviceRoleRegister"
 
 export interface SafeLocalManifestItem {
   resourceType: "NOTE" | "FILE" | "FOLDER"
@@ -130,7 +131,7 @@ interface SafeSyncStatusResponse {
   vaultId: number
 }
 
-interface SafeSyncManifestItem {
+export interface SafeSyncManifestItem {
   resourceId: string
   resourceType: "NOTE" | "FILE" | "FOLDER"
   path: string
@@ -138,6 +139,14 @@ interface SafeSyncManifestItem {
   resourceRevision: number
   contentHash: string
   size: number
+}
+
+export interface SafeMirrorBootstrapSnapshot {
+  sessionId: string
+  manifestHash: string
+  snapshotVaultRevision: number
+  expiresAt: number
+  remoteItems: SafeSyncManifestItem[]
 }
 
 export class SafeSyncManifestMismatchError extends Error {
@@ -161,6 +170,7 @@ export class SafeSyncEngine {
   private remoteEvents: SafeSyncEvent[] = []
   private readonly remoteClaims = new Map<number, SafeRemoteEventClaim>()
   private activeRemoteEvent?: SafeSyncEvent
+  private mirrorBootstrap?: SafeMirrorBootstrapSnapshot
 
   status: SafeSyncClientStatus = { state: "disabled", serverState: "UNKNOWN", capability: false }
 
@@ -201,66 +211,93 @@ export class SafeSyncEngine {
     const initial = await this.refreshStatus(true)
     if (initial.state === "unsupported" || initial.state === "error") return initial
     if (initial.state === "active") return initial
-    this.setStatus("bootstrapping", initial.serverState, true)
+    try {
+      const snapshot = await this.beginMirrorBootstrap()
+      const mismatches = compareManifests(await this.options.getLocalManifest(), snapshot.remoteItems)
+      if (mismatches.length > 0) throw new SafeSyncManifestMismatchError(mismatches)
+      return await this.commitMirrorBootstrap(snapshot)
+    } catch (error) {
+      await this.cancelMirrorBootstrap().catch(() => undefined)
+      this.setStatus("error", "UNKNOWN", true, errorMessage(error))
+      throw error
+    }
+  }
 
+  async beginMirrorBootstrap(): Promise<SafeMirrorBootstrapSnapshot> {
+    const initial = await this.refreshStatus(true)
+    if (initial.state === "unsupported" || initial.state === "error") {
+      throw new Error(initial.message || "safe sync is unavailable")
+    }
+    if (this.mirrorBootstrap && this.mirrorBootstrap.expiresAt > this.options.now()) return this.mirrorBootstrap
+    this.setStatus("bootstrapping", initial.serverState, true)
     const started = await this.options.transport.request("SafeSyncBootstrapStart", {
       vault: this.options.vault,
       deviceId: this.requireStore().deviceId,
     })
-    const sessionId = requiredString(started, "sessionId")
-    const manifestHash = requiredString(started, "manifestHash")
-    const snapshotVaultRevision = integer(started, "snapshotVaultRevision", 0)
-    let cursor = requiredString(started, "cursor")
-    const remoteItems: SafeSyncManifestItem[] = []
-
-    try {
-      do {
-        const page = await this.options.transport.request("SafeSyncBootstrapPage", {
-          vault: this.options.vault,
-          sessionId,
-          cursor,
-          pageSize: 200,
-        })
-        if (requiredString(page, "sessionId") !== sessionId || requiredString(page, "manifestHash") !== manifestHash ||
-          integer(page, "snapshotVaultRevision", 0) !== snapshotVaultRevision) {
-          throw new Error("safe sync bootstrap page does not match the active snapshot")
-        }
-        remoteItems.push(...parseManifestItems(page.items))
-        cursor = optionalString(page, "nextCursor")
-      } while (cursor)
-
-      const mismatches = compareManifests(await this.options.getLocalManifest(), remoteItems)
-      if (mismatches.length > 0) throw new SafeSyncManifestMismatchError(mismatches)
-
-      const committed = parseStatus(await this.options.transport.request("SafeSyncBootstrapCommit", {
-        vault: this.options.vault,
-        sessionId,
-        manifestHash,
-        snapshotVaultRevision,
-      }))
-      if (committed.state !== "STRICT") throw new Error("safe sync bootstrap commit did not enter STRICT")
-      await this.requireStore().replaceBootstrapBaselines(
-        remoteItems.map((item) => ({
-          path: item.path,
-          resourceId: item.resourceId,
-          resourceRevision: item.resourceRevision,
-          contentHash: item.contentHash,
-          vaultRevision: snapshotVaultRevision,
-          state: item.state,
-          size: item.size,
-        })),
-        snapshotVaultRevision,
-      )
-      return this.setStatus("active", "STRICT", true)
-    } catch (error) {
-      try {
-        await this.options.transport.request("SafeSyncBootstrapCancel", { vault: this.options.vault, sessionId })
-      } catch {
-        // The original bootstrap failure remains the actionable error.
-      }
-      this.setStatus("error", "UNKNOWN", true, errorMessage(error))
-      throw error
+    const snapshot: SafeMirrorBootstrapSnapshot = {
+      sessionId: requiredString(started, "sessionId"),
+      manifestHash: requiredString(started, "manifestHash"),
+      snapshotVaultRevision: integer(started, "snapshotVaultRevision", 0),
+      expiresAt: integer(started, "expiresAt", 0),
+      remoteItems: [],
     }
+    let cursor = requiredString(started, "cursor")
+    this.mirrorBootstrap = snapshot
+    do {
+      const page = await this.options.transport.request("SafeSyncBootstrapPage", {
+        vault: this.options.vault,
+        sessionId: snapshot.sessionId,
+        cursor,
+        pageSize: 200,
+      })
+      if (requiredString(page, "sessionId") !== snapshot.sessionId || requiredString(page, "manifestHash") !== snapshot.manifestHash ||
+        integer(page, "snapshotVaultRevision", 0) !== snapshot.snapshotVaultRevision) {
+        throw new Error("safe sync bootstrap page does not match the active snapshot")
+      }
+      snapshot.remoteItems.push(...parseManifestItems(page.items))
+      cursor = optionalString(page, "nextCursor")
+    } while (cursor)
+    return snapshot
+  }
+
+  async commitMirrorBootstrap(snapshot: SafeMirrorBootstrapSnapshot): Promise<SafeSyncClientStatus> {
+    if (!this.mirrorBootstrap || this.mirrorBootstrap.sessionId !== snapshot.sessionId || snapshot.expiresAt <= this.options.now()) {
+      throw new Error("safe mirror plan expired or was replaced")
+    }
+    const committed = parseStatus(await this.options.transport.request("SafeSyncBootstrapCommit", {
+      vault: this.options.vault,
+      sessionId: snapshot.sessionId,
+      manifestHash: snapshot.manifestHash,
+      snapshotVaultRevision: snapshot.snapshotVaultRevision,
+    }))
+    if (committed.state !== "STRICT") throw new Error("safe sync bootstrap commit did not enter STRICT")
+    await this.requireStore().replaceBootstrapBaselines(
+      snapshot.remoteItems.map((item) => ({
+        path: item.path,
+        resourceType: item.resourceType,
+        resourceId: item.resourceId,
+        resourceRevision: item.resourceRevision,
+        contentHash: item.contentHash,
+        vaultRevision: snapshot.snapshotVaultRevision,
+        state: item.state,
+        size: item.size,
+      })),
+      snapshot.snapshotVaultRevision,
+    )
+    this.mirrorBootstrap = undefined
+    return this.setStatus("active", "STRICT", true)
+  }
+
+  async cancelMirrorBootstrap(localRequested = false): Promise<void> {
+    const snapshot = this.mirrorBootstrap
+    this.mirrorBootstrap = undefined
+    if (!snapshot) return
+    await this.options.transport.request("SafeSyncBootstrapCancel", { vault: this.options.vault, sessionId: snapshot.sessionId })
+    await this.refreshStatus(localRequested)
+  }
+
+  localManifest(): Promise<SafeLocalManifestItem[]> {
+    return this.options.getLocalManifest()
   }
 
   async mutate(resourceType: "NOTE" | "FILE" | "FOLDER", input: SafeMutationInput): Promise<SafeMutationAck> {
@@ -317,6 +354,7 @@ export class SafeSyncEngine {
       vaultRevision: positiveInteger(response, "vaultRevision"),
       state: input.action === "DELETE" ? "DELETED" : "LIVE",
       size: input.size || baseline?.size || 0,
+      resourceType,
     }
     await store.acknowledge(ack)
     return ack
@@ -395,6 +433,7 @@ export class SafeSyncEngine {
       vaultRevision: positiveInteger(response, "vaultRevision"),
       state: "LIVE",
       size,
+      resourceType: "FILE",
     }
     await store.acknowledge(ack)
     return ack

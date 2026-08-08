@@ -130,6 +130,10 @@ function enSendDataPayload(action: WSAction.WSSendAction, payload: unknown): Uin
             const msg = proto.v1.SafeSyncStatusRequest.create(properties);
             return proto.v1.SafeSyncStatusRequest.encode(msg).finish();
         }
+        case WSAction.SafeSyncReceiveDeviceRoleRegister: {
+            const msg = proto.v1.DeviceRoleRegisterRequest.create(properties);
+            return proto.v1.DeviceRoleRegisterRequest.encode(msg).finish();
+        }
         case WSAction.SafeSyncReceiveBootstrapStart: {
             const msg = proto.v1.SafeSyncBootstrapStartRequest.create(properties);
             return proto.v1.SafeSyncBootstrapStartRequest.encode(msg).finish();
@@ -586,6 +590,8 @@ function deReceiveProtobufToDTO(action: WSAction.WSReceiveAction, data: Uint8Arr
         }
         case WSAction.SafeSyncStatus:
             return decodeSafeSyncMessage(data, proto.v1.SafeSyncStatusResponse, tryJsonDecode);
+        case WSAction.SafeSyncDeviceRoleStatus:
+            return decodeSafeSyncMessage(data, proto.v1.DeviceRoleStatusResponse, tryJsonDecode);
         case WSAction.SafeSyncBootstrapStartAck:
             return decodeSafeSyncMessage(data, proto.v1.SafeSyncBootstrapStartResponse, tryJsonDecode);
         case WSAction.SafeSyncBootstrapPageAck:

@@ -163,8 +163,9 @@ const emptyTransport = new ScriptedTransport({
   SafeSyncStatus: [
     { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
     { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
   ],
-  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-empty", snapshotVaultRevision: 0, manifestHash: "manifest-empty", cursor: "cursor-empty" }],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-empty", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-empty", cursor: "cursor-empty" }],
   SafeSyncBootstrapPage: [{ sessionId: "session-empty", snapshotVaultRevision: 0, manifestHash: "manifest-empty", items: [], nextCursor: "" }],
   SafeSyncBootstrapCommit: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
 })
@@ -181,11 +182,65 @@ assert.equal((await emptyVault.activate()).state, "active")
 assert.equal((await emptyVault.refreshStatus(true)).state, "active", "an empty bootstrapped Vault must remain active after reconnect")
 assert.equal(emptyTransport.calls.filter((call) => call.action === "SafeSyncBootstrapStart").length, 1)
 
+const cancelStore = new MemoryStore()
+cancelStore.persistedBootstrapComplete = true
+const cancelTransport = new ScriptedTransport({
+  SafeSyncStatus: [
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-cancel", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-cancel", cursor: "cursor-cancel" }],
+  SafeSyncBootstrapPage: [{ sessionId: "session-cancel", snapshotVaultRevision: 0, manifestHash: "manifest-cancel", items: [], nextCursor: "" }],
+  SafeSyncBootstrapCancel: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+})
+const cancelPreview = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: cancelTransport,
+  createStateStore: () => cancelStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-cancel",
+  now: () => 1_000,
+})
+await cancelPreview.beginMirrorBootstrap()
+assert.equal(cancelPreview.status.state, "bootstrapping")
+await cancelPreview.cancelMirrorBootstrap(true)
+assert.equal(cancelPreview.status.state, "active", "closing a mirror preview must preserve the enabled local preference")
+
+const failedPageStore = new MemoryStore()
+const failedPageTransport = new ScriptedTransport({
+  SafeSyncStatus: [
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-failed-page", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-failed-page", cursor: "cursor-failed-page" }],
+  SafeSyncBootstrapPage: [new Error("page unavailable")],
+  SafeSyncBootstrapCancel: [{ capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+})
+const failedPage = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: failedPageTransport,
+  createStateStore: () => failedPageStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-failed-page",
+  now: () => 1_000,
+})
+await assert.rejects(() => failedPage.activate(), /page unavailable/)
+assert.equal(
+  failedPageTransport.calls.filter((call) => call.action === "SafeSyncBootstrapCancel").length,
+  1,
+  "a failed manifest page must cancel its server bootstrap session",
+)
+
 const activeStore = new MemoryStore()
 const activeOperationIds = ["op-a", "op-file"]
 const activeTransport = new ScriptedTransport({
-  SafeSyncStatus: [{ capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
-  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-a", snapshotVaultRevision: 0, manifestHash: "manifest-a", cursor: "cursor-a" }],
+  SafeSyncStatus: [
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-a", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-a", cursor: "cursor-a" }],
   SafeSyncBootstrapPage: [{
     sessionId: "session-a",
     snapshotVaultRevision: 0,
@@ -231,8 +286,12 @@ assert.equal(remoteEvents[0].path, "b.md")
 
 const mismatchStore = new MemoryStore()
 const mismatchTransport = new ScriptedTransport({
-  SafeSyncStatus: [{ capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
-  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-b", snapshotVaultRevision: 0, manifestHash: "manifest-b", cursor: "cursor-b" }],
+  SafeSyncStatus: [
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+    { capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true },
+  ],
+  SafeSyncBootstrapStart: [{ state: "BOOTSTRAPPING", sessionId: "session-b", expiresAt: 20_000, snapshotVaultRevision: 0, manifestHash: "manifest-b", cursor: "cursor-b" }],
   SafeSyncBootstrapPage: [{ sessionId: "session-b", snapshotVaultRevision: 0, manifestHash: "manifest-b", items: [], nextCursor: "" }],
   SafeSyncBootstrapCancel: [{ capability: true, state: "OFF", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
 })
@@ -252,7 +311,7 @@ await assert.rejects(() => mismatch.activate(), (error) => {
 })
 assert.equal(mismatch.status.state, "error")
 assert.equal(mismatchStore.listBaselines().length, 0)
-assert.equal(mismatchTransport.calls.at(-1).action, "SafeSyncBootstrapCancel")
+assert.ok(mismatchTransport.calls.some((call) => call.action === "SafeSyncBootstrapCancel"))
 
 const gapStore = new MemoryStore()
 gapStore.latestVaultRevision = 4

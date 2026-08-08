@@ -4,16 +4,19 @@ import type FastSync from "../../main"
 import { SafeSyncEngine, SafeSyncClientStatus, SafeSyncEvent, SafeSyncManifestMismatchError, SafeMutationInput } from "./safe_sync_engine"
 import { SafeSyncWebSocketTransport } from "./safe_sync_websocket_transport"
 import { SafeSyncStateStore, createSafeSyncNamespace } from "../storage/safe_sync_state_store"
-import { generateUUID, getPluginDir, hashFileAsync, isFolderSyncPathExcluded, isPathExcluded, vaultDelete } from "../utils/helpers"
+import { generateUUID, getPluginDir, hashContentAsync, hashFileAsync, isFolderSyncPathExcluded, isPathExcluded, vaultDelete } from "../utils/helpers"
 import { SafeRemoteDeleteProtector, SafeRemoteDeleteResult } from "./safe_remote_delete_protector"
 import { receiveSafeDirectEvent } from "./safe_sync_inbound"
+import { applySyncRoleSettingConflicts, type SyncRole } from "./safe_sync_role"
 
 export type SafeSyncWriteMode = "legacy" | "safe" | "paused"
+export type { SyncRole } from "./safe_sync_role"
 
 export class SafeSyncRuntime {
   readonly transport: SafeSyncWebSocketTransport
   readonly engine: SafeSyncEngine
   private drainingDirectEvents = false
+  private roleHeartbeat?: number
 
   constructor(private readonly plugin: FastSync) {
     this.transport = new SafeSyncWebSocketTransport({
@@ -57,8 +60,37 @@ export class SafeSyncRuntime {
       if (status.serverState === "STRICT") await this.engine.refreshStatus(false)
       status = this.engine.status
     }
+    if (status.capability && this.engine.store) {
+      try {
+        await this.registerDeviceRole(this.plugin.settings.syncRole)
+      } catch (error) {
+        status = { ...status, message: error instanceof Error ? error.message : String(error) }
+      }
+    }
+    if (applySyncRoleSettingConflicts(this.plugin.settings, this.plugin.settings.syncRole)) {
+      await this.plugin.saveSettings()
+    }
     this.plugin.settingTab?.refresh()
     return status
+  }
+
+  async setDeviceRole(role: SyncRole): Promise<void> {
+    await this.registerDeviceRole(role)
+    this.plugin.settings.syncRole = role
+    applySyncRoleSettingConflicts(this.plugin.settings, role)
+    await this.plugin.saveSettings()
+  }
+
+  async registerDeviceRole(role: SyncRole): Promise<Record<string, unknown>> {
+    const store = this.engine.store
+    if (!store) throw new Error("safe sync device identity is unavailable")
+    const response = await this.transport.request("DeviceRoleRegister", {
+      vault: this.plugin.settings.vault,
+      deviceId: store.deviceId,
+      role: role === "local-publisher" ? "LOCAL_PUBLISHER" : role === "remote-mirror" ? "REMOTE_MIRROR" : "BIDIRECTIONAL",
+    })
+    this.startRoleHeartbeat()
+    return response
   }
 
   async setEnabled(enabled: boolean): Promise<boolean> {
@@ -154,6 +186,7 @@ export class SafeSyncRuntime {
   async commitRemoteEvent(event: SafeSyncEvent, contentHash: string, size: number): Promise<void> {
     await this.engine.commitRemoteEvent(event, {
       path: event.path,
+      resourceType: event.resourceType,
       resourceId: event.resourceId,
       resourceRevision: event.resourceRevision,
       contentHash,
@@ -200,7 +233,12 @@ export class SafeSyncRuntime {
     return this.engine.store?.getBaseline(path)?.state === "LIVE"
   }
 
+  baselineAt(path: string) {
+    return this.engine.store?.getBaseline(path)
+  }
+
   close(): void {
+    if (this.roleHeartbeat) window.clearInterval(this.roleHeartbeat)
     this.engine.cancelRemoteEvents(new Error("safe sync runtime closed"))
     this.transport.close()
   }
@@ -222,7 +260,11 @@ export class SafeSyncRuntime {
       }
       if (!(entry instanceof TFile) || isPathExcluded(entry.path, this.plugin)) continue
       let contentHash = this.plugin.fileHashManager.getValidHash(entry.path, entry.stat.mtime, entry.stat.size)
-      if (contentHash == null) contentHash = await hashFileAsync(this.plugin.app, entry.path)
+      if (contentHash == null) {
+        contentHash = entry.path.endsWith(".md")
+          ? await hashContentAsync(await this.plugin.app.vault.read(entry))
+          : await hashFileAsync(this.plugin.app, entry.path)
+      }
       manifest.push({
         resourceType: entry.path.endsWith(".md") ? "NOTE" : "FILE",
         path: entry.path,
@@ -245,6 +287,13 @@ export class SafeSyncRuntime {
     } finally {
       this.drainingDirectEvents = false
     }
+  }
+
+  private startRoleHeartbeat(): void {
+    if (this.roleHeartbeat) window.clearInterval(this.roleHeartbeat)
+    this.roleHeartbeat = window.setInterval(() => {
+      if (this.plugin.websocket.isConnected()) void this.registerDeviceRole(this.plugin.settings.syncRole).catch(() => undefined)
+    }, 60_000)
   }
 }
 

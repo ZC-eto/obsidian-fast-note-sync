@@ -270,6 +270,7 @@ export const SafeSyncFolderMutationAck: WSReceiveAction = "SafeFolderMutationAck
 export const SafeSyncFileUploadStartAck: WSReceiveAction = "SafeFileUploadStartAck";
 export const SafeSyncFileUploadCommitAck: WSReceiveAction = "SafeFileUploadCommitAck";
 export const SafeSyncFileMutationAck: WSReceiveAction = "SafeFileMutationAck";
+export const SafeSyncDeviceRoleStatus: WSReceiveAction = "DeviceRoleStatus";
 export const SafeSyncEvent: WSReceiveAction = "SafeSyncEvent";
 
 
@@ -432,6 +433,7 @@ export const SafeSyncReceiveFolderMutation: WSSendAction = "SafeFolderMutation";
 export const SafeSyncReceiveFileMutation: WSSendAction = "SafeFileMutation";
 export const SafeSyncReceiveFileUploadStart: WSSendAction = "SafeFileUploadStart";
 export const SafeSyncReceiveFileUploadCommit: WSSendAction = "SafeFileUploadCommit";
+export const SafeSyncReceiveDeviceRoleRegister: WSSendAction = "DeviceRoleRegister";
 
 
 /**

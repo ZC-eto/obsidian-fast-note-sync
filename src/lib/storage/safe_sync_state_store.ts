@@ -5,6 +5,7 @@ export type SafePendingStatus = "pending" | "expired"
 
 export interface SafeRevisionBaseline {
   path: string
+  resourceType?: "NOTE" | "FILE" | "FOLDER"
   resourceId: string
   resourceRevision: number
   contentHash: string
@@ -35,6 +36,7 @@ export interface SafeMutationAck {
   vaultRevision: number
   state?: SafeSyncResourceState
   size?: number
+  resourceType?: "NOTE" | "FILE" | "FOLDER"
 }
 
 interface SafeSyncStateDocument {
@@ -184,6 +186,7 @@ export class SafeSyncStateStore {
     if (ack.previousPath) delete this.state.baselines[ack.previousPath]
     this.state.baselines[ack.path] = {
       path: ack.path,
+      resourceType: ack.resourceType,
       resourceId: ack.resourceId,
       resourceRevision: ack.resourceRevision,
       contentHash: ack.contentHash,

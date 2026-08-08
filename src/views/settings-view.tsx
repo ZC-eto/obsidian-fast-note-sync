@@ -271,7 +271,6 @@ const SupportList = ({ plugin }: { plugin: FastSync }) => {
 
   const getSupportLink = () => {
     const locale = getLocale();
-    const source = plugin.settings.updateSource || "github";
 
     const fileNameMap: Record<string, string> = {
       "zh-cn": "Support.zh-CN.md",
@@ -281,11 +280,7 @@ const SupportList = ({ plugin }: { plugin: FastSync }) => {
     };
     const fileName = fileNameMap[locale] || "Support.en.md";
 
-    const baseUrl = source === "cnb"
-      ? "https://cnb.cool/haierkeys/fast-note-sync-service/-/blob/master/docs/"
-      : "https://github.com/haierkeys/fast-note-sync-service/blob/master/docs/";
-
-    return baseUrl + fileName;
+    return `https://github.com/ZC-eto/fast-note-sync-service/blob/master/docs/${fileName}`;
   };
 
   if (loading && records.length === 0) {

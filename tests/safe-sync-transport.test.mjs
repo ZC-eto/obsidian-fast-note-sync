@@ -12,6 +12,7 @@ const build = await esbuild.build({
   write: false,
 })
 const source = Buffer.from(build.outputFiles[0].contents).toString("base64")
+globalThis.window = globalThis
 const { SafeSyncTransportError, SafeSyncWebSocketTransport } = await import(`data:text/javascript;base64,${source}`)
 
 const sent = []
@@ -28,14 +29,19 @@ assert.equal(sent[0].context, "request-1")
 assert.equal(transport.receive("SafeSyncStatus", { capability: true, state: "OFF" }), true)
 assert.equal((await statusPromise).state, "OFF")
 
+const rolePromise = transport.request("DeviceRoleRegister", { vault: "vault-a", role: "BIDIRECTIONAL" })
+assert.equal(sent[1].action, "DeviceRoleRegister")
+assert.equal(transport.receive("DeviceRoleStatus", { context: "request-2", role: "BIDIRECTIONAL", writable: true }), true)
+assert.equal((await rolePromise).writable, true)
+
 const mutationPromise = transport.request("SafeNoteMutation", { vault: "vault-a" })
 assert.equal(transport.receive("SafeNoteMutationAck", { context: "wrong", resourceId: "r1" }), false)
-assert.equal(transport.receive("SafeNoteMutationAck", { context: "request-2", resourceId: "r1" }), true)
+assert.equal(transport.receive("SafeNoteMutationAck", { context: "request-3", resourceId: "r1" }), true)
 assert.equal((await mutationPromise).resourceId, "r1")
 
 const errorPromise = transport.request("SafeFolderMutation", { vault: "vault-a" })
 assert.equal(transport.receive("SafeFolderMutationAck", {
-  context: "request-3",
+  context: "request-4",
   safeSyncError: true,
   errorCode: "REVISION_CONFLICT",
   code: 534,
