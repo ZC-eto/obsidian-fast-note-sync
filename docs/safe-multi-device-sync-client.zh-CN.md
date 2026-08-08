@@ -48,21 +48,22 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 - 远端删除先检查 pending、baseline 和当前 hash，再写入 Obsidian 配置目录下的 `plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
 - 安全附件下载的分片、hash、大小和临时写盘任一步失败都会拒绝当前事件，不留下已推进的 baseline。
 
-Windows 插件 `2.5.0` 已写入真实 Obsidian 安装目录并完成普通同步 smoke；设置页、问号帮助、三种设备角色、两个覆盖按钮和最近一次回滚入口已在真实 Obsidian `1.13.4` 中验收。两个权威覆盖方向及对应回滚使用隔离的内存 Vault 与远端状态执行，不在唯一生产 Vault 首次执行破坏性覆盖。Android 本轮不安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API，供后续手工导入。
+Windows 插件 `2.5.8` 已写入真实 Obsidian 安装目录；设置页、问号帮助、三种设备角色、两个覆盖按钮和最近一次回滚入口已在真实 Obsidian `1.13.4` 中验收。两个权威覆盖方向及对应回滚使用隔离的内存 Vault 与远端状态执行；生产 Vault 已执行“本地覆盖远端”真实预览并确认 875 项零差异，因此没有执行无意义的破坏性覆盖。Android 本轮不安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API，供后续手工导入。
 
 ## Windows 自用安装记录
 
 - Vault：`E:\Document\Notes`
 - 插件目录：`E:\Document\Notes\.obsidian\plugins\fast-note-sync`
-- 安装版本：`2.5.0`，Release tag 提交 `ab673c7`；分支后续 CI 修复提交为 `2f2b858`
-- 回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.4.0-before-safe-sync-20260807-091747`
+- 安装版本：`2.5.8`，Release tag 与分支提交均为 `b00534a`
+- 最近回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.5.7-before-2.5.8-20260808-165400`；前一份为 `2.5.6-before-2.5.7-20260808-163700`
 - 服务地址：`https://fast-note-sync-safe-1irxvu-6387b0-23-144-4-140.sslip.io`
 - 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
 - 持久状态：`fileHashMap-v2.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留；v1 文件哈希缓存不再迁移，升级后会按修复后的 Range 读取规则重建
 - `safe-sync/` 的设备状态和 `recovery/` 的权威覆盖恢复包属于设备私有数据，即使启用旧“配置同步”也会被硬排除，不上传到远端或其他设备
-- 运行验证：Obsidian 已加载 `2.5.0`，WebSocket 已连接并鉴权，普通增量同步完成；设置页可见“安全多端同步”、问号帮助、设备角色、两个覆盖方向和回滚入口
-- 服务能力：客户端观察到 capability 可用，服务端状态为 `OFF`；`safeRevisionSyncEnabled=false`，没有进入 bootstrap
-- 文件核对：Windows 实际安装的 `main.js` SHA-256 为 `5b9c4f506dd01e5e653c630d8a013f8e175f74a40b3072ca3d12c1125d3c77ef`，与 GitHub `2.5.0` Release 资产一致；原 `data.json`、hash map 和 folder snapshot 均保留
+- 运行验证：Obsidian 已加载 `2.5.8`，WebSocket 已连接并鉴权；安全同步已开启，角色为 `bidirectional`，运行状态为 `active / STRICT`，写入模式为 `safe`
+- 权威预览：生产 Vault 本地与远端均为 875 项，CREATE / UPDATE / DELETE / REPLACE 全部为 0；等待取消完成后状态恢复为 `active / STRICT / safe`
+- 中断恢复：实机人为清除本地 bootstrap session 后，客户端使用稳定 device ID 接管本机原 session 并成功取消；没有残留 preview、bootstrap 或 busy 状态，控制台无 error/warning
+- 文件核对：Windows 实际安装的 `main.js` SHA-256 为 `fd283b75c2aafa49ffa60fda0b8d3ffdedbe253d41c472e398e01d60ca3eb317`，与 GitHub `2.5.8` Release 资产一致；原 `data.json`、hash map 和 folder snapshot 均保留
 
 启动时曾发现 LocalStorage 中的旧 API 地址优先于已更新的 `data.json`。本次已通过插件的正式 `saveAndReloadServices("api")` 路径同时更新运行配置、LocalStorage 和 `data.json`，重连后确认实际使用新临时域名。
 
@@ -97,9 +98,9 @@ tests/
 - `pnpm test`：通过。
 - `pnpm lint`：通过，0 warning、0 error；`pnpm lint:css`：通过。
 - `pnpm build`：通过。
-- 当前复验环境为 Node `v24.14.0`、pnpm `11.1.2`，满足项目声明的运行版本。
+- 当前本地复验环境为 Node `v24.14.0`、pnpm `10.28.1`；GitHub Release 工作流按仓库 `packageManager` 使用 pnpm `11.1.2`，两处测试与构建均通过。
 
-Windows 实机加载、普通增量同步、设置交互和 Dokploy 新服务连接已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.5.0`。`SafeMirrorManager` 隔离集成测试实际执行了本地覆盖远端、远端覆盖本地、两个方向回滚、预览后本地漂移失效、计划过期失效及远端镜像端禁止覆盖远端。Android、真实双设备传播和生产 Vault 首次安全同步 bootstrap 尚未执行；其中 Android 安装是用户明确延后的交付项，不属于当前 Windows 版本缺失功能。
+Windows 实机加载、设置交互、Dokploy 新服务连接、生产 Vault 安全 bootstrap 预览和中断取消恢复已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.5.8`。`SafeMirrorManager` 隔离集成测试实际执行了本地覆盖远端、远端覆盖本地、两个方向回滚、预览后本地漂移失效、计划过期失效及远端镜像端禁止覆盖远端。Android 与真实双设备传播尚未执行；Android 安装是用户明确延后的交付项，不属于当前 Windows 版本缺失功能。
 
 ## 禁止事项
 
