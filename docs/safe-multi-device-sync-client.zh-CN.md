@@ -2,7 +2,7 @@
 
 ## 文档状态
 
-- 状态：安全修订同步、设备角色、两个权威覆盖方向和最近一次回滚已实现；发布与新部署验证进行中
+- 状态：当前 Windows 自用范围已实现并发布；两个权威覆盖方向与回滚已通过隔离集成测试，Android 安装按用户要求后续单独进行
 - 日期：2026-08-08
 - 插件交付版本：`2.5.0`
 - 当前 fork 自用构建版本：`2.5.0`
@@ -42,19 +42,20 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 - 远端删除先检查 pending、baseline 和当前 hash，再写入 Obsidian 配置目录下的 `plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
 - 安全附件下载的分片、hash、大小和临时写盘任一步失败都会拒绝当前事件，不留下已推进的 baseline。
 
-此前 Windows 插件 `2.4.1` 已写入真实 Obsidian 安装目录并完成普通同步 smoke；`2.5.0` 将先在复制 Vault 上验证两个权威覆盖方向，再替换真实 Windows 插件。Android 本轮不安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API，供后续手工导入。
+Windows 插件 `2.5.0` 已写入真实 Obsidian 安装目录并完成普通同步 smoke；设置页、问号帮助、三种设备角色、两个覆盖按钮和最近一次回滚入口已在真实 Obsidian `1.13.4` 中验收。两个权威覆盖方向及对应回滚使用隔离的内存 Vault 与远端状态执行，不在唯一生产 Vault 首次执行破坏性覆盖。Android 本轮不安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API，供后续手工导入。
 
 ## Windows 自用安装记录
 
 - Vault：`E:\Document\Notes`
 - 插件目录：`E:\Document\Notes\.obsidian\plugins\fast-note-sync`
-- 安装版本：`2.4.1`，fork 提交 `3c784a98c50e33bca870525ab4ea33823c40bcbf`
+- 安装版本：`2.5.0`，Release tag 提交 `ab673c7`；分支后续 CI 修复提交为 `2f2b858`
 - 回滚目录：`E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.4.0-before-safe-sync-20260807-091747`
 - 服务地址：`https://fast-note-sync-safe-1irxvu-6387b0-23-144-4-140.sslip.io`
 - 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
 - 持久状态：`fileHashMap.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留
-- 运行验证：Obsidian 已加载 `2.4.1`，WebSocket 已连接并鉴权，普通增量同步完成；设置页能看到“安全多端同步”，状态为“未启用”，toggle 未勾选且可用
+- 运行验证：Obsidian 已加载 `2.5.0`，WebSocket 已连接并鉴权，普通增量同步完成；设置页可见“安全多端同步”、问号帮助、设备角色、两个覆盖方向和回滚入口
 - 服务能力：客户端观察到 capability 可用，服务端状态为 `OFF`；`safeRevisionSyncEnabled=false`，没有进入 bootstrap
+- 文件核对：Windows 实际安装的 `main.js` SHA-256 为 `5b9c4f506dd01e5e653c630d8a013f8e175f74a40b3072ca3d12c1125d3c77ef`，与 GitHub `2.5.0` Release 资产一致；原 `data.json`、hash map 和 folder snapshot 均保留
 
 启动时曾发现 LocalStorage 中的旧 API 地址优先于已更新的 `data.json`。本次已通过插件的正式 `saveAndReloadServices("api")` 路径同时更新运行配置、LocalStorage 和 `data.json`，重连后确认实际使用新临时域名。
 
@@ -84,14 +85,14 @@ tests/
 
 ## 实现与验证状态
 
-实现前基线曾存在 `test:auth` 和 `test:mirror` 不可归因失败；当前分支已经建立统一 `pnpm test`，覆盖原有测试和安全同步 protobuf、状态存储、引擎、入站处理与传输测试。
+实现前基线曾存在 `test:auth` 和 `test:mirror` 不可归因失败；当前分支已经建立统一 `pnpm test`，覆盖原有测试和安全同步 protobuf、状态存储、引擎、入站处理、传输、权威覆盖计划及 `SafeMirrorManager` 隔离集成测试。
 
 - `pnpm test`：通过。
 - `pnpm lint`：通过，0 warning、0 error；`pnpm lint:css`：通过。
 - `pnpm build`：通过。
 - 当前复验环境为 Node `v24.14.0`、pnpm `11.1.2`，满足项目声明的运行版本。
 
-Windows 实机加载、普通增量同步和 Dokploy 新服务连接已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.4.1`。Android、跨设备同步和首次安全同步 bootstrap 尚未执行，不能据此文档声称这些场景已经验收完成。
+Windows 实机加载、普通增量同步、设置交互和 Dokploy 新服务连接已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.5.0`。`SafeMirrorManager` 隔离集成测试实际执行了本地覆盖远端、远端覆盖本地、两个方向回滚、预览后本地漂移失效、计划过期失效及远端镜像端禁止覆盖远端。Android、真实双设备传播和生产 Vault 首次安全同步 bootstrap 尚未执行；其中 Android 安装是用户明确延后的交付项，不属于当前 Windows 版本缺失功能。
 
 ## 禁止事项
 
