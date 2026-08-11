@@ -75,6 +75,12 @@ export function formatAuthorizationError(data: StructuredMessageData): string {
   return "Service Authorization Error: Code=" + data.code + " Msg=" + message + detailsText + hint;
 }
 
+export function shouldBypassActiveSyncContext(action: string): boolean {
+  return action === WSAction.ClientReceiveAuth ||
+    action === WSAction.ClientReceiveInfo ||
+    action.startsWith("Safe");
+}
+
 export class WebSocketManager {
   public client: WebSocketClient;
   private plugin: FastSync;
@@ -420,8 +426,7 @@ export class WebSocketManager {
       // 基于 Context 进行过滤：如果处于活跃的同步中，必须完全匹配
       // Filter based on Context: if there's an active sync context, incoming messages (including Acks) must match
       if (this.plugin.syncState.activeSyncContext) {
-        const isControlMsg = msgAction === WSAction.ClientReceiveAuth || msgAction === WSAction.ClientReceiveInfo;
-        if (!isControlMsg && data.context !== this.plugin.syncState.activeSyncContext) {
+        if (!shouldBypassActiveSyncContext(msgAction) && data.context !== this.plugin.syncState.activeSyncContext) {
           dump(`[SyncContext] Discard message ${msgAction} due to mismatched context. Expected: ${this.plugin.syncState.activeSyncContext}, Got: ${data.context}`);
           return;
         }
@@ -537,15 +542,6 @@ export class WebSocketManager {
         (this.plugin.settings.safeRevisionSyncEnabled && safeStatus.state !== "active")) {
         dump(`Safe revision sync paused startup sync: ${safeStatus.state}`)
         return
-      }
-      if (safeStatus.state === "active") {
-        try {
-          await this.plugin.safeSyncRuntime.prepareRemoteEvents()
-        } catch (error) {
-          dump(`Safe revision sync paused while loading events: ${error instanceof Error ? error.message : String(error)}`)
-          this.plugin.settingTab?.refresh()
-          return
-        }
       }
     }
 

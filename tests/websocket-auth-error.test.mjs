@@ -54,7 +54,10 @@ const requireStub = (id) => {
     case "../../pb/protobuf_mapper":
       return { enSendDTOToProtobuf: () => undefined, deReceivePacket: () => undefined };
     case "./websocket_action":
-      return {};
+      return {
+        ClientReceiveAuth: "Authorization",
+        ClientReceiveInfo: "ClientInfo",
+      };
     case "./websocket_client":
       return { WebSocketClient: class {} };
     case "../utils/types":
@@ -75,9 +78,16 @@ vm.runInNewContext(transpiled, {
   clearTimeout,
 }, { filename: sourcePath });
 
-const { formatAuthorizationError } = module.exports;
+const { formatAuthorizationError, shouldBypassActiveSyncContext } = module.exports;
 
 assert.equal(typeof formatAuthorizationError, "function");
+assert.equal(typeof shouldBypassActiveSyncContext, "function");
+
+assert.equal(shouldBypassActiveSyncContext("Authorization"), true);
+assert.equal(shouldBypassActiveSyncContext("ClientInfo"), true);
+assert.equal(shouldBypassActiveSyncContext("SafeSyncEventsAck"), true);
+assert.equal(shouldBypassActiveSyncContext("SafeNoteMutationAck"), true);
+assert.equal(shouldBypassActiveSyncContext("NoteSyncNeedPull"), false);
 
 const missingMessage = formatAuthorizationError({ code: 308 });
 assert.match(missingMessage, /Code=308/);

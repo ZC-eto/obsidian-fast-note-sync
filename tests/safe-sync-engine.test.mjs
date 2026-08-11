@@ -424,7 +424,90 @@ assert.equal((await failedMutation.refreshStatus(true)).state, "active")
 await assert.rejects(() => failedMutation.mutate("NOTE", {
   action: "MODIFY", path: "failed.md", content: "after", contentHash: "after", size: 5,
 }), /mutation rejected/)
-assert.equal(failedMutationStore.pending.size, 0, "a rejected mutation must not leave a stale pending operation")
+assert.equal(failedMutationStore.pending.size, 1, "an ambiguous transport failure must retain the pending operation for idempotent recovery")
+
+const lostAckStore = new MemoryStore()
+lostAckStore.baselines.set("lost.md", {
+  path: "lost.md", resourceType: "NOTE", resourceId: "lost", resourceRevision: 1,
+  contentHash: "before", vaultRevision: 0, state: "LIVE", size: 6,
+})
+lostAckStore.pending.set("op-lost-ack", {
+  operationId: "op-lost-ack", deviceId: "device-a", path: "lost.md", resourceId: "lost",
+  createdAt: 1_000, expiresAt: 10_000, status: "pending",
+  payload: { action: "MODIFY", path: "lost.md", contentHash: "after", size: 5 },
+})
+const lostAckTransport = new ScriptedTransport({
+  SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 1, migrationVerified: true }],
+  SafeSyncEvents: [{
+    events: [{
+      vaultRevision: 1, resourceId: "lost", resourceRevision: 2, resourceType: "NOTE", action: "MODIFY",
+      path: "lost.md", contentHash: "after", state: "LIVE", operationId: "op-lost-ack",
+    }],
+    latestVaultRevision: 1, nextRevision: 1, hasMore: false,
+  }],
+})
+const lostAck = new SafeSyncEngine({
+  vault: "vault-a", serverUrl: "https://sync.example.com", transport: lostAckTransport,
+  createStateStore: () => lostAckStore, getLocalManifest: async () => [], operationId: () => "unused", now: () => 1_000,
+})
+assert.equal((await lostAck.refreshStatus(true)).state, "active")
+assert.equal(await lostAck.acknowledgePendingEvents(await lostAck.pullEvents()), 1)
+assert.equal(lostAckStore.pending.size, 0, "a committed operation event must recover an ACK lost before persistence")
+assert.equal(lostAckStore.getBaseline("lost.md").resourceRevision, 2)
+assert.equal(lostAckStore.latestVaultRevision, 1)
+
+const unsentStore = new MemoryStore()
+unsentStore.baselines.set("retry.md", {
+  path: "retry.md", resourceType: "NOTE", resourceId: "retry", resourceRevision: 1,
+  contentHash: "before", vaultRevision: 0, state: "LIVE", size: 6,
+})
+const unsentPayload = {
+  vault: "vault-a", deviceId: "device-a", operationId: "op-unsent", resourceId: "retry",
+  baseRevision: 1, baseHash: "before", expectedPathState: "PRESENT", action: "MODIFY",
+  path: "retry.md", pathHash: "path", previousPath: "", previousPathHash: "",
+  content: "after", contentHash: "after", size: 5, ctime: 1, mtime: 2,
+}
+unsentStore.pending.set("op-unsent", {
+  operationId: "op-unsent", deviceId: "device-a", resourceType: "NOTE", path: "retry.md", resourceId: "retry",
+  createdAt: 1_000, expiresAt: 10_000, status: "pending", payload: unsentPayload,
+})
+const unsentTransport = new ScriptedTransport({
+  SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+  SafeNoteMutation: [{ resourceId: "retry", resourceRevision: 2, vaultRevision: 1, contentHash: "after", outcome: "COMMITTED" }],
+})
+const unsent = new SafeSyncEngine({
+  vault: "vault-a", serverUrl: "https://sync.example.com", transport: unsentTransport,
+  createStateStore: () => unsentStore, getLocalManifest: async () => [], operationId: () => "must-not-be-used", now: () => 1_000,
+})
+assert.equal((await unsent.refreshStatus(true)).state, "active")
+await unsent.retryPendingMutation("NOTE", unsent.retryablePending()[0])
+assert.equal(unsentTransport.calls.find((call) => call.action === "SafeNoteMutation").payload.operationId, "op-unsent")
+assert.equal(unsentStore.pending.size, 0, "an uncommitted request must be replayed with its original operationId")
+
+const uploadRetryStore = new MemoryStore()
+uploadRetryStore.persistedBootstrapComplete = true
+const uploadRetryPayload = {
+  vault: "vault-a", deviceId: "device-a", operationId: "op-upload-retry", resourceId: "",
+  baseRevision: 0, baseHash: "", expectedPathState: "ABSENT", action: "CREATE",
+  path: "retry.bin", pathHash: "path", contentHash: "file-hash", size: 4, ctime: 1, mtime: 2,
+}
+uploadRetryStore.pending.set("op-upload-retry", {
+  operationId: "op-upload-retry", deviceId: "device-a", resourceType: "FILE", path: "retry.bin",
+  createdAt: 1_000, expiresAt: 10_000, status: "pending", payload: uploadRetryPayload,
+})
+const uploadRetryTransport = new ScriptedTransport({
+  SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+  SafeFileUploadStart: [{ sessionId: "upload-retry", nextChunkIndex: 0, operationId: "op-upload-retry", expiresAt: 50_000 }],
+})
+const uploadRetry = new SafeSyncEngine({
+  vault: "vault-a", serverUrl: "https://sync.example.com", transport: uploadRetryTransport,
+  createStateStore: () => uploadRetryStore, getLocalManifest: async () => [], operationId: () => "must-not-be-used", now: () => 1_000,
+})
+assert.equal((await uploadRetry.refreshStatus(true)).state, "active")
+const retriedUpload = await uploadRetry.retryPendingFileUploadStart(uploadRetry.retryablePending()[0], 1024)
+assert.equal(retriedUpload.operationId, "op-upload-retry")
+assert.equal(uploadRetryTransport.calls.find((call) => call.action === "SafeFileUploadStart").payload.operationId, "op-upload-retry")
+
 const upload = await active.startFileUpload({ action: "CREATE", path: "asset.bin", contentHash: "hash-file", size: 4, ctime: 1, mtime: 2 }, 1024)
 assert.equal(activeTransport.calls.find((call) => call.action === "SafeFileUploadStart").payload.expectedPathState, "ABSENT")
 assert.equal(upload.sessionId, "upload-a")

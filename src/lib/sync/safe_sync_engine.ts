@@ -320,6 +320,10 @@ export class SafeSyncEngine {
     return this.options.getLocalManifest()
   }
 
+  mirrorSnapshotMismatches(localItems: SafeLocalManifestItem[], snapshot: SafeMirrorBootstrapSnapshot): SafeSyncManifestMismatch[] {
+    return compareManifests(localItems, snapshot.remoteItems)
+  }
+
   async discardPendingForPaths(paths: string[]): Promise<number> {
     const store = this.requireStore()
     const targets = new Set(paths)
@@ -328,10 +332,81 @@ export class SafeSyncEngine {
     return pending.length
   }
 
+  retryablePending(): SafePendingMutation[] {
+    return this.requireStore().listRetryablePending().sort((left, right) => left.createdAt - right.createdAt || left.operationId.localeCompare(right.operationId))
+  }
+
+  async acknowledgePendingEvents(events: SafeSyncEvent[]): Promise<number> {
+    const store = this.requireStore()
+    const byOperation = new Map<string, SafeSyncEvent[]>()
+    for (const event of events) {
+      if (!event.operationId) continue
+      const group = byOperation.get(event.operationId) || []
+      group.push(event)
+      byOperation.set(event.operationId, group)
+    }
+
+    let acknowledged = 0
+    for (const pending of this.retryablePending()) {
+      const operationEvents = byOperation.get(pending.operationId)
+      if (!operationEvents?.length) continue
+      const event = operationEvents.find((candidate) => pendingEventMatches(candidate, pending))
+      if (!event) throw new Error(`safe sync operation event does not match pending mutation: ${pending.operationId}`)
+      const baseline = store.getBaseline(pending.previousPath || pending.path)
+      await store.acknowledge({
+        operationId: pending.operationId,
+        path: pending.path,
+        previousPath: pending.previousPath,
+        resourceId: event.resourceId,
+        resourceRevision: event.resourceRevision,
+        contentHash: event.contentHash || optionalString(pending.payload, "contentHash") || baseline?.contentHash || "",
+        vaultRevision: Math.max(...operationEvents.map((candidate) => candidate.vaultRevision)),
+        state: event.state,
+        size: optionalNonNegativeInteger(pending.payload, "size") ?? baseline?.size ?? 0,
+        resourceType: event.resourceType,
+      })
+      acknowledged++
+    }
+    return acknowledged
+  }
+
+  async retryPendingMutation(resourceType: "NOTE" | "FILE" | "FOLDER", pending: SafePendingMutation): Promise<SafeMutationAck> {
+    const store = this.requireStore()
+    const current = store.getPending(pending.operationId)
+    if (!current || current.status !== "pending") throw new Error("safe sync retry has no pending mutation")
+    if (current.resourceType && current.resourceType !== resourceType) throw new Error("safe sync pending resource type mismatch")
+    const action = resourceType === "NOTE" ? "SafeNoteMutation" : resourceType === "FILE" ? "SafeFileMutation" : "SafeFolderMutation"
+    const response = await this.options.transport.request(action, current.payload)
+    const ack = mutationAckFromResponse(current, resourceType, response, store.getBaseline(current.previousPath || current.path))
+    await store.acknowledge(ack)
+    return ack
+  }
+
+  async retryPendingFileUploadStart(pending: SafePendingMutation, chunkSize: number): Promise<SafeFileUploadSession> {
+    const store = this.requireStore()
+    const current = store.getPending(pending.operationId)
+    if (!current || current.status !== "pending") throw new Error("safe file upload retry has no pending mutation")
+    if (current.resourceType && current.resourceType !== "FILE") throw new Error("safe file upload pending resource type mismatch")
+    const action = current.payload.action
+    if (action !== "CREATE" && action !== "MODIFY") throw new Error("safe file upload retry only supports create or modify")
+    const response = await this.options.transport.request("SafeFileUploadStart", { ...current.payload, chunkSize })
+    const responseOperationID = requiredString(response, "operationId")
+    if (responseOperationID !== current.operationId) throw new Error("safe file upload retry operationId mismatch")
+    return {
+      sessionId: requiredString(response, "sessionId"),
+      operationId: current.operationId,
+      nextChunkIndex: integer(response, "nextChunkIndex", 0),
+      expiresAt: integer(response, "expiresAt", 0),
+    }
+  }
+
   async mutate(resourceType: "NOTE" | "FILE" | "FOLDER", input: SafeMutationInput): Promise<SafeMutationAck> {
     if (this.status.state !== "active") throw new Error("safe sync mutation requires an active client")
     const store = this.requireStore()
     const baselinePath = input.previousPath || input.path
+    if (store.hasPendingForPath(baselinePath) || store.hasPendingForPath(input.path)) {
+      throw new Error(`safe sync mutation is waiting for an earlier operation at ${baselinePath}`)
+    }
     const baseline = store.getBaseline(baselinePath)
     if (input.action === "CREATE" ? baseline?.state === "LIVE" : !baseline || baseline.state !== "LIVE") {
       throw new Error(`safe sync mutation has no usable baseline for ${baselinePath}`)
@@ -361,6 +436,7 @@ export class SafeSyncEngine {
     await store.putPending({
       operationId,
       deviceId: store.deviceId,
+      resourceType,
       path: input.path,
       previousPath: input.previousPath,
       resourceId: mutationBaseline?.resourceId,
@@ -371,25 +447,8 @@ export class SafeSyncEngine {
     })
 
     const action = resourceType === "NOTE" ? "SafeNoteMutation" : resourceType === "FILE" ? "SafeFileMutation" : "SafeFolderMutation"
-    let response: Record<string, unknown>
-    try {
-      response = await this.options.transport.request(action, payload)
-    } catch (error) {
-      await store.removePending(operationId).catch(() => undefined)
-      throw error
-    }
-    const ack: SafeMutationAck = {
-      operationId,
-      path: input.path,
-      previousPath: input.previousPath,
-      resourceId: requiredString(response, "resourceId"),
-      resourceRevision: positiveInteger(response, "resourceRevision"),
-      contentHash: optionalString(response, "contentHash") || input.contentHash || baseline?.contentHash || "",
-      vaultRevision: positiveInteger(response, "vaultRevision"),
-      state: input.action === "DELETE" ? "DELETED" : "LIVE",
-      size: input.size || baseline?.size || 0,
-      resourceType,
-    }
+    const response = await this.options.transport.request(action, payload)
+    const ack = mutationAckFromResponse(store.getPending(operationId)!, resourceType, response, baseline)
     await store.acknowledge(ack)
     return ack
   }
@@ -399,6 +458,7 @@ export class SafeSyncEngine {
     if (input.action !== "CREATE" && input.action !== "MODIFY") throw new Error("safe file upload only supports create or modify")
     if (!input.contentHash || !Number.isSafeInteger(input.size) || (input.size || 0) < 0) throw new Error("safe file upload requires content hash and size")
     const store = this.requireStore()
+    if (store.hasPendingForPath(input.path)) throw new Error(`safe file upload is waiting for an earlier operation at ${input.path}`)
     const baseline = store.getBaseline(input.path)
     if (input.action === "CREATE" ? baseline?.state === "LIVE" : !baseline || baseline.state !== "LIVE") {
       throw new Error(`safe file upload has no usable baseline for ${input.path}`)
@@ -425,6 +485,7 @@ export class SafeSyncEngine {
     await store.putPending({
       operationId,
       deviceId: store.deviceId,
+      resourceType: "FILE",
       path: input.path,
       resourceId: mutationBaseline?.resourceId,
       createdAt: now,
@@ -432,13 +493,7 @@ export class SafeSyncEngine {
       status: "pending",
       payload,
     })
-    let response: Record<string, unknown>
-    try {
-      response = await this.options.transport.request("SafeFileUploadStart", { ...payload, chunkSize })
-    } catch (error) {
-      await store.removePending(operationId).catch(() => undefined)
-      throw error
-    }
+    const response = await this.options.transport.request("SafeFileUploadStart", { ...payload, chunkSize })
     const responseOperationID = requiredString(response, "operationId")
     if (responseOperationID !== operationId) throw new Error("safe file upload session operationId mismatch")
     return {
@@ -456,20 +511,14 @@ export class SafeSyncEngine {
     if (pending.payload.contentHash !== contentHash || pending.payload.size !== size) {
       throw new Error("safe file upload commit does not match pending content")
     }
-    let response: Record<string, unknown>
-    try {
-      response = await this.options.transport.request("SafeFileUploadCommit", {
-        vault: this.options.vault,
-        deviceId: store.deviceId,
-        operationId,
-        sessionId,
-        contentHash,
-        size,
-      })
-    } catch (error) {
-      await store.removePending(operationId).catch(() => undefined)
-      throw error
-    }
+    const response = await this.options.transport.request("SafeFileUploadCommit", {
+      vault: this.options.vault,
+      deviceId: store.deviceId,
+      operationId,
+      sessionId,
+      contentHash,
+      size,
+    })
     const ack: SafeMutationAck = {
       operationId,
       path: pending.path,
@@ -576,6 +625,10 @@ export class SafeSyncEngine {
     return this.remoteEvents.length
   }
 
+  pendingRemoteEvents(): SafeSyncEvent[] {
+    return this.remoteEvents.map((event) => ({ ...event }))
+  }
+
   nextRemoteEvent(): SafeSyncEvent | undefined {
     return this.remoteEvents[0]
   }
@@ -587,6 +640,12 @@ export class SafeSyncEngine {
     } else {
       this.resetRemoteEvents(error)
     }
+  }
+
+  failClosed(reason: unknown): void {
+    const error = reason instanceof Error ? reason : new Error(String(reason))
+    this.setStatus("error", this.status.serverState, this.status.capability, error.message)
+    this.resetRemoteEvents(error)
   }
 
   private async initializeStateStore(uid: number, vaultId: number): Promise<void> {
@@ -706,6 +765,38 @@ function remoteEventMatchesBaseline(event: SafeSyncEvent, store: SafeSyncStateSt
   return baseline.state === expectedState && (!event.contentHash || baseline.contentHash === event.contentHash)
 }
 
+function pendingEventMatches(event: SafeSyncEvent, pending: SafePendingMutation): boolean {
+  if (event.operationId !== pending.operationId || event.path !== pending.path) return false
+  if (pending.resourceType && event.resourceType !== pending.resourceType) return false
+  const action = pending.payload.action
+  if (action !== event.action) return false
+  return action !== "RENAME" || event.previousPath === pending.previousPath
+}
+
+function mutationAckFromResponse(
+  pending: SafePendingMutation,
+  resourceType: "NOTE" | "FILE" | "FOLDER",
+  response: Record<string, unknown>,
+  baseline?: SafeRevisionBaseline,
+): SafeMutationAck {
+  const action = pending.payload.action
+  if (action !== "CREATE" && action !== "MODIFY" && action !== "DELETE" && action !== "RENAME") {
+    throw new Error("safe sync pending mutation has invalid action")
+  }
+  return {
+    operationId: pending.operationId,
+    path: pending.path,
+    previousPath: pending.previousPath,
+    resourceId: requiredString(response, "resourceId"),
+    resourceRevision: positiveInteger(response, "resourceRevision"),
+    contentHash: optionalString(response, "contentHash") || optionalString(pending.payload, "contentHash") || baseline?.contentHash || "",
+    vaultRevision: positiveInteger(response, "vaultRevision"),
+    state: action === "DELETE" ? "DELETED" : "LIVE",
+    size: optionalNonNegativeInteger(pending.payload, "size") ?? baseline?.size ?? 0,
+    resourceType,
+  }
+}
+
 function compareManifests(localItems: SafeLocalManifestItem[], remoteItems: SafeSyncManifestItem[]): SafeSyncManifestMismatch[] {
   const local = new Map(localItems.filter((item) => item.path && item.path !== "/").map((item) => [item.path, item]))
   const remote = new Map(remoteItems.filter((item) => item.path && item.path !== "/").map((item) => [item.path, item]))
@@ -811,6 +902,12 @@ function optionalString(value: Record<string, unknown>, key: string): string {
 function integer(value: Record<string, unknown>, key: string, fallback: number): number {
   const result = Number(value[key])
   return Number.isSafeInteger(result) && result >= 0 ? result : fallback
+}
+
+function optionalNonNegativeInteger(value: Record<string, unknown>, key: string): number | undefined {
+  if (value[key] === undefined || value[key] === null) return undefined
+  const result = Number(value[key])
+  return Number.isSafeInteger(result) && result >= 0 ? result : undefined
 }
 
 function positiveInteger(value: Record<string, unknown>, key: string): number {

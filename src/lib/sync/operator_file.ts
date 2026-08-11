@@ -8,6 +8,7 @@ import { HttpApiService } from "../api/http_api_service";
 import type FastSync from "../../main";
 import { receiveSafeFileDelete, receiveSafeFileRename } from "./safe_sync_inbound";
 import type { SafeSyncEvent } from "./safe_sync_engine";
+import { shouldIgnoreLegacyPush } from "./safe_sync_protocol_guard";
 
 
 // 下载内存缓冲控制 (20MB 阈值防止 OOM)
@@ -520,6 +521,14 @@ export const receiveFileUpload = async function (data: FileUploadMessage, plugin
     return
   }
 
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  const isInternalSafeUpload = data.awaitCompletion === true && typeof data.onUploadReady === "function"
+  if (shouldIgnoreLegacyPush(writeMode, isInternalSafeUpload)) {
+    dump(`Safe revision sync ignored legacy file upload request: ${data.path}`)
+    plugin.recordSyncCompleted('file', data.pageIndex)
+    return
+  }
+
   if (plugin.settings.readonlySyncEnabled) {
     if (data.awaitCompletion) throw new Error(`只读模式禁止上传附件：${data.path}`)
     dump(`Read-only mode: Intercepted file upload request for ${data.path}`)
@@ -931,6 +940,13 @@ export const receiveFileSyncDelete = async function (data: ReceivePathMessage, p
 
   if (isPathExcluded(data.path, plugin)) {
     plugin.recordSyncCompleted('file', data.pageIndex);
+    return
+  }
+
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  if (shouldIgnoreLegacyPush(writeMode)) {
+    dump(`Safe revision sync ignored legacy file delete: ${data.path}`)
+    plugin.recordSyncCompleted('file', data.pageIndex)
     return
   }
 
@@ -1349,6 +1365,13 @@ export const receiveFileSyncRename = async function (data: { oldPath: string; pa
 
   const normalizedOldPath = normalizePath(data.oldPath)
   const normalizedNewPath = normalizePath(data.path)
+
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  if (shouldIgnoreLegacyPush(writeMode)) {
+    dump(`Safe revision sync ignored legacy file rename: ${data.oldPath} -> ${data.path}`)
+    plugin.recordSyncCompleted('file', data.pageIndex)
+    return
+  }
 
   if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
     try {

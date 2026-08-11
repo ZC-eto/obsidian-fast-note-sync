@@ -343,9 +343,7 @@ export const receiveOperators: Map<WSAction.WSReceiveAction, OperatorHandler> = 
   [WSAction.SafeSyncFileUploadStartAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFileUploadStartAck, data); }],
   [WSAction.SafeSyncFileUploadCommitAck, (data, plugin) => { plugin.safeSyncRuntime?.receive(WSAction.SafeSyncFileUploadCommitAck, data); }],
   [WSAction.SafeSyncEvent, (_data, plugin) => {
-    if (plugin.safeSyncRuntime?.writeMode() === "safe" && !plugin.isSyncing && !plugin.isSyncRequesting) {
-      void plugin.websocket.StartHandle()
-    }
+    if (plugin.safeSyncRuntime?.writeMode() === "safe") plugin.safeSyncRuntime.queueRemoteRefresh()
   }],
 ] as [WSAction.WSReceiveAction, OperatorHandler][]);
 
@@ -621,12 +619,16 @@ export const handleSync = async function (plugin: FastSync, isLoadLastTime: bool
       dump("Read-only mode: Proceeding with state gathering for remote-to-local sync.");
     }
 
+    const shouldSyncNotes = syncMode === "auto" || syncMode === "note";
+    const shouldSyncConfigs = syncMode === "auto" || syncMode === "config";
+    if (plugin.settings.syncEnabled && shouldSyncNotes && plugin.safeSyncRuntime?.writeMode() === "safe") {
+      const reconciled = await plugin.safeSyncRuntime.prepareStartupSync()
+      dump(`Safe revision startup reconciliation completed: ${reconciled} local change(s)`)
+    }
+
     plugin.currentSyncType = isLoadLastTime ? 'incremental' : 'full';
     plugin.syncTypeCompleteCount = 0;
     plugin.resetSyncTasks();
-
-    const shouldSyncNotes = syncMode === "auto" || syncMode === "note";
-    const shouldSyncConfigs = syncMode === "auto" || syncMode === "config";
 
     const activeTypes: SyncType[] = [];
     if (plugin.settings.syncEnabled && shouldSyncNotes) {
@@ -1170,6 +1172,9 @@ export const handleSync = async function (plugin: FastSync, isLoadLastTime: bool
     plugin.syncState.progressCheckIntervalId = progressCheckInterval;
   } catch (error) {
     dump("Sync failed with error: " + (error instanceof Error ? error.message : String(error)));
+    if (plugin.safeSyncRuntime?.status.state === "error" && plugin.settings.isShowNotice) {
+      showSyncNotice(`安全同步已暂停：${error instanceof Error ? error.message : String(error)}`, 10000)
+    }
     // 归属判断：只有当前活跃上下文仍是本次会话时才清空/重置，防止旧会话的迟到异常
     // （例如断线重连后旧会话 BatchAck 15s 超时才抛出）把已经在跑的新会话状态清掉
     // Ownership guard: only clear/reset when the active context still belongs to this

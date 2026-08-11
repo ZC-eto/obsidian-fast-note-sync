@@ -136,6 +136,14 @@ assert.equal(restored.getBaseline("notes/a.md").resourceRevision, 2)
 assert.equal(restored.latestVaultRevision, 1)
 
 await restored.putPending({
+  operationId: "op-folder", deviceId: "device-a", resourceType: "FOLDER", path: "notes/tree",
+  createdAt: 1_250, expiresAt: 1_250 + SAFE_SYNC_OPERATION_RETENTION_MS, status: "pending", payload: { action: "DELETE" },
+})
+assert.equal(restored.getPending("op-folder").resourceType, "FOLDER")
+assert.equal(restored.hasPendingForPath("notes/tree/child.md"), true, "a folder operation must block overlapping child writes")
+await restored.removePending("op-folder")
+
+await restored.putPending({
   operationId: "op-gap-ack", deviceId: "device-a", path: "notes/a.md", resourceId: "resource-a",
   createdAt: 1_500, expiresAt: 1_500 + SAFE_SYNC_OPERATION_RETENTION_MS, status: "pending", payload: { action: "MODIFY" },
 })

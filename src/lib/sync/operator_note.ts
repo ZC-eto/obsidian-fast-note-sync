@@ -6,6 +6,7 @@ import { SyncLogManager } from "./sync_log_manager";
 import type FastSync from "../../main";
 import { receiveSafeNoteDelete, receiveSafeNoteModify, receiveSafeNoteRename } from "./safe_sync_inbound";
 import { safeSyncTextSize } from "./safe_sync_content";
+import { shouldIgnoreLegacyPush } from "./safe_sync_protocol_guard";
 
 
 /**
@@ -414,6 +415,12 @@ export const receiveNoteSyncModify = async function (data: ReceiveMessage, plugi
  */
 export const receiveNoteUpload = async function (data: ReceivePathMessage, plugin: FastSync) {
   if (plugin.settings.syncEnabled == false) return
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  if (shouldIgnoreLegacyPush(writeMode)) {
+    dump(`Safe revision sync ignored legacy note upload request: ${data.path}`)
+    plugin.recordSyncCompleted('note', data.pageIndex)
+    return
+  }
   if (plugin.settings.readonlySyncEnabled) {
     dump(`Read-only mode: Intercepted note upload request for ${data.path}`)
     plugin.recordSyncCompleted('note', data.pageIndex)
@@ -542,6 +549,13 @@ export const receiveNoteSyncDelete = async function (data: ReceiveMessage, plugi
   dump(`Receive note delete:`, data.path, data.mtime, data.pathHash)
   const normalizedPath = normalizePath(data.path)
 
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  if (shouldIgnoreLegacyPush(writeMode)) {
+    dump(`Safe revision sync ignored legacy note delete: ${data.path}`)
+    plugin.recordSyncCompleted('note', data.pageIndex)
+    return
+  }
+
   if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
     try {
       await receiveSafeNoteDelete(data, plugin)
@@ -626,6 +640,13 @@ export const receiveNoteSyncRename = async function (data: { path: string, oldPa
 
   const normalizedOldPath = normalizePath(data.oldPath)
   const normalizedNewPath = normalizePath(data.path)
+
+  const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+  if (shouldIgnoreLegacyPush(writeMode)) {
+    dump(`Safe revision sync ignored legacy note rename: ${data.oldPath} -> ${data.path}`)
+    plugin.recordSyncCompleted('note', data.pageIndex)
+    return
+  }
 
   if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
     try {

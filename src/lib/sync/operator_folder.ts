@@ -5,6 +5,7 @@ import { hashContent, dump, dumpError, isFolderSyncPathExcluded, waitForFolderEm
 import { SyncLogManager } from "./sync_log_manager";
 import type FastSync from "../../main";
 import { receiveSafeFolderDelete, receiveSafeFolderModify, receiveSafeFolderRename } from "./safe_sync_inbound";
+import { shouldIgnoreLegacyPush } from "./safe_sync_protocol_guard";
 
 
 /**
@@ -259,6 +260,13 @@ export const receiveFolderSyncDelete = async function (data: { path: string, las
 
     const normalizedPath = normalizePath(data.path)
 
+    const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+    if (shouldIgnoreLegacyPush(writeMode)) {
+        dump(`Safe revision sync ignored legacy folder delete: ${data.path}`)
+        plugin.recordSyncCompleted('folder', data.pageIndex)
+        return
+    }
+
     if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
         try {
             await receiveSafeFolderDelete(data, plugin)
@@ -328,6 +336,13 @@ export const receiveFolderSyncRename = async function (data: FolderSyncRenameMes
 
     const normalizedOldPath = normalizePath(data.oldPath)
     const normalizedNewPath = normalizePath(data.path)
+
+    const writeMode = plugin.safeSyncRuntime?.writeMode() || "legacy"
+    if (shouldIgnoreLegacyPush(writeMode)) {
+        dump(`Safe revision sync ignored legacy folder rename: ${data.oldPath} -> ${data.path}`)
+        plugin.recordSyncCompleted('folder', data.pageIndex)
+        return
+    }
 
     if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
         try {

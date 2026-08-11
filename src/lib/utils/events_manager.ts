@@ -4,7 +4,7 @@ import { noteModify, noteDelete, noteRename, noteDeleteByPath } from "../sync/op
 import { fileModify, fileDelete, fileRename, fileDeleteByPath } from "../sync/operator_file";
 import { folderModify, folderDelete, folderRename } from "../sync/operator_folder";
 import { NoteHistoryModal } from "../../views/note-history/history-modal";
-import { dump, isPathInConfigSyncDirs } from "./helpers";
+import { dump, dumpError, isPathInConfigSyncDirs } from "./helpers";
 import { ShareModal } from "../../views/share-modal";
 import type FastSync from "../../main";
 import { $ } from "../../i18n/lang";
@@ -150,12 +150,12 @@ export class EventManager {
     this.runWithDelay(file.path, () => {
       if (file instanceof TFile) {
         if (file.path.endsWith(".md")) {
-          void noteModify(file, this.plugin, true)
+          this.runSyncTask(file.path, noteModify(file, this.plugin, true))
         } else {
-          void fileModify(file, this.plugin, true)
+          this.runSyncTask(file.path, fileModify(file, this.plugin, true))
         }
       } else if (file instanceof TFolder) {
-        void folderModify(file, this.plugin, true)
+        this.runSyncTask(file.path, folderModify(file, this.plugin, true))
       }
     })
   }
@@ -170,12 +170,12 @@ export class EventManager {
     this.runWithDelay(file.path, () => {
       if (file instanceof TFile) {
         if (file.path.endsWith(".md")) {
-          void noteDelete(file, this.plugin, true)
+          this.runSyncTask(file.path, noteDelete(file, this.plugin, true))
         } else {
-          void fileDelete(file, this.plugin, true)
+          this.runSyncTask(file.path, fileDelete(file, this.plugin, true))
         }
       } else if (file instanceof TFolder) {
-        void folderDelete(file, this.plugin, true)
+        this.runSyncTask(file.path, folderDelete(file, this.plugin, true))
       }
     })
   }
@@ -210,8 +210,8 @@ export class EventManager {
             this.runWithDelay(
               oldFile,
               () => {
-                if (oldFile.endsWith(".md")) void noteDeleteByPath(oldFile, this.plugin)
-                else void fileDeleteByPath(oldFile, this.plugin)
+                if (oldFile.endsWith(".md")) this.runSyncTask(oldFile, noteDeleteByPath(oldFile, this.plugin))
+                else this.runSyncTask(oldFile, fileDeleteByPath(oldFile, this.plugin))
               },
               0,
             )
@@ -220,8 +220,8 @@ export class EventManager {
               file.path,
               () => {
                 //如果新文件是markdown文件，则发送笔记创建消息，否则发送文件创建消息
-                if (file.path.endsWith(".md")) void noteModify(file, this.plugin, true)
-                else void fileModify(file, this.plugin, true)
+                if (file.path.endsWith(".md")) this.runSyncTask(file.path, noteModify(file, this.plugin, true))
+                else this.runSyncTask(file.path, fileModify(file, this.plugin, true))
               },
               0,
             )
@@ -242,11 +242,11 @@ export class EventManager {
     }
 
     if (delay <= 0) {
-      void executeRename()
+      void executeRename().catch((error) => this.handleEventFailure(file.path, error))
     } else {
       const timer = window.setTimeout(() => {
         this.rawEventTimers.delete(file.path)
-        void executeRename()
+        void executeRename().catch((error) => this.handleEventFailure(file.path, error))
       }, delay)
       this.rawEventTimers.set(file.path, timer)
     }
@@ -310,7 +310,7 @@ export class EventManager {
           await task()
         },
         { maxRetries: 3, retryInterval: 50 },
-      )
+      ).catch((error) => this.handleEventFailure(key, error))
       return
     }
 
@@ -327,10 +327,20 @@ export class EventManager {
           },
           { maxRetries: 5, retryInterval: 100 },
         )
-      })()
+      })().catch((error) => this.handleEventFailure(key, error))
     }, delay)
 
     this.rawEventTimers.set(key, timer)
+  }
+
+  private handleEventFailure(path: string, error: unknown): void {
+    dumpError(`Vault sync event failed: ${path}`, error)
+    const runtime = this.plugin.safeSyncRuntime
+    if (runtime?.hasRetryablePending()) runtime.queueRemoteRefresh(1_000)
+  }
+
+  private runSyncTask(path: string, task: Promise<void>): void {
+    void task.catch((error) => this.handleEventFailure(path, error))
   }
 
   private watchFileMenu = (menu: Menu, file: TAbstractFile) => {

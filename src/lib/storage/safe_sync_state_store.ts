@@ -17,6 +17,7 @@ export interface SafeRevisionBaseline {
 export interface SafePendingMutation {
   operationId: string
   deviceId: string
+  resourceType?: "NOTE" | "FILE" | "FOLDER"
   path: string
   previousPath?: string
   resourceId?: string
@@ -152,7 +153,7 @@ export class SafeSyncStateStore {
   }
 
   hasPendingForPath(path: string): boolean {
-    return Object.values(this.state.pending).some((pending) => pending.status === "pending" && (pending.path === path || pending.previousPath === path))
+    return Object.values(this.state.pending).some((pending) => pending.status === "pending" && pendingOverlapsPath(pending, path))
   }
 
   async replaceBootstrapBaselines(baselines: SafeRevisionBaseline[], latestVaultRevision: number): Promise<void> {
@@ -308,9 +309,17 @@ function validateBaseline(value: SafeRevisionBaseline): void {
 function validatePending(value: SafePendingMutation): void {
   if (!value || typeof value.operationId !== "string" || !value.operationId || typeof value.deviceId !== "string" || !value.deviceId ||
     typeof value.path !== "string" || !value.path || !Number.isSafeInteger(value.createdAt) || !Number.isSafeInteger(value.expiresAt) ||
-    value.expiresAt <= value.createdAt || (value.status !== "pending" && value.status !== "expired") || !isRecord(value.payload)) {
+    value.expiresAt <= value.createdAt || (value.status !== "pending" && value.status !== "expired") ||
+    (value.resourceType !== undefined && value.resourceType !== "NOTE" && value.resourceType !== "FILE" && value.resourceType !== "FOLDER") ||
+    !isRecord(value.payload)) {
     throw new SafeSyncStateCorruptError("invalid safe sync pending mutation")
   }
+}
+
+function pendingOverlapsPath(pending: SafePendingMutation, path: string): boolean {
+  if (pending.path === path || pending.previousPath === path) return true
+  if (pending.resourceType !== "FOLDER") return false
+  return path.startsWith(`${pending.path}/`) || Boolean(pending.previousPath && path.startsWith(`${pending.previousPath}/`))
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
