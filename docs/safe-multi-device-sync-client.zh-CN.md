@@ -2,9 +2,9 @@
 
 ## 文档状态
 
-- 状态：`2.5.11` 正在发布验证，已实现持久 pending 恢复、ACK 丢失确认、原 operationId 幂等重放和旧协议重复事件隔离；Windows 当前加载 `2.5.10`，Android 暂不更新
+- 状态：`2.5.11` 已发布并加载到 Windows，正文一致性与真实自动创建/修改/删除 smoke 已通过；Android 暂不更新
 - 日期：2026-08-12
-- Windows 当前版本：`2.5.10`；计划交付版本：`2.5.11`
+- Windows 当前版本：`2.5.11`
 - 当前 fork 自用构建版本：`2.5.11`
 - 工作分支：`feat/safe-multi-device-sync`
 
@@ -55,25 +55,26 @@ fast-note-sync-service/docs/safe-multi-device-sync.zh-CN.md
 - 远端删除先检查 pending、baseline 和当前 hash，再写入 Obsidian 配置目录下的 `plugins/fast-note-sync/recovery/safe-sync/`；恢复区不可写时保留原文件并显示错误。
 - 安全附件下载的分片、hash、大小和临时写盘任一步失败都会拒绝当前事件，不留下已推进的 baseline。
 
-Windows 插件 `2.5.9` 已写入真实 Obsidian 安装目录并在 Obsidian `1.13.4` 中加载；设置页、问号帮助、三种设备角色、两个覆盖按钮和最近一次回滚入口均已验收。两个权威覆盖方向及对应回滚使用隔离的内存 Vault 与远端状态执行；生产 Vault 已执行“本地覆盖远端”真实预览并确认 875 项零差异，因此没有执行无意义的破坏性覆盖。Android `2.5.8` 已手工安装，发布 ZIP 保持 `isDesktopOnly=false` 且不使用桌面专属 API；Android 的新域名写入和真实同步仍待验证。
+Windows 插件 `2.5.11` 已写入真实 Obsidian 安装目录并完成热重载；设置页、问号帮助、三种设备角色、两个覆盖按钮和最近一次回滚入口均保留。两个权威覆盖方向及对应回滚使用隔离的内存 Vault 与远端状态执行；Android 保持 `2.5.8`，本轮不更新。
 
 ## Windows 与 Android 自用安装记录
 
 - Vault：`E:\Document\Notes`
 - 插件目录：`E:\Document\Notes\.obsidian\plugins\fast-note-sync`
-- Windows 安装版本：本地构建 `2.5.9`，`main.js` SHA-256 为 `752b1beb8e01535efaa3f20395cd8ffb121cc2576f6935977c2695fdfbb85911`；安装前程序、设置、哈希缓存和 safe-sync 状态备份位于 `E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.5.8-before-2.5.9-20260810-101536`
-- GitHub 当前 Release 仍为 `2.5.8`，tag 与分支提交均为 `b00534a`；Android 安装版本也仍为该 Release。
+- Windows 安装版本：GitHub Release `2.5.11`，分支提交为 `7686c33fd13d`，`main.js` SHA-256 为 `a7d15ce8c67a3ad8568e1e8bb443ec2e738d59835620fca5d7ddab02ceb83bff`；安装前程序、设置、根目录哈希状态和 safe-sync 状态备份位于 `E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\2.5.10-before-2.5.11-20260812-010647`
+- GitHub 当前 Release 为 `2.5.11`；Android 安装版本仍为 `2.5.8`。
 - Android 手工安装包：`E:\Tools\Obsidian\android-plugin\fast-note-sync-v2.5.8.zip`；SHA-256 为 `2779a335d00287b15b5c57a8822694c458d4f94b8fe535285942fcb04728e483`，包内 `manifest.json` 已确认版本为 `2.5.8`、`isDesktopOnly=false`、作者为 `ZC-eto`。程序文件已安装到 Xiaomi 15 的 `内部存储设备\Sync\Notes\.obsidian\plugins\fast-note-sync`，手机读回版本和三个程序文件哈希均通过；原设置与同步状态文件保留，电脑端安装前备份为 `E:\Tools\Obsidian\android-plugin\backups\Xiaomi15-fast-note-sync-before-2.5.8-20260809-213152`
 - 最近回滚目录：域名切换前备份为 `E:\Document\Notes\.obsidian\plugin-backups\fast-note-sync\before-domain-fns-902830-20260809-215003`；版本升级前备份为 `2.5.7-before-2.5.8-20260808-165400`，前一份为 `2.5.6-before-2.5.7-20260808-163700`
 - 服务地址：`https://fns-902830.prismio.net`；Android 域名切换时手机未连接，手机端 `data.json` 尚待写入该地址
 - 认证：沿用迁移前的现有授权令牌；`data.json` 仅保存 `fns-enc2:` 混淆值，不记录明文
 - 持久状态：`fileHashMap-v2.json`、`folderSnapshot.json`、`syncHashMap.json` 均保留；v1 文件哈希缓存不再迁移，升级后会按修复后的 Range 读取规则重建
 - `safe-sync/` 的设备状态和 `recovery/` 的权威覆盖恢复包属于设备私有数据，即使启用旧“配置同步”也会被硬排除，不上传到远端或其他设备
-- 运行验证：Obsidian 已加载 `2.5.9`；通过插件正式 `saveAndReloadServices("api")` 路径更新运行配置、LocalStorage 和 `data.json` 后，`settings.api` 与 `runApi` 均为新域名，WebSocket 已连接并鉴权；安全同步已开启，角色为 `bidirectional`，运行状态为 `active / STRICT`，capability 为 `true`，写入模式为 `safe`
-- Windows 本地写入 smoke：在不读取现有笔记正文的前提下创建唯一临时 Markdown，安全 ACK 将 Vault Revision 从 `2` 推进到 `3` 并写入 `LIVE` baseline；删除同一临时笔记后推进到 `4` 并写入 `DELETED` baseline，本地临时文件和运行时测试标记均已清理。整个过程没有 `457`、未处理错误或安全写入暂停。
+- 运行验证：Obsidian 已加载 `2.5.11`，WebSocket 已连接并鉴权；安全同步已开启，角色为 `bidirectional`，运行状态为 `active / STRICT`，capability 为 `true`，写入模式为 `safe`。
+- 正文一致性：`英语/练习/2026-08-11.md` 使用 Windows 原正文安全重提后，Vault Revision 从 `174` 推进到 `175`；`/api/note` 与本地正文逐字节一致，两端均为 `24449` 字节，pending 为 0。
+- Windows 自动同步 smoke：通过 Obsidian 正常创建、修改、删除唯一临时 Markdown，未直接调用安全 mutation；Vault Revision 依次推进到 `176 / 177 / 178`，每一步 VPS 均确认。本地临时文件已清理，状态保持 `active / STRICT / safe`，控制台无错误。
 - 权威预览：生产 Vault 本地与远端均为 875 项，CREATE / UPDATE / DELETE / REPLACE 全部为 0；等待取消完成后状态恢复为 `active / STRICT / safe`
 - 中断恢复：实机人为清除本地 bootstrap session 后，客户端使用稳定 device ID 接管本机原 session 并成功取消；没有残留 preview、bootstrap 或 busy 状态，控制台无 error/warning
-- 文件核对：Windows 实际安装的 `main.js` SHA-256 为 `752b1beb8e01535efaa3f20395cd8ffb121cc2576f6935977c2695fdfbb85911`；这是尚未发布到 GitHub Release 的本地 `2.5.9` 构建。原 `data.json`、hash map 和 folder snapshot 均保留。
+- 文件核对：Windows 实际安装的 `main.js` SHA-256 与 GitHub `2.5.11` Release digest 一致；原 `data.json`、hash map、folder snapshot、safe-sync 状态和恢复包均保留。
 
 域名切换时再次确认 LocalStorage 中的 API 地址优先于 `data.json`。因此不能只编辑配置文件；本次先把 893 条 baseline、0 条 pending 从旧域名指纹 `81a3bf7e-u1-v1` 复制迁移到新指纹 `b2af6334-u1-v1`，再通过插件正式 `saveAndReloadServices("api")` 路径同时更新运行配置、LocalStorage 和 `data.json`，重连后确认实际使用 `https://fns-902830.prismio.net`。
 
@@ -108,10 +109,9 @@ tests/
 - `pnpm test`：通过。
 - `pnpm lint`：通过，0 warning、0 error；`pnpm lint:css`：通过。
 - `pnpm build`：通过。
-- 2026-08-10 的 `2.5.9` 修复新增 `safe-sync-reconciler`、`safe-sync-runtime-startup` 测试，并在 `test:auth` 中补充安全 ACK 绕过旧同步 context 的回归断言；全量 `pnpm test`、`pnpm lint`、`pnpm lint:css` 与 `pnpm build` 均通过。此次本机命令实际使用 Node `v22.20.0`、pnpm `11.1.2`，低于仓库声明的 Node `>=24.14.0` 并产生 engine warning；测试与构建没有因此失败，正式发布仍应使用声明版本。
-- 当前本地复验环境为 Node `v24.14.0`、pnpm `10.28.1`；GitHub Release 工作流按仓库 `packageManager` 使用 pnpm `11.1.2`，两处测试与构建均通过。
+- 2026-08-12 的 `2.5.11` 修复新增 `safe-sync-reconciler`、`safe-sync-runtime-startup` 测试，并在 `test:auth` 中补充安全 ACK 绕过旧同步 context 的回归断言；本机全量 `pnpm test`、`pnpm lint`、`pnpm lint:css` 与 `pnpm build` 均通过。本机使用 Node `v22.20.0` 会产生 engine warning；GitHub Release 工作流已使用声明的 Node `v24.14.0` 与 pnpm `11.1.2` 重跑相同闸门并成功发布。
 
-Windows 实机加载、设置交互、Dokploy 新服务连接、正式域名切换、生产 Vault 安全 bootstrap 预览、中断取消恢复和本地安全创建/删除已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.5.9`。`SafeMirrorManager` 隔离集成测试实际执行了本地覆盖远端、远端覆盖本地、两个方向回滚、预览后本地漂移失效、计划过期失效及远端镜像端禁止覆盖远端。Android `2.5.8` 已完成程序文件安装和读回哈希校验，但新域名写入、Android 加载及真实双设备传播尚未执行。
+Windows 实机加载、设置交互、Dokploy `3.6.11` 服务连接、正式域名、生产正文一致性和本地自动创建/修改/删除已经验证，`manifest.json` 与 Obsidian 实际加载版本均为 `2.5.11`。`SafeMirrorManager` 隔离集成测试仍覆盖本地覆盖远端、远端覆盖本地、两个方向回滚、预览后本地漂移失效、计划过期失效及远端镜像端禁止覆盖远端。Android `2.5.8` 本轮未更新，真实双设备传播仍待后续验收。
 
 ## 禁止事项
 
