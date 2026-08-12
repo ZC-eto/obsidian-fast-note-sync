@@ -110,6 +110,7 @@ export class SafeMirrorManager {
       this.activeSession = undefined
       this.plugin.settings.safeRevisionSyncEnabled = true
       await this.plugin.saveSettings()
+      await this.requireRuntime().discardPendingForPaths(allPlanItems(session.plan).map((item) => item.path))
       await this.recovery.update(record, "APPLYING")
 
       if (session.plan.direction === "LOCAL_TO_REMOTE") await this.applyLocalToRemote(session, onProgress)

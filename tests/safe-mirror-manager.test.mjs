@@ -110,7 +110,7 @@ function cloneResource(resource) {
   return { ...resource, content: new Uint8Array(resource.content) }
 }
 
-function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Date.now() + 60_000, isSyncing = false, isSyncRequesting = false }) {
+function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Date.now() + 60_000, isSyncing = false, isSyncRequesting = false, stalePendingPaths = [] }) {
   const localMap = new Map(local.map((item) => [item.path, cloneResource(item)]))
   const remoteMap = new Map(remote.map((item) => [item.path, cloneResource(item)]))
   const ignored = new Set()
@@ -119,6 +119,8 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   let commitCount = 0
   let cancelCount = 0
   const prepareOrder = []
+  const pendingPaths = new Set(stalePendingPaths)
+  const applyOrder = []
 
   const manifest = (items) => [...items.values()].map(({ content: _content, ctime: _ctime, mtime: _mtime, ...item }) => ({ ...item }))
   const localFile = (resource) => resource && resource.resourceType !== "FOLDER" ? {
@@ -165,6 +167,8 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     async cancelMirrorBootstrap() { cancelCount++ },
   }
   const applyMutation = (resourceType, input) => {
+    if (pendingPaths.has(input.path)) throw new Error(`stale pending blocks authoritative mutation: ${input.path}`)
+    applyOrder.push(`mutate:${input.path}`)
     mutationBusyStates.push(plugin.safeMirrorManager?.isBusy)
     if (input.action === "DELETE") {
       const prefix = `${input.path}/`
@@ -190,7 +194,12 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     hasLiveBaseline: (target) => remoteMap.has(target),
     startFileUpload: async () => { throw new Error("unexpected attachment upload in this test") },
     commitFileUpload: async () => undefined,
-    discardPendingForPaths: async () => 0,
+    discardPendingForPaths: async (paths) => {
+      let discarded = 0
+      for (const target of paths) if (pendingPaths.delete(target)) discarded++
+      applyOrder.push(`discard:${discarded}`)
+      return discarded
+    },
   }
   const plugin = {
     settings: { syncRole, safeRevisionSyncEnabled: false },
@@ -233,6 +242,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     get commitCount() { return commitCount },
     get cancelCount() { return cancelCount },
     prepareOrder,
+    applyOrder,
     mutationBusyStates,
     assertNoIgnoredPaths() { assert.equal(ignored.size, 0) },
   }
@@ -248,6 +258,7 @@ function textAt(items, target) {
   const harness = makeHarness({
     local: [makeResource("NOTE", "shared.md", "local-new"), makeResource("NOTE", "local-only.md", "local-only")],
     remote: [makeResource("NOTE", "shared.md", "remote-old"), makeResource("NOTE", "remote-only.md", "remote-only")],
+    stalePendingPaths: ["shared.md"],
   })
   const manager = new SafeMirrorManager(harness.plugin)
   harness.plugin.safeMirrorManager = manager
@@ -267,6 +278,7 @@ function textAt(items, target) {
   assert.equal(harness.plugin.settings.safeRevisionSyncEnabled, true)
   assert.equal(harness.commitCount, 1)
   assert.equal(harness.saveCount, 1)
+  assert.equal(harness.applyOrder[0], "discard:1", "authoritative paths must discard stale pending before the first mutation")
   assert.ok(harness.mutationBusyStates.every(Boolean), "ordinary sync must stay paused during authoritative mutations")
 
   const rolledBack = await manager.rollbackLatest()
