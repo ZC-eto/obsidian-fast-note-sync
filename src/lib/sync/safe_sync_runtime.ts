@@ -215,6 +215,16 @@ export class SafeSyncRuntime {
     return this.engine.claimRemoteEvent(resourceType, action, path, previousPath, contentHash)
   }
 
+  isConfirmedDuplicateUpsert(
+    resourceType: SafeSyncEvent["resourceType"],
+    path: string,
+    payloadContentHash: string,
+    localContentHash: string | null,
+  ): boolean {
+    return this.writeMode() === "safe" &&
+      this.engine.isConfirmedDuplicateUpsert(resourceType, path, payloadContentHash, localContentHash)
+  }
+
   verifyRemoteEvent(
     event: SafeSyncEvent,
     sourceContentHash: string | null,

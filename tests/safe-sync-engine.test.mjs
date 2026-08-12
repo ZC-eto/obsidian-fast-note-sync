@@ -622,6 +622,51 @@ await assert.rejects(
   /no matching safe sync event/,
 )
 
+const duplicateStore = new MemoryStore()
+duplicateStore.persistedBootstrapComplete = true
+duplicateStore.latestVaultRevision = 7
+duplicateStore.baselines.set("same.md", {
+  path: "same.md", resourceType: "NOTE", resourceId: "same-note", resourceRevision: 2,
+  contentHash: "same-hash", vaultRevision: 7, state: "LIVE", size: 9,
+})
+duplicateStore.baselines.set("folder", {
+  path: "folder", resourceType: "FOLDER", resourceId: "same-folder", resourceRevision: 1,
+  contentHash: "", vaultRevision: 7, state: "LIVE", size: 0,
+})
+duplicateStore.baselines.set("same.bin", {
+  path: "same.bin", resourceType: "FILE", resourceId: "same-file", resourceRevision: 1,
+  contentHash: "same-file-hash", vaultRevision: 7, state: "LIVE", size: 4,
+})
+const duplicate = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: new ScriptedTransport({
+    SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 7, migrationVerified: true }],
+  }),
+  createStateStore: () => duplicateStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-duplicate",
+  now: () => 1_000,
+})
+assert.equal((await duplicate.refreshStatus(true)).state, "active")
+assert.equal(duplicate.isConfirmedDuplicateUpsert("NOTE", "same.md", "same-hash", "same-hash"), true)
+assert.equal(duplicate.isConfirmedDuplicateUpsert("FOLDER", "folder", "", ""), true)
+assert.equal(duplicate.isConfirmedDuplicateUpsert("FILE", "same.bin", "same-file-hash", "same-file-hash"), true)
+assert.equal(duplicate.isConfirmedDuplicateUpsert("NOTE", "same.md", "different", "same-hash"), false)
+assert.equal(duplicate.isConfirmedDuplicateUpsert("NOTE", "same.md", "same-hash", "local-edit"), false)
+duplicateStore.pending.set("pending-duplicate", {
+  operationId: "pending-duplicate", deviceId: "device-a", resourceType: "NOTE", path: "same.md",
+  createdAt: 1, expiresAt: 50_000, status: "pending", payload: { action: "MODIFY" },
+})
+assert.equal(duplicate.isConfirmedDuplicateUpsert("NOTE", "same.md", "same-hash", "same-hash"), false)
+duplicateStore.pending.clear()
+duplicate.remoteEvents = [{
+  vaultRevision: 8, resourceId: "same-note", resourceRevision: 3, resourceType: "NOTE",
+  action: "MODIFY", path: "same.md", contentHash: "same-hash", state: "LIVE",
+}]
+assert.equal(duplicate.isConfirmedDuplicateUpsert("NOTE", "same.md", "same-hash", "same-hash"), false)
+duplicate.cancelRemoteEvents(new Error("test complete"))
+
 const repeatedStore = new MemoryStore()
 repeatedStore.baselines.set("repeat.md", {
   path: "repeat.md", resourceId: "repeat", resourceRevision: 1, contentHash: "r1", vaultRevision: 0, state: "LIVE", size: 2,

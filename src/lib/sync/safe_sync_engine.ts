@@ -605,6 +605,29 @@ export class SafeSyncEngine {
     return promise
   }
 
+  isConfirmedDuplicateUpsert(
+    resourceType: SafeSyncEvent["resourceType"],
+    path: string,
+    payloadContentHash: string,
+    localContentHash: string | null,
+  ): boolean {
+    if (this.status.state !== "active" || localContentHash == null) return false
+    const store = this.requireStore()
+    if (!store.bootstrapComplete || store.hasPendingForPath(path)) return false
+    if (this.remoteEvents.some((event) => remoteEventMatches(event, resourceType, "UPSERT", path, "", payloadContentHash))) {
+      return false
+    }
+    const baseline = store.getBaseline(path)
+    if (!baseline || baseline.state !== "LIVE" || baseline.path !== path || baseline.resourceType !== resourceType ||
+      baseline.vaultRevision > store.latestVaultRevision) {
+      return false
+    }
+    if (resourceType === "FOLDER") {
+      return payloadContentHash === "" && localContentHash === "" && baseline.contentHash === ""
+    }
+    return payloadContentHash !== "" && payloadContentHash === localContentHash && payloadContentHash === baseline.contentHash
+  }
+
   async commitRemoteEvent(event: SafeSyncEvent, baseline: SafeRevisionBaseline): Promise<void> {
     if (!this.activeRemoteEvent || this.activeRemoteEvent.vaultRevision !== event.vaultRevision) {
       throw new Error("safe sync remote event is not the active Vault Revision")

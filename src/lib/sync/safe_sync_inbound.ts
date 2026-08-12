@@ -45,14 +45,21 @@ export async function receiveSafeDirectEvent(event: SafeSyncEvent, plugin: FastS
 
 export async function receiveSafeNoteModify(data: ReceiveMessage, plugin: FastSync): Promise<void> {
   const runtime = requireRuntime(plugin)
-  const event = await requireEvent(runtime.claimRemoteEvent("NOTE", "UPSERT", data.path, "", data.contentHash))
-  try {
-    const incomingHash = await hashContentAsync(data.content || "")
-    if (event.contentHash && incomingHash !== event.contentHash) throw new Error(`safe sync note payload hash mismatch at ${data.path}`)
-    const path = normalizePath(data.path)
-    await plugin.lockManager.withLock(path, async () => {
-      const existing = plugin.app.vault.getFileByPath(path)
-      const currentHash = existing instanceof TFile ? await hashContentAsync(await plugin.app.vault.read(existing)) : null
+  const incomingHash = await hashContentAsync(data.content || "")
+  const path = normalizePath(data.path)
+  await plugin.lockManager.withLock(path, async () => {
+    const existing = plugin.app.vault.getFileByPath(path)
+    const currentHash = existing instanceof TFile ? await hashContentAsync(await plugin.app.vault.read(existing)) : null
+    if (data.contentHash === incomingHash && runtime.isConfirmedDuplicateUpsert("NOTE", data.path, incomingHash, currentHash)) {
+      if (!(existing instanceof TFile)) throw new Error(`safe sync duplicate note is missing: ${path}`)
+      plugin.fileHashManager.setFileHash(data.path, incomingHash, existing.stat.mtime, existing.stat.size)
+      plugin.lastSyncMtime.set(data.path, existing.stat.mtime)
+      plugin.pendingNoteDeleteAcks.delete(data.path)
+      return
+    }
+    const event = await requireEvent(runtime.claimRemoteEvent("NOTE", "UPSERT", data.path, "", data.contentHash))
+    try {
+      if (event.contentHash && incomingHash !== event.contentHash) throw new Error(`safe sync note payload hash mismatch at ${data.path}`)
       const shouldApply = runtime.verifyRemoteEvent(event, currentHash)
       plugin.addIgnoredFile(path)
       try {
@@ -73,12 +80,12 @@ export async function receiveSafeNoteModify(data: ReceiveMessage, plugin: FastSy
       } finally {
         window.setTimeout(() => plugin.removeIgnoredFile(path), 500)
       }
-    }, { maxRetries: 5, retryInterval: 100 })
-    updateSyncTime(plugin, "lastNoteSyncTime", data.lastTime)
-  } catch (error) {
-    runtime.rejectRemoteEvent(event, error)
-    throw error
-  }
+    } catch (error) {
+      runtime.rejectRemoteEvent(event, error)
+      throw error
+    }
+  }, { maxRetries: 5, retryInterval: 100 })
+  updateSyncTime(plugin, "lastNoteSyncTime", data.lastTime)
 }
 
 export async function receiveSafeNoteDelete(data: ReceiveMessage, plugin: FastSync): Promise<void> {
@@ -150,11 +157,15 @@ export async function receiveSafeFolderModify(
   plugin: FastSync,
 ): Promise<void> {
   const runtime = requireRuntime(plugin)
-  const event = await requireEvent(runtime.claimRemoteEvent("FOLDER", "UPSERT", data.path))
-  try {
-    const path = normalizePath(data.path)
-    await plugin.lockManager.withLock(path, async () => {
-      const existing = plugin.app.vault.getAbstractFileByPath(path)
+  const path = normalizePath(data.path)
+  await plugin.lockManager.withLock(path, async () => {
+    const existing = plugin.app.vault.getAbstractFileByPath(path)
+    if (runtime.isConfirmedDuplicateUpsert("FOLDER", data.path, "", existing instanceof TFolder ? "" : null)) {
+      plugin.folderSnapshotManager.setFolderMtime(path, data.mtime || Date.now())
+      return
+    }
+    const event = await requireEvent(runtime.claimRemoteEvent("FOLDER", "UPSERT", data.path))
+    try {
       const shouldApply = runtime.verifyRemoteEvent(event, existing instanceof TFolder ? "" : null)
       if (existing && !(existing instanceof TFolder)) throw new Error(`safe sync folder target is occupied: ${path}`)
       plugin.addIgnoredFile(path)
@@ -165,12 +176,12 @@ export async function receiveSafeFolderModify(
       } finally {
         window.setTimeout(() => plugin.removeIgnoredFile(path), 500)
       }
-    }, { maxRetries: 5, retryInterval: 100 })
-    updateSyncTime(plugin, "lastFolderSyncTime", data.lastTime)
-  } catch (error) {
-    runtime.rejectRemoteEvent(event, error)
-    throw error
-  }
+    } catch (error) {
+      runtime.rejectRemoteEvent(event, error)
+      throw error
+    }
+  }, { maxRetries: 5, retryInterval: 100 })
+  updateSyncTime(plugin, "lastFolderSyncTime", data.lastTime)
 }
 
 export async function receiveSafeFolderDelete(

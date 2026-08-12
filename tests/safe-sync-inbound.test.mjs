@@ -54,6 +54,7 @@ function makePlugin(runtimeOverrides = {}) {
   }
   const runtime = {
     claimRemoteEvent: async () => event,
+    isConfirmedDuplicateUpsert: () => false,
     verifyRemoteEvent: (_event, currentHash) => {
       assert.equal(currentHash, "hash:old")
       return true
@@ -117,6 +118,33 @@ await assert.rejects(() => receiveSafeNoteModify({
 }, unmatched.plugin), /no matching safe sync event/)
 assert.equal(unmatched.file.content, "old")
 assert.equal(unmatched.modifyCount, 0)
+
+const duplicate = makePlugin({
+  claimRemoteEvent: async () => { throw new Error("duplicate payload must not claim an event") },
+  isConfirmedDuplicateUpsert: (_type, path, payloadHash, localHash) => {
+    assert.equal(path, "note.md")
+    assert.equal(payloadHash, "hash:old")
+    assert.equal(localHash, "hash:old")
+    return true
+  },
+})
+await receiveSafeNoteModify({
+  path: "note.md", content: "old", contentHash: "hash:old", ctime: 1, mtime: 2, lastTime: 3,
+}, duplicate.plugin)
+assert.equal(duplicate.file.content, "old")
+assert.equal(duplicate.modifyCount, 0)
+assert.equal(duplicate.committed, false)
+assert.equal(duplicate.rejected, false)
+
+const duplicatePayloadMismatch = makePlugin({
+  claimRemoteEvent: async () => { throw new Error("no matching safe sync event") },
+  isConfirmedDuplicateUpsert: () => { throw new Error("mismatched payload must not use duplicate handling") },
+})
+await assert.rejects(() => receiveSafeNoteModify({
+  path: "note.md", content: "tampered", contentHash: "hash:old", ctime: 1, mtime: 2, lastTime: 3,
+}, duplicatePayloadMismatch.plugin), /no matching safe sync event/)
+assert.equal(duplicatePayloadMismatch.file.content, "old")
+assert.equal(duplicatePayloadMismatch.modifyCount, 0)
 
 const diverged = makePlugin({
   verifyRemoteEvent: () => { throw new Error("local content differs from the confirmed baseline") },

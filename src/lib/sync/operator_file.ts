@@ -835,6 +835,17 @@ export const receiveFileSyncUpdate = async function (data: ReceiveFileSyncUpdate
   let safeSyncEvent: SafeSyncEvent | undefined
   if (plugin.safeSyncRuntime && plugin.safeSyncRuntime.writeMode() !== "legacy") {
     try {
+      const normalizedPath = normalizePath(data.path)
+      const existing = plugin.app.vault.getFileByPath(normalizedPath)
+      const currentHash = existing instanceof TFile ? await hashFileAsync(plugin.app, normalizedPath) : null
+      if (plugin.safeSyncRuntime.isConfirmedDuplicateUpsert("FILE", data.path, data.contentHash || "", currentHash)) {
+        if (!(existing instanceof TFile)) throw new Error(`safe sync duplicate file is missing: ${data.path}`)
+        plugin.fileHashManager.setFileHash(data.path, currentHash!, existing.stat.mtime, existing.stat.size)
+        plugin.lastSyncMtime.set(data.path, existing.stat.mtime)
+        plugin.pendingFileDeleteAcks.delete(data.path)
+        plugin.recordSyncCompleted('file', data.pageIndex)
+        return
+      }
       safeSyncEvent = await plugin.safeSyncRuntime.claimRemoteEvent("FILE", "UPSERT", data.path, "", data.contentHash)
     } catch (e) {
       dumpError(`[FastSync] Failed safe receiveFileSyncUpdate authorization: ${data.path}`, e)
