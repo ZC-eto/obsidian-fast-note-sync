@@ -71,11 +71,11 @@ export const folderDelete = async function (folder: TFolder, plugin: FastSync, e
             if (safeMode === "paused") return
             if (safeMode === "safe") {
                 await plugin.safeSyncRuntime!.mutateFolder({ action: "DELETE", path: folder.path })
-                plugin.folderSnapshotManager.removeFolder(folder.path)
+                cleanupFolderTreeCaches(plugin, folder.path)
                 return
             }
             void plugin.websocket.SendMessage("FolderDelete", data, undefined, () => {
-                plugin.folderSnapshotManager.removeFolder(folder.path)
+                cleanupFolderTreeCaches(plugin, folder.path)
             })
             dump(`Folder delete send`, folder.path)
         } finally {
@@ -100,7 +100,7 @@ export const folderDeleteByPath = async function (folderPath: string, plugin: Fa
             if (safeMode === "paused") return
             if (safeMode === "safe") {
                 await plugin.safeSyncRuntime!.mutateFolder({ action: "DELETE", path: folderPath })
-                plugin.folderSnapshotManager.removeFolder(folderPath)
+                cleanupFolderTreeCaches(plugin, folderPath)
                 return
             }
             const data = {
@@ -109,7 +109,7 @@ export const folderDeleteByPath = async function (folderPath: string, plugin: Fa
                 pathHash: hashContent(folderPath),
             }
             void plugin.websocket.SendMessage("FolderDelete", data, undefined, () => {
-                plugin.folderSnapshotManager.removeFolder(folderPath)
+                cleanupFolderTreeCaches(plugin, folderPath)
             })
             dump('Folder delete by path send', folderPath)
         } finally {
@@ -168,19 +168,55 @@ export const folderRename = async function (folder: TFolder, oldPath: string, pl
             if (safeMode === "paused") return
             if (safeMode === "safe") {
                 await plugin.safeSyncRuntime!.mutateFolder({ action: "RENAME", path: folder.path, previousPath: oldPath })
-                plugin.folderSnapshotManager.removeFolder(oldPath)
-                plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
+                renameFolderTreeCaches(plugin, oldPath, folder.path, now)
                 return
             }
             void plugin.websocket.SendMessage("FolderRename", data, undefined, () => {
-                plugin.folderSnapshotManager.removeFolder(oldPath)
-                plugin.folderSnapshotManager.setFolderMtime(folder.path, now)
+                renameFolderTreeCaches(plugin, oldPath, folder.path, now)
             })
             dump(`Folder rename send`, data.path, data.pathHash)
         } finally {
             plugin.removeIgnoredFile(folder.path)
         }
     }, { maxRetries: 5, retryInterval: 50 });
+}
+
+function cleanupFolderTreeCaches(plugin: FastSync, root: string): void {
+    plugin.folderSnapshotManager.removeFolderTree(root)
+    plugin.fileHashManager.removeTree(root)
+    removeMapTree(plugin.lastSyncMtime, root)
+    const pendingNotesChanged = removeMapTree(plugin.pendingNoteModifies, root)
+    const pendingFilesChanged = removeMapTree(plugin.pendingUploadHashes, root)
+    if (pendingNotesChanged) plugin.localStorageManager.savePending("pendingNoteModifies", plugin.pendingNoteModifies)
+    if (pendingFilesChanged) plugin.localStorageManager.savePending("pendingUploadHashes", plugin.pendingUploadHashes)
+}
+
+function renameFolderTreeCaches(plugin: FastSync, oldRoot: string, newRoot: string, mtime: number): void {
+    plugin.folderSnapshotManager.renameFolderTree(oldRoot, newRoot, mtime)
+    plugin.fileHashManager.renameTree(oldRoot, newRoot)
+    renameMapTree(plugin.lastSyncMtime, oldRoot, newRoot)
+    const pendingNotesChanged = renameMapTree(plugin.pendingNoteModifies, oldRoot, newRoot)
+    const pendingFilesChanged = renameMapTree(plugin.pendingUploadHashes, oldRoot, newRoot)
+    if (pendingNotesChanged) plugin.localStorageManager.savePending("pendingNoteModifies", plugin.pendingNoteModifies)
+    if (pendingFilesChanged) plugin.localStorageManager.savePending("pendingUploadHashes", plugin.pendingUploadHashes)
+}
+
+function removeMapTree<T>(map: Map<string, T>, root: string): boolean {
+    let changed = false
+    for (const path of [...map.keys()]) {
+        if (path !== root && !path.startsWith(`${root}/`)) continue
+        map.delete(path)
+        changed = true
+    }
+    return changed
+}
+
+function renameMapTree<T>(map: Map<string, T>, oldRoot: string, newRoot: string): boolean {
+    const moved = [...map.entries()].filter(([path]) => path === oldRoot || path.startsWith(`${oldRoot}/`))
+    if (moved.length === 0) return false
+    for (const [path] of moved) map.delete(path)
+    for (const [path, value] of moved) map.set(`${newRoot}${path.slice(oldRoot.length)}`, value)
+    return true
 }
 
 /**

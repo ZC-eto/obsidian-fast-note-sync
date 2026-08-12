@@ -153,6 +153,48 @@ await restored.acknowledge({
 })
 assert.equal(restored.latestVaultRevision, 1, "an ACK must not skip unapplied Vault events")
 
+await restored.replaceBootstrapBaselines([
+  { path: "old", resourceType: "FOLDER", resourceId: "tree-root", resourceRevision: 1, contentHash: "", vaultRevision: 10, state: "LIVE", size: 0 },
+  { path: "old/child", resourceType: "FOLDER", resourceId: "tree-child", resourceRevision: 1, contentHash: "", vaultRevision: 10, state: "LIVE", size: 0 },
+  { path: "old/child/note.md", resourceType: "NOTE", resourceId: "tree-note", resourceRevision: 1, contentHash: "note-hash", vaultRevision: 10, state: "LIVE", size: 9 },
+], 10)
+await restored.putPending({
+  operationId: "op-tree-rename", deviceId: "device-a", resourceType: "FOLDER", path: "new", previousPath: "old", resourceId: "tree-root",
+  createdAt: 1_600, expiresAt: 1_600 + SAFE_SYNC_OPERATION_RETENTION_MS, status: "pending", payload: { action: "RENAME" },
+})
+await restored.acknowledge({
+  operationId: "op-tree-rename", path: "new", previousPath: "old", resourceId: "tree-root", resourceRevision: 2,
+  contentHash: "", vaultRevision: 13, state: "LIVE", size: 0, resourceType: "FOLDER",
+}, {
+  previousPaths: ["old/child", "old/child/note.md"],
+  baselines: [
+    { path: "new/child", resourceType: "FOLDER", resourceId: "tree-child", resourceRevision: 2, contentHash: "", vaultRevision: 12, state: "LIVE", size: 0 },
+    { path: "new/child/note.md", resourceType: "NOTE", resourceId: "tree-note", resourceRevision: 2, contentHash: "note-hash", vaultRevision: 11, state: "LIVE", size: 9 },
+  ],
+})
+assert.equal(restored.latestVaultRevision, 13, "a complete folder tree ACK must advance the contiguous cursor")
+assert.equal(restored.getBaseline("old/child"), undefined)
+assert.equal(restored.getBaseline("new/child/note.md").resourceRevision, 2)
+
+await restored.putPending({
+  operationId: "op-tree-delete", deviceId: "device-a", resourceType: "FOLDER", path: "new", resourceId: "tree-root",
+  createdAt: 1_700, expiresAt: 1_700 + SAFE_SYNC_OPERATION_RETENTION_MS, status: "pending", payload: { action: "DELETE" },
+})
+await restored.acknowledge({
+  operationId: "op-tree-delete", path: "new", resourceId: "tree-root", resourceRevision: 3,
+  contentHash: "", vaultRevision: 16, state: "DELETED", size: 0, resourceType: "FOLDER",
+}, {
+  previousPaths: [],
+  baselines: [
+    { ...restored.getBaseline("new/child"), resourceRevision: 3, vaultRevision: 15, state: "DELETED" },
+    { ...restored.getBaseline("new/child/note.md"), resourceRevision: 3, vaultRevision: 14, state: "DELETED" },
+  ],
+})
+assert.equal(restored.latestVaultRevision, 16)
+assert.equal(restored.getBaseline("new").state, "DELETED")
+assert.equal(restored.getBaseline("new/child").state, "DELETED")
+assert.equal(restored.getBaseline("new/child/note.md").state, "DELETED")
+
 await restored.putPending({
   operationId: "op-expired", deviceId: "device-a", path: "notes/expired.md",
   createdAt: 2_000, expiresAt: 3_000, status: "pending", payload: { action: "CREATE" },

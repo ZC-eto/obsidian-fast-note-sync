@@ -227,6 +227,28 @@ export class FolderSnapshotManager {
         }
     }
 
+    /** Remove a folder and every cached descendant in one persisted update. */
+    removeFolderTree(root: string): void {
+        this.removeFolders([...this.snapshotMap.keys()].filter((path) => path === root || path.startsWith(`${root}/`)));
+    }
+
+    /** Remap a folder subtree after Obsidian moves its root with a single rename event. */
+    renameFolderTree(oldRoot: string, newRoot: string, mtime: number): void {
+        const moved = [...this.snapshotMap.entries()]
+            .filter(([path]) => path === oldRoot || path.startsWith(`${oldRoot}/`));
+        if (moved.length === 0) {
+            this.snapshotMap.set(newRoot, mtime);
+            this.scheduleSave();
+            return;
+        }
+        for (const [path] of moved) this.snapshotMap.delete(path);
+        for (const [path, previousMtime] of moved) {
+            this.snapshotMap.set(`${newRoot}${path.slice(oldRoot.length)}`, path === oldRoot ? mtime : previousMtime);
+        }
+        if (!this.snapshotMap.has(newRoot)) this.snapshotMap.set(newRoot, mtime);
+        this.scheduleSave();
+    }
+
     /**
      * 从 localStorage 加载快照
      */

@@ -319,6 +319,27 @@ export class FileHashManager {
     if (changed) this.scheduleSave();
   }
 
+  removeTree(root: string): void {
+    let changed = false;
+    for (const path of new Set([...this.hashMap.keys(), ...this.syncHashMap.keys()])) {
+      if (path !== root && !path.startsWith(`${root}/`)) continue;
+      changed = this.hashMap.delete(path) || changed;
+      changed = this.syncHashMap.delete(path) || changed;
+    }
+    if (changed) this.scheduleSave();
+  }
+
+  renameTree(oldRoot: string, newRoot: string): void {
+    const localEntries = [...this.hashMap.entries()].filter(([path]) => path === oldRoot || path.startsWith(`${oldRoot}/`));
+    const syncEntries = [...this.syncHashMap.entries()].filter(([path]) => path === oldRoot || path.startsWith(`${oldRoot}/`));
+    if (localEntries.length === 0 && syncEntries.length === 0) return;
+    for (const [path] of localEntries) this.hashMap.delete(path);
+    for (const [path] of syncEntries) this.syncHashMap.delete(path);
+    for (const [path, cache] of localEntries) this.hashMap.set(`${newRoot}${path.slice(oldRoot.length)}`, cache);
+    for (const [path, hash] of syncEntries) this.syncHashMap.set(`${newRoot}${path.slice(oldRoot.length)}`, hash);
+    this.scheduleSave();
+  }
+
   /**
    * 从 localStorage 加载哈希映射
    */

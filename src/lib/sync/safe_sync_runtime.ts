@@ -22,6 +22,7 @@ export class SafeSyncRuntime {
   private drainingDirectEvents = false
   private roleHeartbeat?: number
   private remoteRefreshTimer?: number
+  private localMutationCount = 0
 
   constructor(private readonly plugin: FastSync) {
     this.transport = new SafeSyncWebSocketTransport({
@@ -128,15 +129,18 @@ export class SafeSyncRuntime {
   }
 
   mutateNote(input: SafeMutationInput) {
-    return this.engine.mutate("NOTE", input.content === undefined ? input : { ...input, size: safeSyncTextSize(input.content) })
+    return this.runLocalMutation(() =>
+      this.engine.mutate("NOTE", input.content === undefined ? input : { ...input, size: safeSyncTextSize(input.content) }))
   }
 
-  mutateFolder(input: SafeMutationInput) {
-    return this.engine.mutate("FOLDER", input)
+  async mutateFolder(input: SafeMutationInput) {
+    const ack = await this.runLocalMutation(() => this.engine.mutate("FOLDER", input))
+    if (input.action === "DELETE" || input.action === "RENAME") this.queueRemoteRefresh()
+    return ack
   }
 
   mutateFile(input: SafeMutationInput) {
-    return this.engine.mutate("FILE", input)
+    return this.runLocalMutation(() => this.engine.mutate("FILE", input))
   }
 
   startFileUpload(input: SafeMutationInput, chunkSize: number) {
@@ -144,7 +148,7 @@ export class SafeSyncRuntime {
   }
 
   commitFileUpload(operationId: string, sessionId: string, contentHash: string, size: number) {
-    return this.engine.commitFileUpload(operationId, sessionId, contentHash, size)
+    return this.runLocalMutation(() => this.engine.commitFileUpload(operationId, sessionId, contentHash, size))
   }
 
   async prepareRemoteEvents(): Promise<number> {
@@ -188,7 +192,7 @@ export class SafeSyncRuntime {
         this.remoteRefreshTimer = undefined
         return
       }
-      if (this.plugin.isSyncing || this.plugin.isSyncRequesting || this.plugin.safeMirrorManager?.isBusy) {
+      if (this.localMutationCount > 0 || this.plugin.isSyncing || this.plugin.isSyncRequesting || this.plugin.safeMirrorManager?.isBusy) {
         this.remoteRefreshTimer = window.setTimeout(attempt, 250)
         return
       }
@@ -304,6 +308,15 @@ export class SafeSyncRuntime {
     this.remoteRefreshTimer = undefined
     this.engine.cancelRemoteEvents(new Error("safe sync websocket disconnected"))
     this.transport.close("safe sync websocket disconnected")
+  }
+
+  private async runLocalMutation<T>(task: () => Promise<T>): Promise<T> {
+    this.localMutationCount++
+    try {
+      return await task()
+    } finally {
+      this.localMutationCount--
+    }
   }
 
   private async getLocalManifest() {
@@ -577,13 +590,13 @@ export class SafeSyncRuntime {
 
   private updateLocalCaches(change: SafeLocalChange, localItems: Array<{ resourceType: "NOTE" | "FILE" | "FOLDER"; path: string; contentHash: string; size: number }>): void {
     const previousPath = change.previousPath
-    const affectedBaselines = this.engine.store?.listBaselines() || []
     if (change.resourceType === "FOLDER" && (change.action === "DELETE" || change.action === "RENAME")) {
       const oldRoot = previousPath || change.path
-      const oldPaths = [...new Set([oldRoot, ...affectedBaselines.filter((item) => item.path.startsWith(`${oldRoot}/`)).map((item) => item.path)])]
-      this.plugin.fileHashManager.removeFileHashes(oldPaths)
-      this.plugin.folderSnapshotManager.removeFolders(oldPaths)
-      for (const path of oldPaths) this.plugin.lastSyncMtime.delete(path)
+      this.plugin.fileHashManager.removeTree(oldRoot)
+      this.plugin.folderSnapshotManager.removeFolderTree(oldRoot)
+      for (const path of [...this.plugin.lastSyncMtime.keys()]) {
+        if (path === oldRoot || path.startsWith(`${oldRoot}/`)) this.plugin.lastSyncMtime.delete(path)
+      }
     } else if (change.action === "DELETE") {
       this.plugin.fileHashManager.removeFileHash(change.path)
       this.plugin.folderSnapshotManager.removeFolder(change.path)

@@ -4,6 +4,7 @@ import {
   SafePendingMutation,
   SafeRevisionBaseline,
   SafeSyncStateStore,
+  SafeTreeMutationAck,
   createSafeSyncServerFingerprint,
 } from "../storage/safe_sync_state_store"
 
@@ -99,7 +100,7 @@ interface SafeSyncStateStoreLike {
   replaceBootstrapBaselines(baselines: SafeRevisionBaseline[], latestVaultRevision: number): Promise<void>
   putPending(pending: SafePendingMutation): Promise<void>
   removePending(operationId: string): Promise<void>
-  acknowledge(ack: SafeMutationAck): Promise<void>
+  acknowledge(ack: SafeMutationAck, tree?: SafeTreeMutationAck): Promise<void>
   applyRemoteBaseline(baseline: SafeRevisionBaseline, previousPath?: string): Promise<void>
   advanceVaultRevision(vaultRevision: number): Promise<void>
 }
@@ -353,7 +354,7 @@ export class SafeSyncEngine {
       const event = operationEvents.find((candidate) => pendingEventMatches(candidate, pending))
       if (!event) throw new Error(`safe sync operation event does not match pending mutation: ${pending.operationId}`)
       const baseline = store.getBaseline(pending.previousPath || pending.path)
-      await store.acknowledge({
+      const ack = {
         operationId: pending.operationId,
         path: pending.path,
         previousPath: pending.previousPath,
@@ -364,7 +365,8 @@ export class SafeSyncEngine {
         state: event.state,
         size: optionalNonNegativeInteger(pending.payload, "size") ?? baseline?.size ?? 0,
         resourceType: event.resourceType,
-      })
+      } satisfies SafeMutationAck
+      await store.acknowledge(ack, folderTreeAckFromEvents(store, pending, operationEvents, event))
       acknowledged++
     }
     return acknowledged
@@ -378,7 +380,7 @@ export class SafeSyncEngine {
     const action = resourceType === "NOTE" ? "SafeNoteMutation" : resourceType === "FILE" ? "SafeFileMutation" : "SafeFolderMutation"
     const response = await this.options.transport.request(action, current.payload)
     const ack = mutationAckFromResponse(current, resourceType, response, store.getBaseline(current.previousPath || current.path))
-    await store.acknowledge(ack)
+    await store.acknowledge(ack, folderTreeAckFromBaselines(store, resourceType, pendingMutationInput(current), ack))
     return ack
   }
 
@@ -449,7 +451,7 @@ export class SafeSyncEngine {
     const action = resourceType === "NOTE" ? "SafeNoteMutation" : resourceType === "FILE" ? "SafeFileMutation" : "SafeFolderMutation"
     const response = await this.options.transport.request(action, payload)
     const ack = mutationAckFromResponse(store.getPending(operationId)!, resourceType, response, baseline)
-    await store.acknowledge(ack)
+    await store.acknowledge(ack, folderTreeAckFromBaselines(store, resourceType, input, ack))
     return ack
   }
 
@@ -795,6 +797,75 @@ function mutationAckFromResponse(
     size: optionalNonNegativeInteger(pending.payload, "size") ?? baseline?.size ?? 0,
     resourceType,
   }
+}
+
+function folderTreeAckFromBaselines(
+  store: SafeSyncStateStoreLike,
+  resourceType: "NOTE" | "FILE" | "FOLDER",
+  input: SafeMutationInput,
+  ack: SafeMutationAck,
+): SafeTreeMutationAck | undefined {
+  if (resourceType !== "FOLDER" || (input.action !== "DELETE" && input.action !== "RENAME")) return undefined
+  const sourceRoot = input.action === "RENAME" ? input.previousPath : input.path
+  if (!sourceRoot) throw new Error("safe sync folder tree mutation is missing its source path")
+  const descendants = store.listBaselines().filter((baseline) =>
+    baseline.state === "LIVE" && baseline.path !== sourceRoot && isPathWithin(baseline.path, sourceRoot))
+  return {
+    previousPaths: input.action === "RENAME" ? descendants.map((baseline) => baseline.path) : [],
+    baselines: descendants.map((baseline) => ({
+      ...baseline,
+      path: input.action === "RENAME" ? replacePathRoot(baseline.path, sourceRoot, input.path) : baseline.path,
+      resourceRevision: baseline.resourceRevision + 1,
+      vaultRevision: ack.vaultRevision,
+      state: input.action === "DELETE" ? "DELETED" : "LIVE",
+    })),
+  }
+}
+
+function pendingMutationInput(pending: SafePendingMutation): SafeMutationInput {
+  const action = pending.payload.action
+  if (action !== "CREATE" && action !== "MODIFY" && action !== "DELETE" && action !== "RENAME") {
+    throw new Error("safe sync pending mutation has invalid action")
+  }
+  return { action, path: pending.path, previousPath: pending.previousPath }
+}
+
+function folderTreeAckFromEvents(
+  store: SafeSyncStateStoreLike,
+  pending: SafePendingMutation,
+  events: SafeSyncEvent[],
+  rootEvent: SafeSyncEvent,
+): SafeTreeMutationAck | undefined {
+  const action = pending.payload.action
+  if (rootEvent.resourceType !== "FOLDER" || (action !== "DELETE" && action !== "RENAME")) return undefined
+  const related = events.filter((event) => event.vaultRevision !== rootEvent.vaultRevision)
+  const previousPaths: string[] = []
+  const baselines = related.map((event) => {
+    const sourcePath = event.action === "RENAME" ? event.previousPath || "" : event.path
+    const baseline = sourcePath ? store.getBaseline(sourcePath) : undefined
+    if (!baseline || baseline.resourceId !== event.resourceId || baseline.state !== "LIVE") {
+      throw new Error(`safe sync recovered folder tree event has no baseline at ${sourcePath || event.path}`)
+    }
+    if (event.action === "RENAME") previousPaths.push(sourcePath)
+    return {
+      ...baseline,
+      path: event.path,
+      resourceType: event.resourceType,
+      resourceRevision: event.resourceRevision,
+      contentHash: event.contentHash || baseline.contentHash,
+      vaultRevision: event.vaultRevision,
+      state: event.state,
+    }
+  })
+  return { previousPaths, baselines }
+}
+
+function isPathWithin(path: string, root: string): boolean {
+  return path.startsWith(`${root}/`)
+}
+
+function replacePathRoot(path: string, sourceRoot: string, targetRoot: string): string {
+  return `${targetRoot}${path.slice(sourceRoot.length)}`
 }
 
 function compareManifests(localItems: SafeLocalManifestItem[], remoteItems: SafeSyncManifestItem[]): SafeSyncManifestMismatch[] {

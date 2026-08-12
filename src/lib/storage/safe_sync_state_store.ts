@@ -40,6 +40,11 @@ export interface SafeMutationAck {
   resourceType?: "NOTE" | "FILE" | "FOLDER"
 }
 
+export interface SafeTreeMutationAck {
+  previousPaths: string[]
+  baselines: SafeRevisionBaseline[]
+}
+
 interface SafeSyncStateDocument {
   version: 1
   namespace: string
@@ -184,11 +189,20 @@ export class SafeSyncStateStore {
     await this.persist()
   }
 
-  async acknowledge(ack: SafeMutationAck): Promise<void> {
+  async acknowledge(ack: SafeMutationAck, tree?: SafeTreeMutationAck): Promise<void> {
     const pending = this.state.pending[ack.operationId]
     if (!pending || pending.status !== "pending") throw new Error("safe sync ack has no matching pending mutation")
     if (pending.path !== ack.path || (pending.resourceId && pending.resourceId !== ack.resourceId)) {
       throw new Error("safe sync ack does not match pending resource")
+    }
+    if (tree && ((pending.resourceType || ack.resourceType) !== "FOLDER" ||
+      (pending.payload.action !== "DELETE" && pending.payload.action !== "RENAME"))) {
+      throw new Error("safe sync tree ack requires a folder delete or rename")
+    }
+    for (const baseline of tree?.baselines || []) validateBaseline(baseline)
+    for (const path of tree?.previousPaths || []) delete this.state.baselines[path]
+    for (const baseline of tree?.baselines || []) {
+      this.state.baselines[baseline.path] = { ...baseline }
     }
     if (ack.previousPath) delete this.state.baselines[ack.previousPath]
     this.state.baselines[ack.path] = {
@@ -201,7 +215,8 @@ export class SafeSyncStateStore {
       state: ack.state || "LIVE",
       size: ack.size || 0,
     }
-    if (ack.vaultRevision === this.state.latestVaultRevision + 1) {
+    const acknowledgedCount = 1 + (tree?.baselines.length || 0)
+    if (ack.vaultRevision === this.state.latestVaultRevision + acknowledgedCount) {
       this.state.latestVaultRevision = ack.vaultRevision
     }
     delete this.state.pending[ack.operationId]

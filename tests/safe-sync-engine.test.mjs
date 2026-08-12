@@ -45,12 +45,14 @@ class MemoryStore {
   }
   async putPending(pending) { this.pending.set(pending.operationId, pending) }
   async removePending(operationId) { this.pending.delete(operationId) }
-  async acknowledge(ack) {
+  async acknowledge(ack, tree) {
     const pending = this.pending.get(ack.operationId)
     if (!pending) throw new Error("missing pending")
+    for (const path of tree?.previousPaths || []) this.baselines.delete(path)
+    for (const baseline of tree?.baselines || []) this.baselines.set(baseline.path, { ...baseline })
     if (ack.previousPath) this.baselines.delete(ack.previousPath)
     this.baselines.set(ack.path, { ...ack, state: ack.state || "LIVE", size: ack.size || 0 })
-    if (ack.vaultRevision === this.latestVaultRevision + 1) this.latestVaultRevision = ack.vaultRevision
+    if (ack.vaultRevision === this.latestVaultRevision + 1 + (tree?.baselines.length || 0)) this.latestVaultRevision = ack.vaultRevision
     this.pending.delete(ack.operationId)
   }
   async applyRemoteBaseline(baseline, previousPath) {
@@ -778,5 +780,87 @@ assert.deepEqual(
   "reconnect must restart pagination from the durable Vault Revision",
 )
 pagedReconnect.cancelRemoteEvents(new Error("test complete"))
+
+const treeStore = new MemoryStore()
+treeStore.persistedBootstrapComplete = true
+treeStore.baselines.set("old", {
+  path: "old", resourceType: "FOLDER", resourceId: "tree-root", resourceRevision: 1, contentHash: "", vaultRevision: 0, state: "LIVE", size: 0,
+})
+treeStore.baselines.set("old/child", {
+  path: "old/child", resourceType: "FOLDER", resourceId: "tree-child", resourceRevision: 1, contentHash: "", vaultRevision: 0, state: "LIVE", size: 0,
+})
+treeStore.baselines.set("old/child/note.md", {
+  path: "old/child/note.md", resourceType: "NOTE", resourceId: "tree-note", resourceRevision: 1, contentHash: "tree-hash", vaultRevision: 0, state: "LIVE", size: 9,
+})
+const treeOperationIds = ["op-tree-rename", "op-tree-delete"]
+const treeEngine = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: new ScriptedTransport({
+    SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+    SafeFolderMutation: [
+      { resourceId: "tree-root", resourceRevision: 2, vaultRevision: 3, contentHash: "", outcome: "COMMITTED" },
+      { resourceId: "tree-root", resourceRevision: 3, vaultRevision: 6, contentHash: "", outcome: "COMMITTED" },
+    ],
+  }),
+  createStateStore: () => treeStore,
+  getLocalManifest: async () => [],
+  operationId: () => treeOperationIds.shift(),
+  now: () => 1_000,
+})
+assert.equal((await treeEngine.refreshStatus(true)).state, "active")
+await treeEngine.mutate("FOLDER", { action: "RENAME", path: "new", previousPath: "old" })
+assert.equal(treeStore.getBaseline("old/child"), undefined)
+assert.equal(treeStore.getBaseline("new/child").resourceRevision, 2)
+assert.equal(treeStore.getBaseline("new/child/note.md").contentHash, "tree-hash")
+assert.equal(treeStore.latestVaultRevision, 3, "a local folder rename must settle its complete server transaction")
+
+await treeEngine.mutate("FOLDER", { action: "DELETE", path: "new" })
+assert.equal(treeStore.getBaseline("new").state, "DELETED")
+assert.equal(treeStore.getBaseline("new/child").state, "DELETED")
+assert.equal(treeStore.getBaseline("new/child/note.md").state, "DELETED")
+assert.equal(treeStore.latestVaultRevision, 6, "a local folder delete must settle every descendant revision")
+
+const interleavedTreeStore = new MemoryStore()
+interleavedTreeStore.persistedBootstrapComplete = true
+interleavedTreeStore.baselines.set("old", {
+  path: "old", resourceType: "FOLDER", resourceId: "interleaved-root", resourceRevision: 1, contentHash: "", vaultRevision: 0, state: "LIVE", size: 0,
+})
+interleavedTreeStore.baselines.set("old/note.md", {
+  path: "old/note.md", resourceType: "NOTE", resourceId: "interleaved-note", resourceRevision: 1, contentHash: "note-1", vaultRevision: 0, state: "LIVE", size: 6,
+})
+const interleavedTree = new SafeSyncEngine({
+  vault: "vault-a",
+  serverUrl: "https://sync.example.com",
+  transport: new ScriptedTransport({
+    SafeSyncStatus: [{ capability: true, state: "STRICT", uid: 3, vaultId: 9, latestVaultRevision: 0, migrationVerified: true }],
+    SafeFolderMutation: [{ resourceId: "interleaved-root", resourceRevision: 2, vaultRevision: 3, contentHash: "", outcome: "COMMITTED" }],
+    SafeSyncEvents: [{
+      events: [
+        { vaultRevision: 1, resourceId: "foreign", resourceRevision: 1, resourceType: "NOTE", action: "CREATE", path: "foreign.md", contentHash: "foreign-1", state: "LIVE" },
+        { vaultRevision: 2, resourceId: "interleaved-root", resourceRevision: 2, resourceType: "FOLDER", action: "RENAME", path: "new", previousPath: "old", contentHash: "", state: "LIVE", operationId: "op-interleaved-tree" },
+        { vaultRevision: 3, resourceId: "interleaved-note", resourceRevision: 2, resourceType: "NOTE", action: "RENAME", path: "new/note.md", previousPath: "old/note.md", contentHash: "note-1", state: "LIVE", operationId: "op-interleaved-tree" },
+      ],
+      latestVaultRevision: 3,
+      nextRevision: 3,
+      hasMore: false,
+    }],
+  }),
+  createStateStore: () => interleavedTreeStore,
+  getLocalManifest: async () => [],
+  operationId: () => "op-interleaved-tree",
+  now: () => 1_000,
+})
+assert.equal((await interleavedTree.refreshStatus(true)).state, "active")
+await interleavedTree.mutate("FOLDER", { action: "RENAME", path: "new", previousPath: "old" })
+assert.equal(interleavedTreeStore.latestVaultRevision, 0, "an unrelated earlier event must keep the cursor behind the local tree ACK")
+assert.equal(await interleavedTree.prepareRemoteEvents(), 3)
+const foreignEvent = await interleavedTree.claimRemoteEvent("NOTE", "UPSERT", "foreign.md", "", "foreign-1")
+await interleavedTree.commitRemoteEvent(foreignEvent, {
+  path: "foreign.md", resourceType: "NOTE", resourceId: "foreign", resourceRevision: 1,
+  contentHash: "foreign-1", vaultRevision: 1, state: "LIVE", size: 9,
+})
+assert.equal(interleavedTreeStore.latestVaultRevision, 3, "own folder tree events must settle after the preceding remote event")
+assert.equal(interleavedTree.pendingRemoteEventCount(), 0)
 
 console.log("safe sync engine tests passed")
