@@ -110,7 +110,7 @@ function cloneResource(resource) {
   return { ...resource, content: new Uint8Array(resource.content) }
 }
 
-function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Date.now() + 60_000 }) {
+function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Date.now() + 60_000, isSyncing = false, isSyncRequesting = false }) {
   const localMap = new Map(local.map((item) => [item.path, cloneResource(item)]))
   const remoteMap = new Map(remote.map((item) => [item.path, cloneResource(item)]))
   const ignored = new Set()
@@ -118,6 +118,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   let saveCount = 0
   let commitCount = 0
   let cancelCount = 0
+  const prepareOrder = []
 
   const manifest = (items) => [...items.values()].map(({ content: _content, ctime: _ctime, mtime: _mtime, ...item }) => ({ ...item }))
   const localFile = (resource) => resource && resource.resourceType !== "FOLDER" ? {
@@ -153,9 +154,13 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   }
   const engine = {
     async beginMirrorBootstrap() {
+      prepareOrder.push("remote")
       return { sessionId: "bootstrap-1", expiresAt, snapshotVaultRevision: 1, manifestHash: "manifest", remoteItems: manifest(remoteMap) }
     },
-    async localManifest() { return manifest(localMap) },
+    async localManifest() {
+      prepareOrder.push("local")
+      return manifest(localMap)
+    },
     async commitMirrorBootstrap() { commitCount++; runtime.status = { state: "active" } },
     async cancelMirrorBootstrap() { cancelCount++ },
   }
@@ -189,6 +194,8 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
   }
   const plugin = {
     settings: { syncRole, safeRevisionSyncEnabled: false },
+    isSyncing,
+    isSyncRequesting,
     websocket: { isConnected: () => true, SendBinary: async () => "sent" },
     safeSyncRuntime: runtime,
     app: { vault },
@@ -225,6 +232,7 @@ function makeHarness({ local, remote, syncRole = "bidirectional", expiresAt = Da
     get saveCount() { return saveCount },
     get commitCount() { return commitCount },
     get cancelCount() { return cancelCount },
+    prepareOrder,
     mutationBusyStates,
     assertNoIgnoredPaths() { assert.equal(ignored.size, 0) },
   }
@@ -244,6 +252,8 @@ function textAt(items, target) {
   const manager = new SafeMirrorManager(harness.plugin)
   harness.plugin.safeMirrorManager = manager
   const session = await manager.prepare("LOCAL_TO_REMOTE")
+  assert.deepEqual(harness.prepareOrder.slice(0, 2), ["local", "remote"], "the server preview TTL must start after the slow local scan")
+  assert.equal(manager.isBusy, true, "preview must pause ordinary sync until apply or cancel")
   assert.equal(session.plan.updates.length, 1)
   assert.equal(session.plan.creates.length, 1)
   assert.equal(session.plan.deletes.length, 1)
@@ -275,6 +285,7 @@ function textAt(items, target) {
   const manager = new SafeMirrorManager(harness.plugin)
   harness.plugin.safeMirrorManager = manager
   const session = await manager.prepare("REMOTE_TO_LOCAL")
+  assert.equal(manager.isBusy, true)
   assert.equal(session.plan.updates.length, 2)
   assert.equal(session.plan.creates.length, 1)
   assert.equal(session.plan.deletes.length, 1)
@@ -310,6 +321,26 @@ function textAt(items, target) {
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
   assert.equal(manager.isBusy, false)
+}
+
+// REQ-MIRROR-001: preview cannot race an ordinary sync already in progress.
+{
+  const harness = makeHarness({ local: [], remote: [], isSyncing: true })
+  const manager = new SafeMirrorManager(harness.plugin)
+  await assert.rejects(() => manager.prepare("LOCAL_TO_REMOTE"), /等待当前同步完成/)
+  assert.equal(manager.isBusy, false)
+  assert.equal(harness.cancelCount, 0)
+}
+
+// REQ-MIRROR-001: cancelling a prepared preview releases the maintenance lock.
+{
+  const harness = makeHarness({ local: [], remote: [makeResource("NOTE", "remote.md", "remote")] })
+  const manager = new SafeMirrorManager(harness.plugin)
+  await manager.prepare("LOCAL_TO_REMOTE")
+  assert.equal(manager.isBusy, true)
+  await manager.cancel()
+  assert.equal(manager.isBusy, false)
+  assert.equal(harness.cancelCount, 1)
 }
 
 // REQ-OBS-001: an expired preview cannot be applied.
@@ -358,6 +389,7 @@ function textAt(items, target) {
   await assert.rejects(() => manager.prepare("LOCAL_TO_REMOTE"), /local manifest failed/)
   assert.equal(harness.cancelCount, 1)
   assert.equal(manager.session, undefined)
+  assert.equal(manager.isBusy, false)
 }
 
 // REQ-BACKUP-001: corrupted recovery content fails before any target mutation.

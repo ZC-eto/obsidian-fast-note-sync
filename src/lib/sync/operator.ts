@@ -570,6 +570,10 @@ async function receiveSyncEndWrapper(data: unknown, plugin: FastSync, type: "not
  * 启动全量/增量同步
  */
 export const handleSync = async function (plugin: FastSync, isLoadLastTime: boolean = true, syncMode: SyncMode = "auto") {
+  if (plugin.safeMirrorManager?.isBusy) {
+    dump("Authoritative preview or recovery is active, skipping ordinary sync")
+    return
+  }
   if (plugin.isSyncing) {
     dump("Sync already in progress, skipping");
     return;

@@ -40,6 +40,7 @@ export class SafeMirrorManager {
   private readonly recovery: SafeMirrorRecoveryStore
   private activeSession?: SafeMirrorSession
   private maintenanceBusy = false
+  private applying = false
 
   constructor(private readonly plugin: FastSync) {
     this.api = new HttpApiService(plugin)
@@ -57,28 +58,37 @@ export class SafeMirrorManager {
   async prepare(direction: SafeMirrorDirection): Promise<SafeMirrorSession> {
     if (this.maintenanceBusy) throw new Error("权威覆盖或恢复正在执行")
     if (!this.plugin.websocket.isConnected()) throw new Error("服务端未连接")
-    if (this.activeSession) await this.cancel()
-    const snapshot = await this.requireRuntime().engine.beginMirrorBootstrap()
+    if (this.plugin.isSyncing || this.plugin.isSyncRequesting) throw new Error("请等待当前同步完成后再生成权威覆盖预览")
+    this.maintenanceBusy = true
     try {
+      if (this.activeSession) await this.cancelMirrorBootstrapPreservingPreference()
+      this.activeSession = undefined
       const localItems = await this.requireRuntime().engine.localManifest()
+      const snapshot = await this.requireRuntime().engine.beginMirrorBootstrap()
       const plan = createSafeMirrorPlan(direction, localItems, snapshot.remoteItems)
       this.activeSession = { id: generateUUID(), createdAt: Date.now(), snapshot, localItems, plan }
       return this.activeSession
     } catch (error) {
       await this.cancelMirrorBootstrapPreservingPreference().catch(() => undefined)
+      this.activeSession = undefined
+      this.maintenanceBusy = false
       throw error
     }
   }
 
   async cancel(): Promise<void> {
     this.activeSession = undefined
-    await this.cancelMirrorBootstrapPreservingPreference()
+    try {
+      await this.cancelMirrorBootstrapPreservingPreference()
+    } finally {
+      this.maintenanceBusy = false
+    }
   }
 
   async apply(session: SafeMirrorSession, onProgress: ProgressCallback = () => undefined): Promise<SafeMirrorRecoveryRecord> {
     if (!this.activeSession || this.activeSession.id !== session.id) throw new Error("镜像计划已失效")
-    if (this.maintenanceBusy) throw new Error("权威覆盖或恢复正在执行")
-    this.maintenanceBusy = true
+    if (!this.maintenanceBusy || this.applying) throw new Error("权威覆盖或恢复正在执行")
+    this.applying = true
     let record: SafeMirrorRecoveryRecord | undefined
     let committed = false
     try {
@@ -119,6 +129,7 @@ export class SafeMirrorManager {
       if (!committed) await this.cancel().catch(() => undefined)
       throw error
     } finally {
+      this.applying = false
       this.maintenanceBusy = false
     }
   }

@@ -593,7 +593,7 @@ export default {
   "setting.sync.safe_help_local": "本地覆盖远端：以当前 Vault 为准，远端独有的项目也会被删除。",
   "setting.sync.safe_help_remote": "远端覆盖本地：以服务端为准，本地独有的项目也会被删除。",
   "setting.sync.safe_help_recovery": "恢复包：目标端原内容保留 30 天，可用历史按钮恢复最近一次覆盖。",
-  "setting.sync.safe_help_warning": "当前版本的权威覆盖不处理 Obsidian 配置目录。差异预览 10 分钟后过期，届时必须重新生成。",
+  "setting.sync.safe_help_warning": "当前版本的权威覆盖不处理 Obsidian 配置目录。预览打开期间普通同步会保持暂停；差异预览 30 分钟后过期，届时必须重新生成。",
   "setting.sync.role": "当前设备角色",
   "setting.sync.role_desc": "控制哪些设备可以写入。远端镜像端会自动开启只读保护，并关闭离线删除上传。",
   "setting.sync.role_bidirectional": "双向端",

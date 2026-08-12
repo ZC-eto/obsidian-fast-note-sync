@@ -593,7 +593,7 @@ export default {
   "setting.sync.safe_help_local": "Local overwrites remote: the current Vault becomes authoritative, including deletion of remote-only items.",
   "setting.sync.safe_help_remote": "Remote overwrites local: the server becomes authoritative, including deletion of local-only items.",
   "setting.sync.safe_help_recovery": "Recovery: target-side originals are retained for 30 days, and the history button restores the latest overwrite.",
-  "setting.sync.safe_help_warning": "Authoritative overwrite excludes the Obsidian configuration directory in this version. A preview expires after 10 minutes and must then be regenerated.",
+  "setting.sync.safe_help_warning": "Authoritative overwrite excludes the Obsidian configuration directory in this version. Ordinary sync stays paused while a preview is open. A preview expires after 30 minutes and must then be regenerated.",
   "setting.sync.role": "Device role",
   "setting.sync.role_desc": "Controls which devices may write. Remote mirror automatically enables read-only protection and disables offline deletion uploads.",
   "setting.sync.role_bidirectional": "Bidirectional",
